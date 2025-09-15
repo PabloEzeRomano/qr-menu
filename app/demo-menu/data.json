@@ -1,0 +1,86 @@
+{
+  "categories": [
+    { "key": "entradas", "label": "Entradas", "icon": "🥗" },
+    { "key": "principales", "label": "Platos principales", "icon": "🍽️" },
+    { "key": "bebidas", "label": "Bebidas", "icon": "🥤" }
+  ],
+  "filters": [
+    { "key": "all", "label": "Todos" },
+    { "key": "recomendado", "label": "Recomendados" },
+    { "key": "nuevo", "label": "Nuevos" },
+    { "key": "vegetariano", "label": "Veggie" },
+    { "key": "sin-gluten", "label": "Sin gluten" }
+  ],
+  "dailyMenu": {
+    "title": "Menú del día",
+    "hours": "12:00–15:00",
+    "price": 5500,
+    "items": [
+      "🥟 Empanada de carne",
+      "🥩 Bife angosto con papas",
+      "🧃 Limonada casera"
+    ]
+  },
+  "items": [
+    {
+      "id": "1",
+      "name": "Provoleta con orégano",
+      "description": "Queso provolone fundido a la plancha, dorado por fuera y suave por dentro, sazonado con orégano fresco y aceite de oliva.",
+      "price": 3500,
+      "category": "entradas",
+      "tags": ["recomendado"],
+      "diet": ["vegetariano"],
+      "img": "/menu-images/provo.png"
+    },
+    {
+      "id": "2",
+      "name": "Empanadas salteñas",
+      "description": "Masa dorada al horno rellena de carne cortada a cuchillo, papa, huevo y condimentos típicos del norte argentino.",
+      "price": 2400,
+      "category": "entradas",
+      "tags": ["nuevo"],
+      "diet": [],
+      "img": "/menu-images/empanadas.png"
+    },
+    {
+      "id": "3",
+      "name": "Bife de chorizo con papas",
+      "description": "Corte de carne premium a la parrilla, jugoso y tierno, acompañado de papas rústicas crocantes y chimichurri casero.",
+      "price": 8500,
+      "category": "principales",
+      "tags": ["recomendado"],
+      "diet": [],
+      "img": "/menu-images/bife.png"
+    },
+    {
+      "id": "4",
+      "name": "Milanesa napolitana",
+      "description": "Clásica milanesa de ternera cubierta con salsa de tomate, jamón cocido, queso mozzarella fundido y un toque de orégano.",
+      "price": 6800,
+      "category": "principales",
+      "tags": [],
+      "diet": [],
+      "img": "/menu-images/mila.png"
+    },
+    {
+      "id": "5",
+      "name": "Cerveza artesanal",
+      "description": "Pinta de cerveza artesanal tipo lager, fresca y liviana, elaborada con ingredientes seleccionados y sin gluten.",
+      "price": 2800,
+      "category": "bebidas",
+      "tags": [],
+      "diet": ["sin-gluten"],
+      "img": "/menu-images/beer.png"
+    },
+    {
+      "id": "6",
+      "name": "Limonada con menta",
+      "description": "Bebida fresca y natural elaborada con limón exprimido, hojas de menta y un toque de azúcar, ideal para días calurosos.",
+      "price": 2000,
+      "category": "bebidas",
+      "tags": ["nuevo"],
+      "diet": ["vegano"],
+      "img": "/menu-images/limonade.png"
+    }
+  ]
+}
