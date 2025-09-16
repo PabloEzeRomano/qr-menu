@@ -14,11 +14,13 @@ A minimal, production-ready starter for building QR code-based digital menus wit
 ## Quick Start
 
 1. **Install dependencies:**
+
    ```bash
    yarn install
    ```
 
 2. **Set up environment variables:**
+
    ```bash
    cp env.example .env.local
    ```
@@ -26,6 +28,7 @@ A minimal, production-ready starter for building QR code-based digital menus wit
    Then configure your Firebase and Mercado Pago credentials in `.env.local`.
 
 3. **Run the development server:**
+
    ```bash
    yarn dev
    ```

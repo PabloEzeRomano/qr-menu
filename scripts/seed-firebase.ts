@@ -19,11 +19,11 @@
  *   export NEXT_PUBLIC_FIREBASE_APP_ID="your_app_id"
  */
 
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, doc, writeBatch } from 'firebase/firestore';
-import fs from 'fs';
-import path from 'path';
-import dotenv from 'dotenv';
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, doc, writeBatch } from "firebase/firestore";
+import fs from "fs";
+import path from "path";
+import dotenv from "dotenv";
 dotenv.config();
 
 // Types
@@ -75,109 +75,110 @@ const firebaseConfig = {
 
 // Validate required environment variables
 const requiredEnvVars = [
-  'NEXT_PUBLIC_FIREBASE_API_KEY',
-  'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-  'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-  'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
-  'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-  'NEXT_PUBLIC_FIREBASE_APP_ID'
+  "NEXT_PUBLIC_FIREBASE_API_KEY",
+  "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+  "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+  "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
+  "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+  "NEXT_PUBLIC_FIREBASE_APP_ID",
 ];
 
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 if (missingVars.length > 0) {
   console.log(process.env);
-  console.error('❌ Missing required environment variables:');
-  missingVars.forEach(varName => console.error(`   - ${varName}`));
-  console.error('\nPlease check your .env.local file and ensure all Firebase configuration variables are set.');
+  console.error("❌ Missing required environment variables:");
+  missingVars.forEach((varName) => console.error(`   - ${varName}`));
+  console.error(
+    "\nPlease check your .env.local file and ensure all Firebase configuration variables are set.",
+  );
   process.exit(1);
 }
 
 // Initialize Firebase
-console.log('🔥 Initializing Firebase...');
+console.log("🔥 Initializing Firebase...");
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Load menu data
-const dataPath = path.join(__dirname, '..', 'app', 'demo-menu', 'data.json');
+const dataPath = path.join(__dirname, "..", "app", "demo-menu", "data.json");
 let menuData: MenuData;
 
 try {
-  const dataFile = fs.readFileSync(dataPath, 'utf8');
+  const dataFile = fs.readFileSync(dataPath, "utf8");
   menuData = JSON.parse(dataFile);
-  console.log('📄 Menu data loaded successfully');
+  console.log("📄 Menu data loaded successfully");
 } catch (error) {
-  console.error('❌ Error loading menu data:', (error as Error).message);
+  console.error("❌ Error loading menu data:", (error as Error).message);
   process.exit(1);
 }
 
 // Seed function
 async function seedDatabase(): Promise<void> {
-  console.log('🌱 Starting database seeding...');
+  console.log("🌱 Starting database seeding...");
 
   try {
     // Create a batch for atomic writes
     const batch = writeBatch(db);
 
     // Seed categories
-    console.log('📂 Seeding categories...');
-    const categoriesRef = collection(db, 'categories');
-    menuData.categories.forEach(category => {
+    console.log("📂 Seeding categories...");
+    const categoriesRef = collection(db, "categories");
+    menuData.categories.forEach((category) => {
       const categoryDoc = doc(categoriesRef, category.key);
       batch.set(categoryDoc, {
         key: category.key,
         label: category.label,
         icon: category.icon,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
     });
 
     // Seed filters
-    console.log('🏷️  Seeding filters...');
-    const filtersRef = collection(db, 'filters');
-    menuData.filters.forEach(filter => {
+    console.log("🏷️  Seeding filters...");
+    const filtersRef = collection(db, "filters");
+    menuData.filters.forEach((filter) => {
       const filterDoc = doc(filtersRef, filter.key);
       batch.set(filterDoc, {
         key: filter.key,
         label: filter.label,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
     });
 
     // Seed daily menu
-    console.log('📅 Seeding daily menu...');
-    const dailyMenuRef = doc(db, 'dailyMenu', 'current');
+    console.log("📅 Seeding daily menu...");
+    const dailyMenuRef = doc(db, "dailyMenu", "current");
     batch.set(dailyMenuRef, {
       ...menuData.dailyMenu,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
 
     // Seed menu items
-    console.log('🍽️  Seeding menu items...');
-    const itemsRef = collection(db, 'items');
-    menuData.items.forEach(item => {
+    console.log("🍽️  Seeding menu items...");
+    const itemsRef = collection(db, "items");
+    menuData.items.forEach((item) => {
       const itemDoc = doc(itemsRef, item.id);
       batch.set(itemDoc, {
         ...item,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
     });
 
     // Commit the batch
-    console.log('💾 Committing data to Firestore...');
+    console.log("💾 Committing data to Firestore...");
     await batch.commit();
 
-    console.log('✅ Database seeded successfully!');
+    console.log("✅ Database seeded successfully!");
     console.log(`   - ${menuData.categories.length} categories`);
     console.log(`   - ${menuData.filters.length} filters`);
     console.log(`   - 1 daily menu`);
     console.log(`   - ${menuData.items.length} menu items`);
-
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
+    console.error("❌ Error seeding database:", error);
     process.exit(1);
   }
 }
@@ -186,10 +187,10 @@ async function seedDatabase(): Promise<void> {
 async function main() {
   try {
     await seedDatabase();
-    console.log('🎉 Seeding completed successfully!');
+    console.log("🎉 Seeding completed successfully!");
     process.exit(0);
   } catch (error) {
-    console.error('💥 Seeding failed:', error);
+    console.error("💥 Seeding failed:", error);
     process.exit(1);
   }
 }
