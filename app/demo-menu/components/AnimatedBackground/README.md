@@ -11,27 +11,31 @@ This folder contains the organized AnimatedBackground component with separated c
 ## Benefits of This Organization
 
 ### **1. Separation of Concerns**
+
 - **Component logic** is separate from **animation configuration**
 - **Easier to maintain** and modify animations
 - **Cleaner component code** focused on rendering
 
 ### **2. Animation Configuration (`animationConfig.ts`)**
+
 - **Blob animations**: Floating, morphing, rotation, and scaling effects
 - **Particle animations**: 20 particles with unique movement patterns
 - **Reusable functions**: Can be imported and used elsewhere
 - **Easy to modify**: Change animation parameters in one place
 
 ### **3. Main Component (`index.tsx`)**
+
 - **Clean and focused**: Only handles rendering and lifecycle
 - **Imports configurations**: Uses the separated animation functions
 - **Proper cleanup**: Manages timeline cleanup on unmount
 
 ### **4. Usage**
+
 ```tsx
-import { AnimatedBackground } from './components';
+import { AnimatedBackground } from "./components";
 
 // The component automatically uses the animation configurations
-<AnimatedBackground />
+<AnimatedBackground />;
 ```
 
 ## Animation Features
@@ -46,6 +50,7 @@ import { AnimatedBackground } from './components';
 ## Customization
 
 To modify animations, edit `animationConfig.ts`:
+
 - Change durations, easing, and movement patterns
 - Add new particle animations
 - Modify blob behaviors

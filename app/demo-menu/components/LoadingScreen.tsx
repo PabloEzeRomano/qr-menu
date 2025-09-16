@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 interface LoadingScreenProps {
   message?: string;
 }
 
-export default function LoadingScreen({ message = "Cargando carta" }: LoadingScreenProps) {
+export default function LoadingScreen({
+  message = "Cargando carta",
+}: LoadingScreenProps) {
   return (
     <motion.main
       initial={{ opacity: 0 }}
@@ -20,9 +22,9 @@ export default function LoadingScreen({ message = "Cargando carta" }: LoadingScr
           {/* Food emojis loading ellipsis */}
           <div className="flex gap-4 mb-4">
             {[
-              { emoji: '🍖', delay: 0 },
-              { emoji: '🍕', delay: 0.3 },
-              { emoji: '🍔', delay: 0.6 }
+              { emoji: "🍖", delay: 0 },
+              { emoji: "🍕", delay: 0.3 },
+              { emoji: "🍔", delay: 0.6 },
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -30,13 +32,13 @@ export default function LoadingScreen({ message = "Cargando carta" }: LoadingScr
                 animate={{
                   y: [0, -10, 0],
                   scale: [1, 1.2, 1],
-                  opacity: [0.5, 1, 0.5]
+                  opacity: [0.5, 1, 0.5],
                 }}
                 transition={{
                   duration: 1.5,
                   repeat: Infinity,
                   delay: item.delay,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
               >
                 {item.emoji}

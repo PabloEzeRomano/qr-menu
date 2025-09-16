@@ -1,32 +1,43 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Check, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { motion } from "framer-motion";
+import { Check, Plus } from "lucide-react";
+import { useState } from "react";
 
 interface AddCategoryButtonProps {
   isEditMode: boolean;
-  onAddCategory: (category: { key: string; label: string; icon: string }) => void;
+  onAddCategory: (category: {
+    key: string;
+    label: string;
+    icon: string;
+  }) => void;
 }
 
-export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCategoryButtonProps) {
+export default function AddCategoryButton({
+  isEditMode,
+  onAddCategory,
+}: AddCategoryButtonProps) {
   const [isAdding, setIsAdding] = useState(false);
-  const [tempCategory, setTempCategory] = useState({ key: '', label: '', icon: '🍽️' });
+  const [tempCategory, setTempCategory] = useState({
+    key: "",
+    label: "",
+    icon: "🍽️",
+  });
 
   const handleAdd = () => {
     if (tempCategory.key.trim() && tempCategory.label.trim()) {
       onAddCategory({
         key: tempCategory.key.trim(),
         label: tempCategory.label.trim(),
-        icon: tempCategory.icon.trim() || '🍽️'
+        icon: tempCategory.icon.trim() || "🍽️",
       });
-      setTempCategory({ key: '', label: '', icon: '🍽️' });
+      setTempCategory({ key: "", label: "", icon: "🍽️" });
       setIsAdding(false);
     }
   };
 
   const handleCancel = () => {
-    setTempCategory({ key: '', label: '', icon: '🍽️' });
+    setTempCategory({ key: "", label: "", icon: "🍽️" });
     setIsAdding(false);
   };
 
@@ -39,16 +50,22 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
         animate={{ opacity: 1, scale: 1 }}
         className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-dashed border-cyan-400/50"
       >
-        <h3 className="text-xl font-bold text-white mb-4">Agregar nueva categoría</h3>
+        <h3 className="text-xl font-bold text-white mb-4">
+          Agregar nueva categoría
+        </h3>
 
         <div className="space-y-4">
           {/* Icon */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-1">Icono</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-1">
+              Icono
+            </label>
             <input
               type="text"
               value={tempCategory.icon}
-              onChange={(e) => setTempCategory(prev => ({ ...prev, icon: e.target.value }))}
+              onChange={(e) =>
+                setTempCategory((prev) => ({ ...prev, icon: e.target.value }))
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400 text-center text-2xl"
               placeholder="🍽️"
             />
@@ -56,11 +73,18 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
 
           {/* Key */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-1">Clave (sin espacios)</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-1">
+              Clave (sin espacios)
+            </label>
             <input
               type="text"
               value={tempCategory.key}
-              onChange={(e) => setTempCategory(prev => ({ ...prev, key: e.target.value.replace(/\s+/g, '-').toLowerCase() }))}
+              onChange={(e) =>
+                setTempCategory((prev) => ({
+                  ...prev,
+                  key: e.target.value.replace(/\s+/g, "-").toLowerCase(),
+                }))
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="nueva-categoria"
             />
@@ -68,11 +92,15 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
 
           {/* Label */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-1">Nombre</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-1">
+              Nombre
+            </label>
             <input
               type="text"
               value={tempCategory.label}
-              onChange={(e) => setTempCategory(prev => ({ ...prev, label: e.target.value }))}
+              onChange={(e) =>
+                setTempCategory((prev) => ({ ...prev, label: e.target.value }))
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="Nueva Categoría"
             />

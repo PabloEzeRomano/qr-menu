@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Edit2, Check, X } from 'lucide-react';
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Edit2, Check, X } from "lucide-react";
 
 interface EditableHeaderProps {
   title: string;
@@ -17,7 +17,7 @@ export default function EditableHeader({
   subtitle,
   isEditMode,
   onTitleChange,
-  onSubtitleChange
+  onSubtitleChange,
 }: EditableHeaderProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingSubtitle, setIsEditingSubtitle] = useState(false);

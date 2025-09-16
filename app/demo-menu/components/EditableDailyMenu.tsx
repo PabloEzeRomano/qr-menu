@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react';
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Edit2, Check, X, Plus, Trash2 } from "lucide-react";
 
 interface EditableDailyMenuProps {
   title: string;
@@ -25,7 +25,7 @@ export default function EditableDailyMenu({
   onTitleChange,
   onHoursChange,
   onPriceChange,
-  onItemsChange
+  onItemsChange,
 }: EditableDailyMenuProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingHours, setIsEditingHours] = useState(false);
@@ -58,14 +58,14 @@ export default function EditableDailyMenu({
   };
 
   const handleItemsSave = () => {
-    const validItems = tempItems.filter(item => item.trim());
+    const validItems = tempItems.filter((item) => item.trim());
     if (validItems.length > 0) {
       onItemsChange(validItems);
     }
   };
 
   const addItem = () => {
-    setTempItems([...tempItems, '']);
+    setTempItems([...tempItems, ""]);
   };
 
   const removeItem = (index: number) => {
@@ -148,7 +148,9 @@ export default function EditableDailyMenu({
                 placeholder="12:00–15:00"
                 autoFocus
               />
-              <span className="text-cyan-100 font-medium">· Entrada + Principal + Bebida</span>
+              <span className="text-cyan-100 font-medium">
+                · Entrada + Principal + Bebida
+              </span>
               <button
                 onClick={handleHoursSave}
                 className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
@@ -226,7 +228,9 @@ export default function EditableDailyMenu({
           <div className="relative">
             {isEditingPrice ? (
               <div className="flex items-center gap-2">
-                <span className="text-2xl font-extrabold text-white drop-shadow-lg">$</span>
+                <span className="text-2xl font-extrabold text-white drop-shadow-lg">
+                  $
+                </span>
                 <input
                   type="number"
                   value={tempPrice}
@@ -252,7 +256,7 @@ export default function EditableDailyMenu({
               </div>
             ) : (
               <div className="text-2xl font-extrabold text-white drop-shadow-lg">
-                ${price.toLocaleString('es-AR')}
+                ${price.toLocaleString("es-AR")}
                 {isEditMode && (
                   <button
                     onClick={() => setIsEditingPrice(true)}

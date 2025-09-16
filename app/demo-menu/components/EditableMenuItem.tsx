@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Check, Edit2, Trash2 } from 'lucide-react';
-import Image from 'next/image';
-import { useState } from 'react';
+import { motion } from "framer-motion";
+import { Check, Edit2, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 
 interface MenuItem {
   id: string;
@@ -29,7 +29,7 @@ export default function EditableMenuItem({
   onItemClick,
   isEditMode,
   onUpdate,
-  onDelete
+  onDelete,
 }: EditableMenuItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [tempItem, setTempItem] = useState({ ...item });
@@ -47,27 +47,30 @@ export default function EditableMenuItem({
   };
 
   const handleDelete = () => {
-    if (confirm('¿Estás seguro de que quieres eliminar este item?')) {
+    if (confirm("¿Estás seguro de que quieres eliminar este item?")) {
       onDelete(item.id);
     }
   };
 
-  const updateField = (field: keyof MenuItem, value: string[] | number | string) => {
-    setTempItem(prev => ({ ...prev, [field]: value }));
+  const updateField = (
+    field: keyof MenuItem,
+    value: string[] | number | string,
+  ) => {
+    setTempItem((prev) => ({ ...prev, [field]: value }));
   };
 
   const updateTags = (tag: string, add: boolean) => {
     const newTags = add
       ? [...tempItem.tags, tag]
-      : tempItem.tags.filter(t => t !== tag);
-    updateField('tags', newTags);
+      : tempItem.tags.filter((t) => t !== tag);
+    updateField("tags", newTags);
   };
 
   const updateDiet = (diet: string, add: boolean) => {
     const newDiet = add
       ? [...tempItem.diet, diet]
-      : tempItem.diet.filter(d => d !== diet);
-    updateField('diet', newDiet);
+      : tempItem.diet.filter((d) => d !== diet);
+    updateField("diet", newDiet);
   };
 
   if (isEditing) {
@@ -81,11 +84,13 @@ export default function EditableMenuItem({
         <div className="space-y-4">
           {/* Name */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-1">Nombre</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-1">
+              Nombre
+            </label>
             <input
               type="text"
               value={tempItem.name}
-              onChange={(e) => updateField('name', e.target.value)}
+              onChange={(e) => updateField("name", e.target.value)}
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="Nombre del plato"
             />
@@ -93,10 +98,12 @@ export default function EditableMenuItem({
 
           {/* Description */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-1">Descripción</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-1">
+              Descripción
+            </label>
             <textarea
               value={tempItem.description}
-              onChange={(e) => updateField('description', e.target.value)}
+              onChange={(e) => updateField("description", e.target.value)}
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400 resize-none"
               rows={3}
               placeholder="Descripción del plato"
@@ -105,11 +112,15 @@ export default function EditableMenuItem({
 
           {/* Price */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-1">Precio</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-1">
+              Precio
+            </label>
             <input
               type="number"
               value={tempItem.price}
-              onChange={(e) => updateField('price', parseInt(e.target.value) || 0)}
+              onChange={(e) =>
+                updateField("price", parseInt(e.target.value) || 0)
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="0"
             />
@@ -117,16 +128,18 @@ export default function EditableMenuItem({
 
           {/* Tags */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-2">Etiquetas</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-2">
+              Etiquetas
+            </label>
             <div className="flex flex-wrap gap-2">
-              {['nuevo', 'recomendado'].map(tag => (
+              {["nuevo", "recomendado"].map((tag) => (
                 <button
                   key={tag}
                   onClick={() => updateTags(tag, !tempItem.tags.includes(tag))}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                     tempItem.tags.includes(tag)
-                      ? 'bg-cyan-500 text-white'
-                      : 'bg-white/20 text-cyan-200 hover:bg-white/30'
+                      ? "bg-cyan-500 text-white"
+                      : "bg-white/20 text-cyan-200 hover:bg-white/30"
                   }`}
                 >
                   {tag}
@@ -137,16 +150,20 @@ export default function EditableMenuItem({
 
           {/* Diet */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-2">Dieta</label>
+            <label className="block text-cyan-200 text-sm font-medium mb-2">
+              Dieta
+            </label>
             <div className="flex flex-wrap gap-2">
-              {['vegetariano', 'sin-gluten'].map(diet => (
+              {["vegetariano", "sin-gluten"].map((diet) => (
                 <button
                   key={diet}
-                  onClick={() => updateDiet(diet, !tempItem.diet.includes(diet))}
+                  onClick={() =>
+                    updateDiet(diet, !tempItem.diet.includes(diet))
+                  }
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                     tempItem.diet.includes(diet)
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-white/20 text-emerald-200 hover:bg-white/30'
+                      ? "bg-emerald-500 text-white"
+                      : "bg-white/20 text-emerald-200 hover:bg-white/30"
                   }`}
                 >
                   {diet}
@@ -189,10 +206,10 @@ export default function EditableMenuItem({
       whileHover={{
         y: -4,
         rotate: -0.25,
-        boxShadow: '0 20px 40px rgba(0,0,0,.15)',
+        boxShadow: "0 20px 40px rgba(0,0,0,.15)",
       }}
       transition={{
-        type: 'spring',
+        type: "spring",
         stiffness: 260,
         damping: 18,
       }}
@@ -212,13 +229,13 @@ export default function EditableMenuItem({
       )}
 
       {/* Tags */}
-      {item.tags.includes('nuevo') && (
+      {item.tags.includes("nuevo") && (
         <motion.span
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{
             repeat: Infinity,
-            repeatType: 'reverse',
+            repeatType: "reverse",
             duration: 1.2,
           }}
           className="absolute top-3 left-3 text-[10px] font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-1 rounded-full shadow-lg z-10"
@@ -226,13 +243,13 @@ export default function EditableMenuItem({
           NUEVO
         </motion.span>
       )}
-      {item.tags.includes('recomendado') && (
+      {item.tags.includes("recomendado") && (
         <motion.span
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{
             repeat: Infinity,
-            repeatType: 'reverse',
+            repeatType: "reverse",
             duration: 1.6,
           }}
           className="absolute top-3 right-3 text-[10px] font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2 py-1 rounded-full shadow-lg z-10"
@@ -256,11 +273,9 @@ export default function EditableMenuItem({
 
       {/* Info */}
       <div className="flex items-start justify-between gap-3">
-        <h4 className="font-bold text-white leading-tight">
-          {item.name}
-        </h4>
+        <h4 className="font-bold text-white leading-tight">{item.name}</h4>
         <div className="font-black text-lg bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-          ${item.price.toLocaleString('es-AR')}
+          ${item.price.toLocaleString("es-AR")}
         </div>
       </div>
     </motion.article>

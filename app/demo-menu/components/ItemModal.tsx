@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import { X } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-import { MenuItem } from '../types';
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { X } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { MenuItem } from "@/types";
 
 interface ItemModalProps {
   item: MenuItem | null;
@@ -17,17 +17,20 @@ export default function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, onClose]);
 
@@ -35,18 +38,18 @@ export default function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
 
   const getCategoryLabel = (categoryKey: string) => {
     const categories = {
-      entradas: 'Entradas',
-      principales: 'Platos principales',
-      bebidas: 'Bebidas'
+      entradas: "Entradas",
+      principales: "Platos principales",
+      bebidas: "Bebidas",
     };
     return categories[categoryKey as keyof typeof categories] || categoryKey;
   };
 
   const getDietLabel = (dietKey: string) => {
     const dietLabels = {
-      vegetariano: 'Vegetariano',
-      vegano: 'Vegano',
-      'sin-gluten': 'Sin gluten'
+      vegetariano: "Vegetariano",
+      vegano: "Vegano",
+      "sin-gluten": "Sin gluten",
     };
     return dietLabels[dietKey as keyof typeof dietLabels] || dietKey;
   };
@@ -69,10 +72,13 @@ export default function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-4 z-50 flex items-center justify-center p-4"
           >
-            <div ref={modalRef} className="bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden border border-white/20">
+            <div
+              ref={modalRef}
+              className="bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden border border-white/20"
+            >
               {/* Header with close button */}
               <div className="relative p-6 pb-0">
                 <button
@@ -95,12 +101,12 @@ export default function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
                   />
                   {/* Tags overlay */}
                   <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                    {item.tags.includes('nuevo') && (
+                    {item.tags.includes("nuevo") && (
                       <span className="text-xs font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full shadow-lg">
                         NUEVO
                       </span>
                     )}
-                    {item.tags.includes('recomendado') && (
+                    {item.tags.includes("recomendado") && (
                       <span className="text-xs font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-lg">
                         RECOMENDADO
                       </span>
@@ -117,7 +123,7 @@ export default function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
                     {item.name}
                   </h2>
                   <div className="text-2xl font-black bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-                    ${item.price.toLocaleString('es-AR')}
+                    ${item.price.toLocaleString("es-AR")}
                   </div>
                 </div>
 

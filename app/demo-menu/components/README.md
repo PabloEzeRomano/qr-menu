@@ -35,13 +35,13 @@ import {
   FilterBar,
   DailyMenu,
   MenuCategory,
-} from './components';
+} from "./components";
 
 // Use components with props
 <Header
   title="🍽️ Restaurant Name"
   subtitle="Digital menu · Updated instantly"
-/>
+/>;
 ```
 
 ### Props Interface

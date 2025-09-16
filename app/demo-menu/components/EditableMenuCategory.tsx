@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react';
-import EditableMenuItem from './EditableMenuItem';
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Edit2, Check, X, Plus, Trash2 } from "lucide-react";
+import EditableMenuItem from "./EditableMenuItem";
 
 interface MenuItem {
   id: string;
@@ -43,7 +43,7 @@ export default function EditableMenuCategory({
   onCategoryDelete,
   onItemUpdate,
   onItemDelete,
-  onAddItem
+  onAddItem,
 }: EditableMenuCategoryProps) {
   const [isEditingCategory, setIsEditingCategory] = useState(false);
   const [tempCategory, setTempCategory] = useState({ ...category });
@@ -63,7 +63,11 @@ export default function EditableMenuCategory({
   };
 
   const handleCategoryDelete = () => {
-    if (confirm(`¿Estás seguro de que quieres eliminar la categoría "${category.label}"?`)) {
+    if (
+      confirm(
+        `¿Estás seguro de que quieres eliminar la categoría "${category.label}"?`,
+      )
+    ) {
       onCategoryDelete(category.key);
     }
   };
@@ -78,7 +82,9 @@ export default function EditableMenuCategory({
               <input
                 type="text"
                 value={tempCategory.icon}
-                onChange={(e) => setTempCategory(prev => ({ ...prev, icon: e.target.value }))}
+                onChange={(e) =>
+                  setTempCategory((prev) => ({ ...prev, icon: e.target.value }))
+                }
                 className="text-3xl bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 text-center w-16"
                 placeholder="🍽️"
                 autoFocus
@@ -117,7 +123,12 @@ export default function EditableMenuCategory({
               <input
                 type="text"
                 value={tempCategory.label}
-                onChange={(e) => setTempCategory(prev => ({ ...prev, label: e.target.value }))}
+                onChange={(e) =>
+                  setTempCategory((prev) => ({
+                    ...prev,
+                    label: e.target.value,
+                  }))
+                }
                 className="text-2xl font-bold text-white bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 drop-shadow-lg"
                 placeholder="Nombre de categoría"
               />
@@ -193,7 +204,9 @@ export default function EditableMenuCategory({
             className="col-span-full text-center py-12"
           >
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-dashed border-white/30">
-              <p className="text-white/60 text-lg mb-4">Esta categoría no tiene items</p>
+              <p className="text-white/60 text-lg mb-4">
+                Esta categoría no tiene items
+              </p>
               <button
                 onClick={() => onAddItem(category.key)}
                 className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2 mx-auto"
