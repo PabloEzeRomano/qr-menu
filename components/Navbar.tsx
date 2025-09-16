@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContextProvider";
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContextProvider'
 
 export default function Navbar() {
-  const pathname = usePathname();
-  const { user, isAdmin, logout } = useAuth();
+  const pathname = usePathname()
+  const { user, isAdmin, logout } = useAuth()
 
   return (
     <motion.nav
@@ -27,9 +27,9 @@ export default function Navbar() {
             <Link
               href="/"
               className={`px-3 py-2 rounded-md transition-colors ${
-                pathname === "/"
-                  ? "bg-cyan-500/80 text-white font-medium"
-                  : "text-cyan-200 hover:text-white hover:bg-white/10"
+                pathname === '/'
+                  ? 'bg-cyan-500/80 text-white font-medium'
+                  : 'text-cyan-200 hover:text-white hover:bg-white/10'
               }`}
             >
               Inicio
@@ -37,9 +37,9 @@ export default function Navbar() {
             <Link
               href="/demo-menu"
               className={`px-3 py-2 rounded-md transition-colors ${
-                pathname === "/demo-menu"
-                  ? "bg-cyan-500/80 text-white font-medium"
-                  : "text-cyan-200 hover:text-white hover:bg-white/10"
+                pathname === '/demo-menu'
+                  ? 'bg-cyan-500/80 text-white font-medium'
+                  : 'text-cyan-200 hover:text-white hover:bg-white/10'
               }`}
             >
               Demo
@@ -51,18 +51,16 @@ export default function Navbar() {
                   <Link
                     href="/admin"
                     className={`px-3 py-2 rounded-md transition-colors ${
-                      pathname === "/admin"
-                        ? "bg-cyan-500/80 text-white font-medium"
-                        : "text-cyan-200 hover:text-white hover:bg-white/10"
+                      pathname === '/admin'
+                        ? 'bg-cyan-500/80 text-white font-medium'
+                        : 'text-cyan-200 hover:text-white hover:bg-white/10'
                     }`}
                   >
                     Admin
                   </Link>
                 )}
                 <div className="flex items-center space-x-2">
-                  <span className="text-cyan-200 text-sm">
-                    {user.displayName || user.email}
-                  </span>
+                  <span className="text-cyan-200 text-sm">{user.displayName || user.email}</span>
                   <button
                     onClick={logout}
                     className="px-3 py-2 rounded-md text-cyan-200 hover:text-white hover:bg-white/10 transition-colors"
@@ -83,5 +81,5 @@ export default function Navbar() {
         </div>
       </div>
     </motion.nav>
-  );
+  )
 }

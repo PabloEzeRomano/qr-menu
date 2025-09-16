@@ -1,45 +1,39 @@
-"use client";
+'use client'
 
-import { db } from "@/lib/firebase";
-import clsx from "clsx";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const phrases = [
-  "Decile chau al menú en PDF",
-  "Mostrá tu carta con estilo",
-  "Tu menú, rápido y siempre actualizado",
-];
+  'Decile chau al menú en PDF',
+  'Mostrá tu carta con estilo',
+  'Tu menú, rápido y siempre actualizado',
+]
 
 export default function Landing() {
-  const router = useRouter();
-  const [currentPhrase, setCurrentPhrase] = useState(0);
-  const [displayedText, setDisplayedText] = useState("");
-  const [firebaseStatus, setFirebaseStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
+  const router = useRouter()
+  const [currentPhrase, setCurrentPhrase] = useState(0)
+  const [displayedText, setDisplayedText] = useState('')
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    let index = 0;
-    const fullText = phrases[currentPhrase];
+    let timeout: NodeJS.Timeout
+    let index = 0
+    const fullText = phrases[currentPhrase]
 
     const type = () => {
-      setDisplayedText(fullText.slice(0, index++));
+      setDisplayedText(fullText.slice(0, index++))
       if (index <= fullText.length) {
-        timeout = setTimeout(type, 60);
+        timeout = setTimeout(type, 60)
       } else {
         setTimeout(() => {
-          setCurrentPhrase((prev) => (prev + 1) % phrases.length);
-        }, 2000);
+          setCurrentPhrase((prev) => (prev + 1) % phrases.length)
+        }, 2000)
       }
-    };
+    }
 
-    type();
-    return () => clearTimeout(timeout);
-  }, [currentPhrase]);
+    type()
+    return () => clearTimeout(timeout)
+  }, [currentPhrase])
 
   return (
     <>
@@ -60,8 +54,8 @@ export default function Landing() {
           transition={{ delay: 1, duration: 0.6 }}
           className="text-cyan-200 mt-6 text-center max-w-xl"
         >
-          Una experiencia moderna para tus clientes. Menús diseñados para
-          celulares, rápidos de leer y fáciles de actualizar.
+          Una experiencia moderna para tus clientes. Menús diseñados para celulares, rápidos de leer
+          y fáciles de actualizar.
         </motion.p>
 
         <motion.div
@@ -73,7 +67,7 @@ export default function Landing() {
           <button
             className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg text-lg transition-all shadow-lg hover:shadow-cyan-500/25"
             onClick={() => {
-              router.push("/demo-menu");
+              router.push('/demo-menu')
             }}
           >
             Probar demo
@@ -81,5 +75,5 @@ export default function Landing() {
         </motion.div>
       </main>
     </>
-  );
+  )
 }

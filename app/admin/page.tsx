@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import { useAuth } from "@/contexts/AuthContextProvider";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import Link from "next/link";
+import { useAuth } from '@/contexts/AuthContextProvider'
+import ProtectedRoute from '@/components/ProtectedRoute'
+import Link from 'next/link'
 
 export default function AdminPage() {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth()
 
   return (
     <ProtectedRoute requireAdmin={true}>
@@ -15,9 +15,7 @@ export default function AdminPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Admin Dashboard
-                </h1>
+                <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
                 <p className="text-gray-600">Manage your QR menu</p>
               </div>
               <div className="flex items-center space-x-4">
@@ -50,9 +48,7 @@ export default function AdminPage() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-indigo-500 rounded-md flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
-                          🍽️
-                        </span>
+                        <span className="text-white text-sm font-medium">🍽️</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
@@ -60,9 +56,7 @@ export default function AdminPage() {
                         <dt className="text-sm font-medium text-gray-500 truncate">
                           Menu Management
                         </dt>
-                        <dd className="text-lg font-medium text-gray-900">
-                          Edit Menu Items
-                        </dd>
+                        <dd className="text-lg font-medium text-gray-900">Edit Menu Items</dd>
                       </dl>
                     </div>
                   </div>
@@ -85,28 +79,20 @@ export default function AdminPage() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
-                          📊
-                        </span>
+                        <span className="text-white text-sm font-medium">📊</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">
-                          Analytics
-                        </dt>
-                        <dd className="text-lg font-medium text-gray-900">
-                          View Statistics
-                        </dd>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Analytics</dt>
+                        <dd className="text-lg font-medium text-gray-900">View Statistics</dd>
                       </dl>
                     </div>
                   </div>
                 </div>
                 <div className="bg-gray-50 px-5 py-3">
                   <div className="text-sm">
-                    <span className="font-medium text-gray-500">
-                      Coming Soon
-                    </span>
+                    <span className="font-medium text-gray-500">Coming Soon</span>
                   </div>
                 </div>
               </div>
@@ -117,28 +103,20 @@ export default function AdminPage() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
-                          ⚙️
-                        </span>
+                        <span className="text-white text-sm font-medium">⚙️</span>
                       </div>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">
-                          Settings
-                        </dt>
-                        <dd className="text-lg font-medium text-gray-900">
-                          App Configuration
-                        </dd>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Settings</dt>
+                        <dd className="text-lg font-medium text-gray-900">App Configuration</dd>
                       </dl>
                     </div>
                   </div>
                 </div>
                 <div className="bg-gray-50 px-5 py-3">
                   <div className="text-sm">
-                    <span className="font-medium text-gray-500">
-                      Coming Soon
-                    </span>
+                    <span className="font-medium text-gray-500">Coming Soon</span>
                   </div>
                 </div>
               </div>
@@ -146,9 +124,7 @@ export default function AdminPage() {
 
             {/* Quick Actions */}
             <div className="mt-8">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Quick Actions
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
               <div className="bg-white shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
                   <div className="flex flex-wrap gap-4">
@@ -178,5 +154,5 @@ export default function AdminPage() {
         </div>
       </div>
     </ProtectedRoute>
-  );
+  )
 }

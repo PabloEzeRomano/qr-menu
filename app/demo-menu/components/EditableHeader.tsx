@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { Edit2, Check, X } from "lucide-react";
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { Edit2, Check, X } from 'lucide-react'
 
 interface EditableHeaderProps {
-  title: string;
-  subtitle: string;
-  isEditMode: boolean;
-  onTitleChange: (newTitle: string) => void;
-  onSubtitleChange: (newSubtitle: string) => void;
+  title: string
+  subtitle: string
+  isEditMode: boolean
+  onTitleChange: (newTitle: string) => void
+  onSubtitleChange: (newSubtitle: string) => void
 }
 
 export default function EditableHeader({
@@ -19,34 +19,34 @@ export default function EditableHeader({
   onTitleChange,
   onSubtitleChange,
 }: EditableHeaderProps) {
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [isEditingSubtitle, setIsEditingSubtitle] = useState(false);
-  const [tempTitle, setTempTitle] = useState(title);
-  const [tempSubtitle, setTempSubtitle] = useState(subtitle);
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [isEditingSubtitle, setIsEditingSubtitle] = useState(false)
+  const [tempTitle, setTempTitle] = useState(title)
+  const [tempSubtitle, setTempSubtitle] = useState(subtitle)
 
   const handleTitleSave = () => {
     if (tempTitle.trim()) {
-      onTitleChange(tempTitle.trim());
+      onTitleChange(tempTitle.trim())
     }
-    setIsEditingTitle(false);
-  };
+    setIsEditingTitle(false)
+  }
 
   const handleSubtitleSave = () => {
     if (tempSubtitle.trim()) {
-      onSubtitleChange(tempSubtitle.trim());
+      onSubtitleChange(tempSubtitle.trim())
     }
-    setIsEditingSubtitle(false);
-  };
+    setIsEditingSubtitle(false)
+  }
 
   const handleTitleCancel = () => {
-    setTempTitle(title);
-    setIsEditingTitle(false);
-  };
+    setTempTitle(title)
+    setIsEditingTitle(false)
+  }
 
   const handleSubtitleCancel = () => {
-    setTempSubtitle(subtitle);
-    setIsEditingSubtitle(false);
-  };
+    setTempSubtitle(subtitle)
+    setIsEditingSubtitle(false)
+  }
 
   return (
     <motion.div
@@ -133,5 +133,5 @@ export default function EditableHeader({
         )}
       </div>
     </motion.div>
-  );
+  )
 }

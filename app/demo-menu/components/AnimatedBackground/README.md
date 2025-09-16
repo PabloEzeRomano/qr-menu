@@ -32,10 +32,10 @@ This folder contains the organized AnimatedBackground component with separated c
 ### **4. Usage**
 
 ```tsx
-import { AnimatedBackground } from "./components";
+import { AnimatedBackground } from './components'
 
 // The component automatically uses the animation configurations
-<AnimatedBackground />;
+;<AnimatedBackground />
 ```
 
 ## Animation Features

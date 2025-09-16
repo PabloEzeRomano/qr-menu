@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { Edit2, Check, X, Plus, Trash2 } from "lucide-react";
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react'
 
 interface EditableDailyMenuProps {
-  title: string;
-  hours: string;
-  price: number;
-  items: string[];
-  isEditMode: boolean;
-  onTitleChange: (newTitle: string) => void;
-  onHoursChange: (newHours: string) => void;
-  onPriceChange: (newPrice: number) => void;
-  onItemsChange: (newItems: string[]) => void;
+  title: string
+  hours: string
+  price: number
+  items: string[]
+  isEditMode: boolean
+  onTitleChange: (newTitle: string) => void
+  onHoursChange: (newHours: string) => void
+  onPriceChange: (newPrice: number) => void
+  onItemsChange: (newItems: string[]) => void
 }
 
 export default function EditableDailyMenu({
@@ -27,58 +27,58 @@ export default function EditableDailyMenu({
   onPriceChange,
   onItemsChange,
 }: EditableDailyMenuProps) {
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [isEditingHours, setIsEditingHours] = useState(false);
-  const [isEditingPrice, setIsEditingPrice] = useState(false);
-  const [tempTitle, setTempTitle] = useState(title);
-  const [tempHours, setTempHours] = useState(hours);
-  const [tempPrice, setTempPrice] = useState(price.toString());
-  const [tempItems, setTempItems] = useState([...items]);
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [isEditingHours, setIsEditingHours] = useState(false)
+  const [isEditingPrice, setIsEditingPrice] = useState(false)
+  const [tempTitle, setTempTitle] = useState(title)
+  const [tempHours, setTempHours] = useState(hours)
+  const [tempPrice, setTempPrice] = useState(price.toString())
+  const [tempItems, setTempItems] = useState([...items])
 
   const handleTitleSave = () => {
     if (tempTitle.trim()) {
-      onTitleChange(tempTitle.trim());
+      onTitleChange(tempTitle.trim())
     }
-    setIsEditingTitle(false);
-  };
+    setIsEditingTitle(false)
+  }
 
   const handleHoursSave = () => {
     if (tempHours.trim()) {
-      onHoursChange(tempHours.trim());
+      onHoursChange(tempHours.trim())
     }
-    setIsEditingHours(false);
-  };
+    setIsEditingHours(false)
+  }
 
   const handlePriceSave = () => {
-    const numPrice = parseInt(tempPrice);
+    const numPrice = parseInt(tempPrice)
     if (!isNaN(numPrice) && numPrice > 0) {
-      onPriceChange(numPrice);
+      onPriceChange(numPrice)
     }
-    setIsEditingPrice(false);
-  };
+    setIsEditingPrice(false)
+  }
 
   const handleItemsSave = () => {
-    const validItems = tempItems.filter((item) => item.trim());
+    const validItems = tempItems.filter((item) => item.trim())
     if (validItems.length > 0) {
-      onItemsChange(validItems);
+      onItemsChange(validItems)
     }
-  };
+  }
 
   const addItem = () => {
-    setTempItems([...tempItems, ""]);
-  };
+    setTempItems([...tempItems, ''])
+  }
 
   const removeItem = (index: number) => {
-    const newItems = tempItems.filter((_, i) => i !== index);
-    setTempItems(newItems);
-    onItemsChange(newItems);
-  };
+    const newItems = tempItems.filter((_, i) => i !== index)
+    setTempItems(newItems)
+    onItemsChange(newItems)
+  }
 
   const updateItem = (index: number, value: string) => {
-    const newItems = [...tempItems];
-    newItems[index] = value;
-    setTempItems(newItems);
-  };
+    const newItems = [...tempItems]
+    newItems[index] = value
+    setTempItems(newItems)
+  }
 
   return (
     <motion.section
@@ -111,8 +111,8 @@ export default function EditableDailyMenu({
                 </button>
                 <button
                   onClick={() => {
-                    setTempTitle(title);
-                    setIsEditingTitle(false);
+                    setTempTitle(title)
+                    setIsEditingTitle(false)
                   }}
                   className="p-1 text-red-400 hover:text-red-300 transition-colors"
                 >
@@ -148,9 +148,7 @@ export default function EditableDailyMenu({
                 placeholder="12:00–15:00"
                 autoFocus
               />
-              <span className="text-cyan-100 font-medium">
-                · Entrada + Principal + Bebida
-              </span>
+              <span className="text-cyan-100 font-medium">· Entrada + Principal + Bebida</span>
               <button
                 onClick={handleHoursSave}
                 className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
@@ -159,8 +157,8 @@ export default function EditableDailyMenu({
               </button>
               <button
                 onClick={() => {
-                  setTempHours(hours);
-                  setIsEditingHours(false);
+                  setTempHours(hours)
+                  setIsEditingHours(false)
                 }}
                 className="p-1 text-red-400 hover:text-red-300 transition-colors"
               >
@@ -228,9 +226,7 @@ export default function EditableDailyMenu({
           <div className="relative">
             {isEditingPrice ? (
               <div className="flex items-center gap-2">
-                <span className="text-2xl font-extrabold text-white drop-shadow-lg">
-                  $
-                </span>
+                <span className="text-2xl font-extrabold text-white drop-shadow-lg">$</span>
                 <input
                   type="number"
                   value={tempPrice}
@@ -246,8 +242,8 @@ export default function EditableDailyMenu({
                 </button>
                 <button
                   onClick={() => {
-                    setTempPrice(price.toString());
-                    setIsEditingPrice(false);
+                    setTempPrice(price.toString())
+                    setIsEditingPrice(false)
                   }}
                   className="p-1 text-red-400 hover:text-red-300 transition-colors"
                 >
@@ -256,7 +252,7 @@ export default function EditableDailyMenu({
               </div>
             ) : (
               <div className="text-2xl font-extrabold text-white drop-shadow-lg">
-                ${price.toLocaleString("es-AR")}
+                ${price.toLocaleString('es-AR')}
                 {isEditMode && (
                   <button
                     onClick={() => setIsEditingPrice(true)}
@@ -285,5 +281,5 @@ export default function EditableDailyMenu({
         )}
       </div>
     </motion.section>
-  );
+  )
 }

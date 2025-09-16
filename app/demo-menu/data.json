@@ -15,11 +15,7 @@
     "title": "Menú del día",
     "hours": "12:00–15:00",
     "price": 5500,
-    "items": [
-      "🥟 Empanada de carne",
-      "🥩 Bife angosto con papas",
-      "🧃 Limonada casera"
-    ]
+    "items": ["🥟 Empanada de carne", "🥩 Bife angosto con papas", "🧃 Limonada casera"]
   },
   "items": [
     {

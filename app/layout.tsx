@@ -1,22 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { AuthProvider } from "@/contexts/AuthContextProvider";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import Navbar from '@/components/Navbar'
+import { AuthProvider } from '@/contexts/AuthContextProvider'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "QR Menu - Digital Restaurant Menu",
-  description:
-    "A modern digital menu solution with QR code ordering and payment integration",
-};
+  title: 'QR Menu - Digital Restaurant Menu',
+  description: 'A modern digital menu solution with QR code ordering and payment integration',
+}
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -26,5 +21,5 @@ export default function RootLayout({
         </AuthProvider>
       </body>
     </html>
-  );
+  )
 }

@@ -1,37 +1,38 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { Edit2, Check, X, Plus, Trash2 } from "lucide-react";
-import EditableMenuItem from "./EditableMenuItem";
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react'
+import EditableMenuItem from './EditableMenuItem'
 
 interface MenuItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  tags: string[];
-  diet: string[];
-  img: string;
+  id: string
+  name: string
+  description: string
+  price: number
+  category: string
+  tags: string[]
+  diet: string[]
+  img: string
 }
 
 interface Category {
-  key: string;
-  label: string;
-  icon: string;
+  key: string
+  label: string
+  icon: string
 }
 
 interface EditableMenuCategoryProps {
-  category: Category;
-  items: MenuItem[];
-  onItemClick: (item: MenuItem) => void;
-  isEditMode: boolean;
-  onCategoryUpdate: (categoryKey: string, updatedCategory: Category) => void;
-  onCategoryDelete: (categoryKey: string) => void;
-  onItemUpdate: (updatedItem: MenuItem) => void;
-  onItemDelete: (itemId: string) => void;
-  onAddItem: (categoryKey: string) => void;
+  category: Category
+  items: MenuItem[]
+  onItemClick: (item: MenuItem) => void
+  isEditMode: boolean
+  onCategoryUpdate: (categoryKey: string, updatedCategory: Category) => void
+  onCategoryDelete: (categoryKey: string) => void
+  onItemUpdate: (updatedItem: MenuItem) => void
+  onItemDelete: (itemId: string) => void
+  onAddItem: (categoryKey: string) => void
+  onImageUpload: (file: File) => void
 }
 
 export default function EditableMenuCategory({
@@ -44,33 +45,30 @@ export default function EditableMenuCategory({
   onItemUpdate,
   onItemDelete,
   onAddItem,
+  onImageUpload,
 }: EditableMenuCategoryProps) {
-  const [isEditingCategory, setIsEditingCategory] = useState(false);
-  const [tempCategory, setTempCategory] = useState({ ...category });
+  const [isEditingCategory, setIsEditingCategory] = useState(false)
+  const [tempCategory, setTempCategory] = useState({ ...category })
 
-  if (!items.length && !isEditMode) return null;
+  if (!items.length && !isEditMode) return null
 
   const handleCategorySave = () => {
     if (tempCategory.label.trim() && tempCategory.icon.trim()) {
-      onCategoryUpdate(category.key, tempCategory);
-      setIsEditingCategory(false);
+      onCategoryUpdate(category.key, tempCategory)
+      setIsEditingCategory(false)
     }
-  };
+  }
 
   const handleCategoryCancel = () => {
-    setTempCategory({ ...category });
-    setIsEditingCategory(false);
-  };
+    setTempCategory({ ...category })
+    setIsEditingCategory(false)
+  }
 
   const handleCategoryDelete = () => {
-    if (
-      confirm(
-        `¿Estás seguro de que quieres eliminar la categoría "${category.label}"?`,
-      )
-    ) {
-      onCategoryDelete(category.key);
+    if (confirm(`¿Estás seguro de que quieres eliminar la categoría "${category.label}"?`)) {
+      onCategoryDelete(category.key)
     }
-  };
+  }
 
   return (
     <section>
@@ -82,9 +80,7 @@ export default function EditableMenuCategory({
               <input
                 type="text"
                 value={tempCategory.icon}
-                onChange={(e) =>
-                  setTempCategory((prev) => ({ ...prev, icon: e.target.value }))
-                }
+                onChange={(e) => setTempCategory((prev) => ({ ...prev, icon: e.target.value }))}
                 className="text-3xl bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 text-center w-16"
                 placeholder="🍽️"
                 autoFocus
@@ -134,9 +130,7 @@ export default function EditableMenuCategory({
               />
             </div>
           ) : (
-            <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-              {category.label}
-            </h3>
+            <h3 className="text-2xl font-bold text-white drop-shadow-lg">{category.label}</h3>
           )}
         </div>
 
@@ -192,6 +186,7 @@ export default function EditableMenuCategory({
               isEditMode={isEditMode}
               onUpdate={onItemUpdate}
               onDelete={onItemDelete}
+              onImageUpload={onImageUpload}
             />
           </motion.div>
         ))}
@@ -204,9 +199,7 @@ export default function EditableMenuCategory({
             className="col-span-full text-center py-12"
           >
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-dashed border-white/30">
-              <p className="text-white/60 text-lg mb-4">
-                Esta categoría no tiene items
-              </p>
+              <p className="text-white/60 text-lg mb-4">Esta categoría no tiene items</p>
               <button
                 onClick={() => onAddItem(category.key)}
                 className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2 mx-auto"
@@ -219,5 +212,5 @@ export default function EditableMenuCategory({
         )}
       </motion.div>
     </section>
-  );
+  )
 }

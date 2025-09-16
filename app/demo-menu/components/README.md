@@ -29,19 +29,10 @@ All TypeScript interfaces are centralized in `../types/index.ts` for consistency
 ### Usage
 
 ```tsx
-import {
-  LoadingScreen,
-  Header,
-  FilterBar,
-  DailyMenu,
-  MenuCategory,
-} from "./components";
+import { LoadingScreen, Header, FilterBar, DailyMenu, MenuCategory } from './components'
 
 // Use components with props
-<Header
-  title="🍽️ Restaurant Name"
-  subtitle="Digital menu · Updated instantly"
-/>;
+;<Header title="🍽️ Restaurant Name" subtitle="Digital menu · Updated instantly" />
 ```
 
 ### Props Interface
