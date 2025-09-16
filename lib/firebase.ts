@@ -1,7 +1,7 @@
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth, signInAnonymously } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
-import { getStorage, FirebaseStorage } from 'firebase/storage';
+import { initializeApp, getApps, FirebaseApp } from "firebase/app";
+import { getAuth, Auth, signInAnonymously } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -12,12 +12,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
-
-console.log(firebaseConfig);
-// lib/firebase.ts
-console.log("FB project:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
-console.log("FB apiKey present:", !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
-
 
 // Initialize Firebase
 let app: FirebaseApp;
@@ -32,13 +26,12 @@ export const auth: Auth = getAuth(app);
 export const db: Firestore = getFirestore(app);
 export const storage: FirebaseStorage = getStorage(app);
 
-export async function ensureAuth() {
-  try {
-    console.log('Ensuring authentication');
-    await signInAnonymously(auth);
-  } catch (e) {
-    console.error(e);
-  }
-}
+// export async function ensureAuth() {
+//   try {
+//     await signInAnonymously(auth);
+//   } catch (e) {
+//     console.error(e);
+//   }
+// }
 
 export default app;
