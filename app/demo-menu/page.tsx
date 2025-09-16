@@ -1,198 +1,189 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from '@/app/components/Navbar';
+import { AdminGuard } from "@/components/AdminGuard";
+import { useMenuData } from "@/hooks/useMenuData";
 import {
-  LoadingScreen,
-  AnimatedBackground,
-  EditableHeader,
-  EditableDailyMenu,
-  EditableMenuCategory,
+  createCategory,
+  createItem,
+  deleteCategory,
+  deleteItem,
+  setDailyMenu,
+  updateCategory,
+  updateItem,
+} from "@/lib/menuCRUD";
+import { Category, DailyMenu, MenuItem } from "@/types";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import {
   AddCategoryButton,
+  AnimatedBackground,
+  EditableDailyMenu,
+  EditableHeader,
+  EditableMenuCategory,
   EditModeToggle,
   FilterBar,
   ItemModal,
-} from './components';
-import data from './data.json';
-import { Category, DailyMenu, MenuItem } from './types';
+  LoadingScreen,
+} from "./components";
 
 export default function DemoMenu() {
-  const [filter, setFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
+  const {
+    loading: loadingMenu,
+    categories,
+    filters,
+    items,
+    dailyMenu,
+    errors,
+  } = useMenuData();
+
+  // UI state
+  const [filter, setFilter] = useState("all");
+  const [loadingAnim, setLoadingAnim] = useState(true);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // Editable state
-  const [menuData, setMenuData] = useState(() => {
-    // Try to load from localStorage first, fallback to default data
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('demo-menu-data');
-      if (saved) {
-        try {
-          return JSON.parse(saved);
-        } catch {
-          console.warn('Failed to parse saved menu data, using default');
-        }
-      }
-    }
-    return {
-      title: '🍽️ Don Julio Parrilla',
-      subtitle: 'Menú digital · Actualizado al instante',
-      dailyMenu: { ...data.dailyMenu },
-      categories: [...data.categories],
-      items: [...data.items],
-    };
-  });
+  // Header (local)
+  const [title, setTitle] = useState("🍽️ Don Julio Parrilla");
+  const [subtitle, setSubtitle] = useState(
+    "Menú digital · Actualizado al instante",
+  );
 
-  // Save to localStorage whenever menuData changes
+  // Loader animado (Lottie) breve para la entrada
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('demo-menu-data', JSON.stringify(menuData));
-    }
-  }, [menuData]);
+    const t = setTimeout(() => setLoadingAnim(false), 1000);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Filtro de ítems
+  const filteredItems = useMemo(() => {
+    if (!items) return [];
+    if (filter === "all") return items;
+    return items.filter(
+      (i: MenuItem) => i.tags?.includes?.(filter) || i.diet?.includes?.(filter),
+    );
+  }, [filter, items]);
+
+  const filteredCategories = useMemo(() => {
+    return (categories || []).map((category: Category) => {
+      const its = filteredItems.filter(
+        (i: MenuItem) => i.category === category.key,
+      );
+      return { category, items: its };
+    });
+  }, [categories, filteredItems]);
 
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
 
-  // Simula carga + animación Lottie
-  useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(t);
-  }, []);
+  // === Handlers de edición (con Firestore CRUD) ===
 
-  const filteredItems = useMemo(() => {
-    if (filter === 'all') {
-      return menuData.items;
-    }
-    return menuData.items.filter(
-      (i: MenuItem) => i.tags.includes(filter) || i.diet.includes(filter)
-    );
-  }, [filter, menuData.items]);
+  // Header (local)
+  const handleTitleChange = (newTitle: string) => setTitle(newTitle);
+  const handleSubtitleChange = (newSubtitle: string) =>
+    setSubtitle(newSubtitle);
 
-  // Memoize the filtered categories to prevent unnecessary re-renders
-  const filteredCategories = useMemo(() => {
-    return menuData.categories.map((category: Category) => {
-      const items = filteredItems.filter(
-        (i: MenuItem) => i.category === category.key
-      );
-      return { category, items };
-    });
-  }, [menuData.categories, filteredItems]);
-
-  // Edit mode handlers
-  const handleTitleChange = (newTitle: string) => {
-    setMenuData((prev: typeof menuData) => ({ ...prev, title: newTitle }));
-  };
-
-  const handleSubtitleChange = (newSubtitle: string) => {
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      subtitle: newSubtitle,
-    }));
-  };
-
-  const handleDailyMenuChange = (
+  const handleDailyMenuChange = async (
     field: keyof DailyMenu,
-    value: string | number | string[]
+    value: string | number | string[],
   ) => {
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      dailyMenu: { ...prev.dailyMenu, [field]: value },
-    }));
+    const base: DailyMenu = {
+      title: dailyMenu?.title ?? "Menú del día",
+      hours: dailyMenu?.hours ?? "12:00–15:00",
+      price: dailyMenu?.price ?? 0,
+      items: dailyMenu?.items ?? [],
+    };
+    const next = { ...base, [field]: value } as DailyMenu;
+    try {
+      await setDailyMenu(next);
+    } catch (e: any) {
+      console.error(e);
+      alert(e?.message || "Error guardando el Menú del día");
+    }
   };
 
-  const handleCategoryUpdate = (
+  const handleCategoryUpdate = async (
     categoryKey: string,
-    updatedCategory: Category
+    updated: Category,
   ) => {
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      categories: prev.categories.map((cat: Category) =>
-        cat.key === categoryKey ? updatedCategory : cat
-      ),
-    }));
+    try {
+      await updateCategory(categoryKey, {
+        label: updated.label,
+        icon: updated.icon,
+      });
+    } catch (e: any) {
+      console.error(e);
+      alert(e?.message || "Error actualizando la categoría");
+    }
   };
 
-  const handleCategoryDelete = (categoryKey: string) => {
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      categories: prev.categories.filter(
-        (cat: Category) => cat.key !== categoryKey
-      ),
-      items: prev.items.filter(
-        (item: MenuItem) => item.category !== categoryKey
-      ),
-    }));
+  const handleCategoryDelete = async (categoryKey: string) => {
+    try {
+      await deleteCategory(categoryKey);
+    } catch (e: any) {
+      console.error(e);
+      alert(e?.message || "No se pudo borrar la categoría (puede tener ítems)");
+    }
   };
 
-  const handleItemUpdate = (updatedItem: MenuItem) => {
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      items: prev.items.map((item: MenuItem) =>
-        item.id === updatedItem.id ? updatedItem : item
-      ),
-    }));
+  const handleItemUpdate = async (updatedItem: MenuItem) => {
+    try {
+      const { id, ...patch } = updatedItem;
+      await updateItem(id, patch);
+    } catch (e: any) {
+      console.error(e);
+      alert(e?.message || "Error guardando el plato");
+    }
   };
 
-  const handleItemDelete = (itemId: string) => {
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      items: prev.items.filter((item: MenuItem) => item.id !== itemId),
-    }));
+  const handleItemDelete = async (itemId: string) => {
+    try {
+      await deleteItem(itemId);
+    } catch (e: any) {
+      console.error(e);
+      alert(e?.message || "Error eliminando el plato");
+    }
   };
 
-  const handleAddItem = (categoryKey: string) => {
-    const newItem: MenuItem = {
-      id: `item-${Date.now()}`,
-      name: 'Nuevo plato',
-      description: 'Descripción del nuevo plato',
+  const handleAddItem = async (categoryKey: string) => {
+    const newItem: Omit<MenuItem, "id"> = {
+      name: "Nuevo plato",
+      description: "Descripción del nuevo plato",
       price: 0,
       category: categoryKey,
       tags: [],
       diet: [],
-      img: '/menu-images/placeholder.png',
+      img: "/menu-images/placeholder.png",
     };
-
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      items: [...prev.items, newItem],
-    }));
-  };
-
-  const handleAddCategory = (newCategory: Category) => {
-    setMenuData((prev: typeof menuData) => ({
-      ...prev,
-      categories: [...prev.categories, newCategory],
-    }));
-  };
-
-  // Reset to default data
-  const resetToDefault = () => {
-    if (
-      confirm(
-        '¿Estás seguro de que quieres restaurar el menú original? Se perderán todos los cambios.'
-      )
-    ) {
-      const defaultData = {
-        title: '🍽️ Don Julio Parrilla',
-        subtitle: 'Menú digital · Actualizado al instante',
-        dailyMenu: { ...data.dailyMenu },
-        categories: [...data.categories],
-        items: [...data.items],
-      };
-      setMenuData(defaultData);
-      localStorage.removeItem('demo-menu-data');
+    try {
+      await createItem(newItem);
+    } catch (e: any) {
+      console.error(e);
+      alert(e?.message || "Error creando el plato");
     }
   };
+
+  const handleAddCategory = async (newCategory: Category) => {
+    try {
+      await createCategory({
+        key: newCategory.key,
+        label: newCategory.label,
+        icon: newCategory.icon,
+      });
+    } catch (e: any) {
+      console.error(e);
+      alert(e?.message || "Error creando la categoría");
+    }
+  };
+
+  const showLoader = loadingAnim || loadingMenu;
 
   return (
     <>
       <AnimatePresence mode="sync">
-        {loading ? (
+        {showLoader ? (
           <LoadingScreen />
         ) : (
           <motion.main
@@ -205,50 +196,70 @@ export default function DemoMenu() {
           >
             <AnimatedBackground />
 
+            {(errors.categories ||
+              errors.filters ||
+              errors.items ||
+              errors.dailyMenu) && (
+              <div className="mx-auto mb-4 max-w-3xl rounded-lg bg-red-600/20 border border-red-600/40 p-3 text-sm text-red-100">
+                {errors.categories && (
+                  <div>Categories: {errors.categories}</div>
+                )}
+                {errors.filters && <div>Filters: {errors.filters}</div>}
+                {errors.items && <div>Items: {errors.items}</div>}
+                {errors.dailyMenu && <div>DailyMenu: {errors.dailyMenu}</div>}
+              </div>
+            )}
+
             <EditableHeader
-              title={menuData.title}
-              subtitle={menuData.subtitle}
+              title={title}
+              subtitle={subtitle}
               isEditMode={isEditMode}
               onTitleChange={handleTitleChange}
               onSubtitleChange={handleSubtitleChange}
             />
 
             <FilterBar
-              filters={data.filters}
+              filters={filters || []}
               activeFilter={filter}
               onFilterChange={setFilter}
             />
 
             <EditableDailyMenu
-              title={menuData.dailyMenu.title}
-              hours={menuData.dailyMenu.hours}
-              price={menuData.dailyMenu.price}
-              items={menuData.dailyMenu.items}
+              title={dailyMenu?.title ?? "Menú del día"}
+              hours={dailyMenu?.hours ?? "12:00–15:00"}
+              price={dailyMenu?.price ?? 0}
+              items={dailyMenu?.items ?? []}
               isEditMode={isEditMode}
-              onTitleChange={(title) => handleDailyMenuChange('title', title)}
-              onHoursChange={(hours) => handleDailyMenuChange('hours', hours)}
-              onPriceChange={(price) => handleDailyMenuChange('price', price)}
-              onItemsChange={(items) => handleDailyMenuChange('items', items)}
+              onTitleChange={(title) => handleDailyMenuChange("title", title)}
+              onHoursChange={(hours) => handleDailyMenuChange("hours", hours)}
+              onPriceChange={(price) => handleDailyMenuChange("price", price)}
+              onItemsChange={(it) => handleDailyMenuChange("items", it)}
             />
 
-            {/* Secciones por categoría */}
             <div className="max-w-6xl mx-auto space-y-12">
-              {filteredCategories.map(({ category, items }: { category: Category; items: MenuItem[] }) => (
-                <EditableMenuCategory
-                  key={category.key}
-                  category={category}
-                  items={items}
-                  onItemClick={handleItemClick}
-                  isEditMode={isEditMode}
-                  onCategoryUpdate={handleCategoryUpdate}
-                  onCategoryDelete={handleCategoryDelete}
-                  onItemUpdate={handleItemUpdate}
-                  onItemDelete={handleItemDelete}
-                  onAddItem={handleAddItem}
-                />
-              ))}
+              {(filteredCategories || []).map(
+                ({
+                  category,
+                  items,
+                }: {
+                  category: Category;
+                  items: MenuItem[];
+                }) => (
+                  <EditableMenuCategory
+                    key={category.key}
+                    category={category}
+                    items={items}
+                    onItemClick={handleItemClick}
+                    isEditMode={isEditMode}
+                    onCategoryUpdate={handleCategoryUpdate}
+                    onCategoryDelete={handleCategoryDelete}
+                    onItemUpdate={handleItemUpdate}
+                    onItemDelete={handleItemDelete}
+                    onAddItem={handleAddItem}
+                  />
+                ),
+              )}
 
-              {/* Add Category Button */}
               <AddCategoryButton
                 isEditMode={isEditMode}
                 onAddCategory={handleAddCategory}
@@ -259,11 +270,12 @@ export default function DemoMenu() {
       </AnimatePresence>
 
       {/* Edit Mode Toggle */}
-      <EditModeToggle
-        isEditMode={isEditMode}
-        onToggle={() => setIsEditMode(!isEditMode)}
-        onReset={resetToDefault}
-      />
+      <AdminGuard>
+        <EditModeToggle
+          isEditMode={isEditMode}
+          onToggle={() => setIsEditMode(!isEditMode)}
+        />
+      </AdminGuard>
 
       {/* Item Modal */}
       <ItemModal
