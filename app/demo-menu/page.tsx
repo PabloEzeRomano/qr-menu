@@ -10,7 +10,7 @@ import {
   setDailyMenu,
   updateCategory,
   updateItem,
-  uploadItemImage,
+  uploadImage,
 } from '@/lib/menuCRUD'
 import { Category, DailyMenu, MenuItem } from '@/types'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -162,13 +162,15 @@ export default function DemoMenu() {
     }
   }
 
-  const handleImageUpload = async (file: File) => {
+  const handleImageUpload = async (file: File, itemId: string): Promise<string> => {
     try {
-      await uploadItemImage(file, selectedItem?.id ?? '')
+      const url = await uploadImage(file, itemId)
+      return url ?? ''
     } catch (e: any) {
       console.error(e)
       alert(e?.message || 'Error subiendo la imagen')
     }
+    return ''
   }
 
   const showLoader = loadingAnim || loadingMenu

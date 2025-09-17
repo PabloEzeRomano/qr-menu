@@ -1,9 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Button from '@/components/Button'
 import { useAuth } from '@/contexts/AuthContextProvider'
+import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { AnimatedBackground } from '../demo-menu/components'
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
@@ -42,105 +45,149 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isLogin ? 'Sign in to your account' : 'Create your account'}
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            {isLogin ? "Don't have an account? " : 'Already have an account? '}
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(!isLogin)
-                setError('')
-              }}
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              {isLogin ? 'Sign up' : 'Sign in'}
-            </button>
-          </p>
-        </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="auth-page"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.45 }}
+        className="relative min-h-screen flex items-center justify-center text-white py-12 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      >
+        <AnimatedBackground />
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            {!isLogin && (
+        <div className="relative z-10 max-w-md w-full space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+              {isLogin ? 'Iniciar sesión' : 'Crear cuenta'}
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-300">
+              {isLogin ? 'No tenés una cuenta? ' : 'Ya tenés una cuenta? '}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLogin(!isLogin)
+                  setError('')
+                }}
+                className="font-medium text-cyan-300 hover:text-cyan-200 transition-colors"
+              >
+                {isLogin ? 'Crear cuenta' : 'Iniciar sesión'}
+              </button>
+            </p>
+          </motion.div>
+
+          <motion.form
+            className="mt-8 space-y-6"
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="space-y-4">
+              <AnimatePresence mode="wait">
+                {!isLogin && (
+                  <motion.div
+                    key="displayName"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <label
+                      htmlFor="displayName"
+                      className="block text-sm font-medium text-gray-300 mb-1"
+                    >
+                      Nombre de usuario
+                    </label>
+                    <input
+                      id="displayName"
+                      name="displayName"
+                      type="text"
+                      required={!isLogin}
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      className="appearance-none relative block w-full px-4 py-3 bg-black/30 border border-gray-600/50 backdrop-blur-sm placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all duration-200"
+                      placeholder="Ingresa tu nombre de usuario"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div>
-                <label htmlFor="displayName" className="sr-only">
-                  Display Name
+                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
+                  Correo electrónico
                 </label>
                 <input
-                  id="displayName"
-                  name="displayName"
-                  type="text"
-                  required={!isLogin}
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Display Name"
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none relative block w-full px-4 py-3 bg-black/30 border border-gray-600/50 backdrop-blur-sm placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all duration-200"
+                  placeholder="correo@ejemplo.com"
                 />
               </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
+                  Contraseña
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none relative block w-full px-4 py-3 bg-black/30 border border-gray-600/50 backdrop-blur-sm placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all duration-200"
+                  placeholder="Ingresa tu contraseña"
+                />
+              </div>
+            </div>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg bg-red-600/20 border border-red-600/40 p-4 backdrop-blur-sm"
+              >
+                <div className="text-sm text-red-200">{error}</div>
+              </motion.div>
             )}
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 ${
-                  !isLogin ? 'rounded-none' : 'rounded-t-md'
-                } focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="Email address"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-          </div>
 
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
-            </div>
-          )}
+            <Button type="submit" variant="primary" size="md" loading={loading} className="w-full">
+              {isLogin ? 'Iniciar sesión' : 'Crear cuenta'}
+            </Button>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
             >
-              {loading ? 'Please wait...' : isLogin ? 'Sign in' : 'Sign up'}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <Link href="/" className="font-medium text-indigo-600 hover:text-indigo-500">
-              ← Back to Menu
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
+              <Link
+                href="/"
+                className="inline-flex items-center font-medium text-cyan-300 hover:text-cyan-200 transition-colors"
+              >
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                Volver al menú
+              </Link>
+            </motion.div>
+          </motion.form>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   )
 }

@@ -1,8 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import Button from '@/components/Button'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { AnimatedBackground } from './demo-menu/components'
 
 const phrases = [
   'Decile chau al menú en PDF',
@@ -36,44 +38,67 @@ export default function Landing() {
   }, [currentPhrase])
 
   return (
-    <>
-      <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 pt-24 pb-20">
-        <motion.h1
-          initial={{ opacity: 0, y: -40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-4xl sm:text-6xl font-bold text-center leading-tight"
-        >
-          {displayedText}
-          <span className="blinking-cursor">|</span>
-        </motion.h1>
+    <AnimatePresence mode="wait">
+      <motion.main
+        key="landing-page"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.45 }}
+        className="relative min-h-screen text-white flex flex-col items-center justify-center px-6 pt-24 pb-20 overflow-hidden"
+      >
+        <AnimatedBackground />
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.6 }}
-          className="text-cyan-200 mt-6 text-center max-w-xl"
-        >
-          Una experiencia moderna para tus clientes. Menús diseñados para celulares, rápidos de leer
-          y fáciles de actualizar.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.5 }}
-          className="mt-10"
-        >
-          <button
-            className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg text-lg transition-all shadow-lg hover:shadow-cyan-500/25"
-            onClick={() => {
-              router.push('/demo-menu')
-            }}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <motion.h1
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-4xl sm:text-6xl font-bold text-center leading-tight"
           >
-            Probar demo
-          </button>
-        </motion.div>
-      </main>
-    </>
+            {displayedText}
+            <span className="blinking-cursor">|</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.6 }}
+            className="text-gray-300 mt-6 text-center max-w-xl text-lg"
+          >
+            Una experiencia moderna para tus clientes. Menús diseñados para celulares, rápidos de
+            leer y fáciles de actualizar.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.7, duration: 0.5 }}
+            className="mt-10"
+          >
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => {
+                router.push('/demo-menu')
+              }}
+            >
+              Probar demo
+            </Button>
+          </motion.div>
+
+          {/* <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.2, duration: 0.5 }}
+            className="mt-8 text-center"
+          >
+            <p className="text-gray-400 text-sm">
+              ✨ Sin registración • Completamente gratis • Responsive
+            </p>
+          </motion.div> */}
+        </div>
+      </motion.main>
+    </AnimatePresence>
   )
 }
