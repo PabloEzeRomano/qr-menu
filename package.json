@@ -16,6 +16,7 @@
     "create:admin": "npx tsx scripts/create-admin.ts"
   },
   "dependencies": {
+    "@vercel/blob": "^2.0.0",
     "clsx": "^2.1.0",
     "dotenv": "^17.2.2",
     "firebase": "^12.2.1",

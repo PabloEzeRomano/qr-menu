@@ -1,5 +1,9 @@
 import type { NextConfig } from 'next'
 
-const nextConfig: NextConfig = {}
+const config: NextConfig = {
+  images: {
+    remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
+  },
+}
 
-export default nextConfig
+export default config
