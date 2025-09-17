@@ -1,29 +1,31 @@
 'use client'
 
+import { db } from '@/lib/firebase'
+import type { Category, DailyMenu, MenuItem } from '@/types'
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
+  getDocs,
+  query,
   serverTimestamp,
   setDoc,
   updateDoc,
-  getDocs,
-  query,
   where,
   writeBatch,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import type { Category, DailyMenu, MenuItem } from '@/types'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { uploadItemImage } from './uploadImage'
 
-export async function uploadItemImage(file: File, itemId: string) {
-  const r = ref(storage, `items/${itemId}/${file.name}`);
-  const snap = await uploadBytes(r, file);
-  return await getDownloadURL(snap.ref);
+export async function uploadImage(file: File, itemId: string) {
+  try {
+    const url = await uploadItemImage(file, itemId)
+    await updateItem(itemId, { img: url })
+    return url
+  } catch (error) {
+    console.error(error)
+  }
 }
-
 
 // ---------- CATEGORIES ----------
 export async function createCategory(input: Pick<Category, 'key' | 'label' | 'icon'>) {
