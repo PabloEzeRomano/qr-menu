@@ -1,20 +1,11 @@
 'use client'
 
+import Button from '@/components/Button'
+import { MenuItem } from '@/types'
 import { motion } from 'framer-motion'
 import { Check, Edit2, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-
-interface MenuItem {
-  id: string
-  name: string
-  description: string
-  price: number
-  category: string
-  tags: string[]
-  diet: string[]
-  img: string
-}
 
 interface EditableMenuItemProps {
   item: MenuItem
@@ -22,7 +13,7 @@ interface EditableMenuItemProps {
   isEditMode: boolean
   onUpdate: (updatedItem: MenuItem) => void
   onDelete: (itemId: string) => void
-  onImageUpload: (file: File) => void
+  onImageUpload: (file: File, itemId: string) => Promise<string>
 }
 
 export default function EditableMenuItem({
@@ -35,16 +26,20 @@ export default function EditableMenuItem({
 }: EditableMenuItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [tempItem, setTempItem] = useState({ ...item })
+  const [imageUploading, setImageUploading] = useState(false)
+  const [selectedFileName, setSelectedFileName] = useState('')
 
   const handleSave = () => {
     if (tempItem.name.trim() && tempItem.description.trim()) {
       onUpdate(tempItem)
+      setSelectedFileName('')
       setIsEditing(false)
     }
   }
 
   const handleCancel = () => {
     setTempItem({ ...item })
+    setSelectedFileName('')
     setIsEditing(false)
   }
 
@@ -68,8 +63,21 @@ export default function EditableMenuItem({
     updateField('diet', newDiet)
   }
 
-  const handleImageUpload = (file: File) => {
-    onImageUpload(file)
+  const handleImageUpload = async (file: File) => {
+    setImageUploading(true)
+    if (!file || file.size === 0) return
+
+    setSelectedFileName(file.name)
+
+    try {
+      const url = await onImageUpload(file, item.id)
+      updateField('img', url)
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      setSelectedFileName('')
+    } finally {
+      setImageUploading(false)
+    }
   }
 
   if (isEditing) {
@@ -159,31 +167,100 @@ export default function EditableMenuItem({
 
           {/* Image */}
           <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-1">Imagen</label>
-            <input type="file" onChange={(e) => handleImageUpload(e.target.files?.[0] ?? new File([], ''))} />
+            <label className="block text-cyan-200 text-sm font-medium mb-2">Imagen</label>
+            <div className="space-y-2">
+              <div className="relative group/upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e.target.files?.[0] ?? new File([], ''))}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                  id={`image-upload-${item.id}`}
+                  disabled={imageUploading}
+                />
+                <div
+                  className={`flex items-center justify-center w-full px-4 py-3 bg-black/30 border border-gray-600/50 backdrop-blur-sm text-gray-300 rounded-lg transition-all duration-200 cursor-pointer ${
+                    imageUploading
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'group-hover/upload:bg-black/40 group-hover/upload:border-gray-500/70 group-hover/upload:text-white'
+                  }`}
+                >
+                  {imageUploading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-400 mr-2"></div>
+                      Subiendo...
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-5 h-5 mr-2 group-hover/upload:scale-110 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
+                      </svg>
+                      Subir imagen
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Display selected file name */}
+              {selectedFileName && !imageUploading && (
+                <div className="flex items-center text-sm text-gray-400 bg-black/20 rounded-lg px-3 py-2">
+                  <svg
+                    className="w-4 h-4 mr-2 text-green-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span className="truncate">{selectedFileName}</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex gap-2 pt-2">
-            <button
+            <Button
               onClick={handleSave}
-              className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="flex-1 flex items-center justify-center gap-2 disabled:opacity-50"
+              variant="primary"
+              size="md"
+              disabled={imageUploading}
             >
               <Check size={16} />
               Guardar
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleCancel}
-              className="px-4 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors"
+              variant="secondary"
+              size="sm"
+              className="flex items-center gap-1"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleDelete}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+              variant="danger"
+              size="sm"
+              className="flex items-center gap-1"
             >
               <Trash2 size={16} />
-            </button>
+            </Button>
           </div>
         </div>
       </motion.article>

@@ -1,27 +1,11 @@
 'use client'
 
+import { Category, MenuItem } from '@/types'
 import { motion } from 'framer-motion'
+import { Check, Edit2, Plus, Trash2, X } from 'lucide-react'
 import { useState } from 'react'
-import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react'
 import EditableMenuItem from './EditableMenuItem'
-
-interface MenuItem {
-  id: string
-  name: string
-  description: string
-  price: number
-  category: string
-  tags: string[]
-  diet: string[]
-  img: string
-}
-
-interface Category {
-  key: string
-  label: string
-  icon: string
-}
-
+import Button from '@/components/Button'
 interface EditableMenuCategoryProps {
   category: Category
   items: MenuItem[]
@@ -32,7 +16,7 @@ interface EditableMenuCategoryProps {
   onItemUpdate: (updatedItem: MenuItem) => void
   onItemDelete: (itemId: string) => void
   onAddItem: (categoryKey: string) => void
-  onImageUpload: (file: File) => void
+  onImageUpload: (file: File, itemId: string) => Promise<string>
 }
 
 export default function EditableMenuCategory({
@@ -137,20 +121,24 @@ export default function EditableMenuCategory({
         {/* Category Actions */}
         {isEditMode && !isEditingCategory && (
           <div className="flex gap-2 ml-auto">
-            <button
+            <Button
               onClick={() => onAddItem(category.key)}
-              className="px-3 py-1 bg-cyan-500 hover:bg-cyan-600 text-white text-sm rounded-lg transition-colors flex items-center gap-1"
+              variant="primary"
+              size="sm"
+              className="flex items-center gap-1"
             >
               <Plus size={14} />
               Agregar item
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleCategoryDelete}
-              className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded-lg transition-colors flex items-center gap-1"
+              variant="danger"
+              size="sm"
+              className="flex items-center gap-1"
             >
               <Trash2 size={14} />
               Eliminar
-            </button>
+            </Button>
           </div>
         )}
       </div>

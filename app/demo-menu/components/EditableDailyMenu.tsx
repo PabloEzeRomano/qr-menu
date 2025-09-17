@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react'
+import Button from '@/components/Button'
 
 interface EditableDailyMenuProps {
   title: string
@@ -270,13 +271,15 @@ export default function EditableDailyMenu({
         {/* Save Items Button */}
         {isEditMode && (
           <div className="mt-4 flex justify-end">
-            <button
+            <Button
               onClick={handleItemsSave}
-              className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              variant="primary"
+              size="md"
+              className="flex items-center gap-2"
             >
               <Check size={16} />
               Guardar cambios
-            </button>
+            </Button>
           </div>
         )}
       </div>
