@@ -16,7 +16,15 @@ export interface ButtonProps
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { variant = 'primary', size = 'md', loading = false, className = '', children, ...props },
+    {
+      variant = 'primary',
+      size = 'md',
+      loading = false,
+      className = '',
+      children,
+      disabled = false,
+      ...props
+    },
     ref,
   ) => {
     const baseClasses =
@@ -47,10 +55,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <motion.button
         ref={ref}
-        whileHover={{ scale: loading ? 1 : 1.02 }}
-        whileTap={{ scale: loading ? 1 : 0.98 }}
+        whileHover={{ scale: loading || disabled ? 1 : 1.02 }}
+        whileTap={{ scale: loading || disabled ? 1 : 0.98 }}
         className={classes}
-        disabled={loading || props.disabled}
+        disabled={loading || disabled}
         {...props}
       >
         {loading ? (

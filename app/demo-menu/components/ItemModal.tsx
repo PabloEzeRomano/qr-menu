@@ -2,18 +2,25 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { X } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { X, Plus } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { MenuItem } from '@/types'
+import { useCart } from '@/contexts/CartProvider'
+import { useAuth } from '@/contexts/AuthContextProvider'
+import Button from '@/components/Button'
 
 interface ItemModalProps {
   item: MenuItem | null
   isOpen: boolean
   onClose: () => void
+  isEditMode?: boolean
 }
 
-export default function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
+export default function ItemModal({ item, isOpen, onClose, isEditMode = false }: ItemModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
+  const { add } = useCart()
+  const { isAdmin } = useAuth()
+  const [addedToCart, setAddedToCart] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -151,13 +158,33 @@ export default function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
                   </div>
                 )}
 
-                {/* Action button */}
-                <button
-                  onClick={onClose}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  ¡Perfecto!
-                </button>
+                {/* Action buttons */}
+                <div className="space-y-3">
+                  {!isEditMode && !isAdmin && (
+                    <Button
+                      onClick={() => {
+                        add({
+                          id: item.id,
+                          name: item.name,
+                          price: item.price,
+                          img: item.img,
+                        })
+                        setAddedToCart(true)
+                        setTimeout(() => setAddedToCart(false), 2000)
+                      }}
+                      variant={addedToCart ? 'success' : 'primary'}
+                      size="md"
+                      className="w-full flex items-center justify-center gap-2"
+                    >
+                      <Plus size={20} className="mr-2" />
+                      {addedToCart ? '¡Agregado!' : 'Agregar al carrito'}
+                    </Button>
+                  )}
+
+                  <Button onClick={onClose} variant="ghost" size="md" className="w-full">
+                    {isEditMode || isAdmin ? 'Cerrar' : 'Continuar viendo'}
+                  </Button>
+                </div>
               </div>
             </div>
           </motion.div>

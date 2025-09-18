@@ -12,7 +12,7 @@ interface EditableMenuCategoryProps {
   onItemClick: (item: MenuItem) => void
   isEditMode: boolean
   onCategoryUpdate: (categoryKey: string, updatedCategory: Category) => void
-  onCategoryDelete: (categoryKey: string) => void
+  onCategoryDelete: (categoryKey: string, forceDelete: boolean) => void
   onItemUpdate: (updatedItem: MenuItem) => void
   onItemDelete: (itemId: string) => void
   onAddItem: (categoryKey: string) => void
@@ -49,8 +49,18 @@ export default function EditableMenuCategory({
   }
 
   const handleCategoryDelete = () => {
-    if (confirm(`¿Estás seguro de que quieres eliminar la categoría "${category.label}"?`)) {
-      onCategoryDelete(category.key)
+    if (
+      !items.length &&
+      confirm(`¿Estás seguro de que quieres eliminar la categoría "${category.label}"?`)
+    ) {
+      onCategoryDelete(category.key, false)
+    } else if (
+      items.length &&
+      confirm(
+        `¿Estás seguro de que quieres eliminar la categoría "${category.label}" y sus ${items.length} items?`,
+      )
+    ) {
+      onCategoryDelete(category.key, true)
     }
   }
 

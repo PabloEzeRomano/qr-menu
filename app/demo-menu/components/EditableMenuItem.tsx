@@ -3,9 +3,11 @@
 import Button from '@/components/Button'
 import { MenuItem } from '@/types'
 import { motion } from 'framer-motion'
-import { Check, Edit2, Trash2 } from 'lucide-react'
+import { Check, Edit2, Trash2, Plus } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
+import { useCart } from '@/contexts/CartProvider'
+import { useAuth } from '@/contexts/AuthContextProvider'
 
 interface EditableMenuItemProps {
   item: MenuItem
@@ -28,6 +30,9 @@ export default function EditableMenuItem({
   const [tempItem, setTempItem] = useState({ ...item })
   const [imageUploading, setImageUploading] = useState(false)
   const [selectedFileName, setSelectedFileName] = useState('')
+  const [addedToCart, setAddedToCart] = useState(false)
+  const { add } = useCart()
+  const { isAdmin } = useAuth()
 
   const handleSave = () => {
     if (tempItem.name.trim() && tempItem.description.trim()) {
@@ -341,10 +346,35 @@ export default function EditableMenuItem({
 
       {/* Info */}
       <div className="flex items-start justify-between gap-3">
-        <h4 className="font-bold text-white leading-tight">{item.name}</h4>
-        <div className="font-black text-lg bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-          ${item.price.toLocaleString('es-AR')}
+        <div className="flex-1">
+          <h4 className="font-bold text-white leading-tight">{item.name}</h4>
+          <div className="font-black text-lg bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
+            ${item.price.toLocaleString('es-AR')}
+          </div>
         </div>
+
+        {/* Add to cart button - only show when not in edit mode and not admin */}
+        {!isEditMode && !isAdmin && (
+          <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              add({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                img: item.img,
+                qty: 1,
+              })
+              setAddedToCart(true)
+              setTimeout(() => setAddedToCart(false), 1000)
+            }}
+            variant={addedToCart ? 'success' : 'primary'}
+            size="sm"
+            className="flex-shrink-0"
+          >
+            <Plus size={16} />
+          </Button>
+        )}
       </div>
     </motion.article>
   )

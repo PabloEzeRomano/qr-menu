@@ -1,5 +1,6 @@
 'use client'
 
+import Button from '@/components/Button'
 import { motion } from 'framer-motion'
 import { Check, Plus } from 'lucide-react'
 import { useState } from 'react'
@@ -91,20 +92,24 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
 
           {/* Action Buttons */}
           <div className="flex gap-2 pt-2">
-            <button
+            <Button
               onClick={handleAdd}
               disabled={!tempCategory.key.trim() || !tempCategory.label.trim()}
-              className="flex-1 bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+              variant="primary"
+              size="md"
+              className="flex-1 flex items-center justify-center gap-2 mr-2"
             >
               <Check size={16} />
               Agregar
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleCancel}
-              className="px-4 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors"
+              variant="danger"
+              size="md"
+              className="flex items-center gap-1"
             >
               Cancelar
-            </button>
+            </Button>
           </div>
         </div>
       </motion.div>
