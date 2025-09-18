@@ -14,9 +14,7 @@ import {
 import { uploadItemImage } from '@/lib/uploadImage'
 import { Category, DailyMenu, MenuItem } from '@/types'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { useCart } from '@/contexts/CartProvider'
+import { useEffect, useMemo, useState, Suspense } from 'react'
 import {
   AddCategoryButton,
   AnimatedBackground,
@@ -27,45 +25,19 @@ import {
   FilterBar,
   ItemModal,
   LoadingScreen,
+  PaymentStatusHandler,
 } from './components'
 
-export default function DemoMenu() {
+function DemoMenuContent() {
   const { loading: loadingMenu, categories, filters, items, dailyMenu, errors } = useMenuData()
-  const searchParams = useSearchParams()
-  const { clear } = useCart()
-
   const [filter, setFilter] = useState('all')
   const [loadingAnim, setLoadingAnim] = useState(true)
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [mpStatus, setMpStatus] = useState<string | null>(null)
 
   const [title, setTitle] = useState('🍽️ Don Julio Parrilla')
   const [subtitle, setSubtitle] = useState('Menú digital · Actualizado al instante')
-
-  useEffect(() => {
-    const status = searchParams.get('mp_status')
-    const order = searchParams.get('order')
-
-    if (status) {
-      console.log('status', status)
-      console.log('order', order)
-      setMpStatus(status)
-
-      if (status === 'success') {
-        clear()
-      }
-
-      setTimeout(() => setMpStatus(null), 5000)
-
-      // Clean URL
-      const url = new URL(window.location.href)
-      url.searchParams.delete('mp_status')
-      url.searchParams.delete('order')
-      window.history.replaceState({}, '', url.toString())
-    }
-  }, [searchParams, clear])
 
   useEffect(() => {
     const t = setTimeout(() => setLoadingAnim(false), 1000)
@@ -273,25 +245,6 @@ export default function DemoMenu() {
         <EditModeToggle isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />
       </AdminGuard>
 
-      {/* MP Status Banner */}
-      {mpStatus && (
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -50 }}
-          className={`fixed bottom-10 right-3 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg backdrop-blur-sm ${
-            mpStatus === 'success'
-              ? 'bg-green-600/90 text-white'
-              : mpStatus === 'pending'
-                ? 'bg-yellow-600/90 text-white'
-                : 'bg-red-600/90 text-white'
-          }`}
-        >
-          {mpStatus === 'success' && '🎉 ¡Pago exitoso! Tu pedido está confirmado'}
-          {mpStatus === 'pending' && '⏳ Pago pendiente. Te notificaremos cuando se confirme'}
-          {mpStatus === 'failure' && '❌ Error en el pago. Intenta nuevamente'}
-        </motion.div>
-      )}
 
       {/* Item Modal */}
       <ItemModal
@@ -304,5 +257,16 @@ export default function DemoMenu() {
         }}
       />
     </>
+  )
+}
+
+export default function DemoMenu() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <DemoMenuContent />
+      <Suspense fallback={null}>
+        <PaymentStatusHandler />
+      </Suspense>
+    </Suspense>
   )
 }
