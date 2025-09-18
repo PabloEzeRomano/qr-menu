@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "analyze": "ANALYZE=true yarn build",
     "seed:firebase": "node scripts/seed-firebase.js",
     "seed:firebase:ts": "npx tsx scripts/seed-firebase.ts",
     "create:admin": "npx tsx scripts/create-admin.ts"
@@ -31,6 +32,7 @@
     "zod": "^4.1.9"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.5.3",
     "@opentelemetry/api": "^1.9.0",
     "@types/node": "^20.12.0",
     "@types/react": "^18.3.0",
