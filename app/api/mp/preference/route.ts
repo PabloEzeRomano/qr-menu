@@ -4,6 +4,7 @@ export const runtime = 'nodejs'
 import { z } from 'zod'
 import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
 import { mpPreference } from '@/lib/server/mp'
+import { rateLimit, getRateLimitKey } from '@/lib/server/rateLimit'
 
 const BodySchema = z.object({
   cart: z.array(z.object({ id: z.string(), qty: z.number().int().positive() })),
@@ -11,8 +12,15 @@ const BodySchema = z.object({
 })
 
 export async function POST(req: Request) {
-  const body = await req.json()
-  const { cart, table } = BodySchema.parse(body)
+  // Rate limiting for payment endpoints
+  const rateLimitKey = getRateLimitKey(req)
+  if (!rateLimit(rateLimitKey, 5, 60000)) { // 5 requests per minute
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  try {
+    const body = await req.json()
+    const { cart, table } = BodySchema.parse(body)
 
   let total = 0
   const enriched: Array<{ title: string; quantity: number; unit_price: number; id: string }> = []
@@ -67,10 +75,17 @@ export async function POST(req: Request) {
   // console.debug('[MP preference] body:', prefBody)
   const pref = await mpPreference.create({ body: prefBody })
 
-  return NextResponse.json({
-    orderId: orderRef.id,
-    id: pref.id,
-    init_point: pref.init_point,
-    sandbox_init_point: pref.sandbox_init_point,
-  })
+    return NextResponse.json({
+      orderId: orderRef.id,
+      id: pref.id,
+      init_point: pref.init_point,
+      sandbox_init_point: pref.sandbox_init_point,
+    })
+  } catch (error: any) {
+    console.error('Error creating payment preference:', error)
+    return NextResponse.json(
+      { error: error.message || 'Error processing payment' },
+      { status: 500 }
+    )
+  }
 }

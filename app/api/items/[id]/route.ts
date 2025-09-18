@@ -13,22 +13,33 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 }
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin(req)
-  const { id } = await params
-  const body = await req.json()
-  const allowed = MenuItemSchema.partial().parse(body)
+  try {
+    await requireAdmin(req)
+    const { id } = await params
+    const body = await req.json()
+    const allowed = MenuItemSchema.partial().parse(body)
 
-  await adminDB.doc(`items/${id}`).update({
-    ...allowed,
-    updatedAt: serverTimestamp(),
-  } as any)
-  const out = await adminDB.doc(`items/${id}`).get()
-  return NextResponse.json({ id: out.id, ...out.data() })
+    await adminDB.doc(`items/${id}`).update({
+      ...allowed,
+      updatedAt: serverTimestamp(),
+    } as any)
+    const out = await adminDB.doc(`items/${id}`).get()
+    if (!out.exists) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    return NextResponse.json({ id: out.id, ...out.data() })
+  } catch (error) {
+    console.error('Error updating item:', error)
+    return NextResponse.json({ error: 'Error updating item' }, { status: 500 })
+  }
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin(req)
-  const { id } = await params
-  await adminDB.doc(`items/${id}`).delete()
-  return NextResponse.json({ ok: true })
+  try {
+    await requireAdmin(req)
+    const { id } = await params
+    await adminDB.doc(`items/${id}`).delete()
+    return NextResponse.json({ ok: true })
+  } catch (error) {
+    console.error('Error deleting item:', error)
+    return NextResponse.json({ error: 'Error deleting item' }, { status: 500 })
+  }
 }
