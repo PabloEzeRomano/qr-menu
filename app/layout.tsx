@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import { AuthProvider } from '@/contexts/AuthContextProvider'
+import { CartProvider } from '@/contexts/CartProvider'
+import CartWrapper from '@/components/cart/CartWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,8 +18,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <Navbar />
-          {children}
+          <CartProvider>
+            <Navbar />
+            {children}
+            <CartWrapper />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>
