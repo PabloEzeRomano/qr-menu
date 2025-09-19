@@ -17,6 +17,8 @@ interface EditableMenuCategoryProps {
   onItemDelete: (itemId: string) => void
   onAddItem: (categoryKey: string) => void
   onImageUpload: (file: File, itemId: string) => Promise<string>
+  onSaveNewItem?: (newItem: MenuItem) => void
+  onCancelNewItem?: (tempId: string) => void
 }
 
 export default function EditableMenuCategory({
@@ -30,6 +32,8 @@ export default function EditableMenuCategory({
   onItemDelete,
   onAddItem,
   onImageUpload,
+  onSaveNewItem,
+  onCancelNewItem,
 }: EditableMenuCategoryProps) {
   const [isEditingCategory, setIsEditingCategory] = useState(false)
   const [tempCategory, setTempCategory] = useState({ ...category })
@@ -185,6 +189,8 @@ export default function EditableMenuCategory({
               onUpdate={onItemUpdate}
               onDelete={onItemDelete}
               onImageUpload={onImageUpload}
+              onSaveNew={onSaveNewItem}
+              onCancelNew={onCancelNewItem}
             />
           </motion.div>
         ))}

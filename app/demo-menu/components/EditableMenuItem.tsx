@@ -16,6 +16,8 @@ interface EditableMenuItemProps {
   onUpdate: (updatedItem: MenuItem) => void
   onDelete: (itemId: string) => void
   onImageUpload: (file: File, itemId: string) => Promise<string>
+  onSaveNew?: (newItem: MenuItem) => void
+  onCancelNew?: (tempId: string) => void
 }
 
 export default function EditableMenuItem({
@@ -25,8 +27,11 @@ export default function EditableMenuItem({
   onUpdate,
   onDelete,
   onImageUpload,
+  onSaveNew,
+  onCancelNew,
 }: EditableMenuItemProps) {
-  const [isEditing, setIsEditing] = useState(false)
+  const isNewItem = item.id.startsWith('temp-')
+  const [isEditing, setIsEditing] = useState(isNewItem) // New items start in edit mode
   const [tempItem, setTempItem] = useState({ ...item })
   const [imageUploading, setImageUploading] = useState(false)
   const [selectedFileName, setSelectedFileName] = useState('')
@@ -34,24 +39,38 @@ export default function EditableMenuItem({
   const { add } = useCart()
   const { isAdmin } = useAuth()
 
+  console.log('item', item)
+
   const handleSave = () => {
     if (tempItem.name.trim() && tempItem.description.trim()) {
-      onUpdate(tempItem)
+      if (isNewItem && onSaveNew) {
+        onSaveNew(tempItem)
+      } else {
+        onUpdate(tempItem)
+      }
       setSelectedFileName('')
       setIsEditing(false)
     }
   }
 
   const handleCancel = () => {
-    setTempItem({ ...item })
-    setSelectedFileName('')
-    setIsEditing(false)
+    if (isNewItem && onCancelNew) {
+      onCancelNew(item.id)
+    } else {
+      setTempItem({ ...item })
+      setSelectedFileName('')
+      setIsEditing(false)
+    }
   }
 
   // Update tempItem when item prop changes (for real-time visibility updates)
   useEffect(() => {
     setTempItem({ ...item })
   }, [item])
+
+  useEffect(() => {
+    isEditing && !isEditMode && setIsEditing(false)
+  }, [isEditing, isEditMode])
 
   const handleDelete = () => {
     if (confirm('¿Estás seguro de que quieres eliminar este item?')) {

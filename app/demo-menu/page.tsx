@@ -60,6 +60,7 @@ function DemoMenuContent() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [newItems, setNewItems] = useState<MenuItem[]>([])
 
   useEffect(() => {
     const t = setTimeout(() => setLoadingAnim(false), 1000)
@@ -71,6 +72,10 @@ function DemoMenuContent() {
   useEffect(() => {
     refreshItems(isAdmin)
   }, [isAdmin, refreshItems])
+
+  useEffect(() => {
+    isEditMode && !isAdmin && setIsEditMode(false)
+  }, [isAdmin])
 
   const activeFilter = useMemo(
     () => (filters || []).find((f) => f.key === filter),
@@ -84,10 +89,12 @@ function DemoMenuContent() {
 
   const filteredCategories = useMemo(() => {
     return (categories || []).map((category: Category) => {
-      const its = filteredItems.filter((i: MenuItem) => i.category === category.key)
-      return { category, items: its }
+      const existingItems = filteredItems.filter((i: MenuItem) => i.category === category.key)
+      const newItemsForCategory = newItems.filter((i: MenuItem) => i.category === category.key)
+      const allItems = [...existingItems, ...newItemsForCategory]
+      return { category, items: allItems }
     })
-  }, [categories, filteredItems])
+  }, [categories, filteredItems, newItems])
 
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item)
@@ -153,6 +160,7 @@ function DemoMenuContent() {
   const handleItemDelete = async (itemId: string) => {
     try {
       await deleteItem(itemId)
+      refreshItems(isAdmin)
     } catch (e: any) {
       console.error(e)
       alert(e?.message || 'Error eliminando el plato')
@@ -160,7 +168,9 @@ function DemoMenuContent() {
   }
 
   const handleAddItem = async (categoryKey: string) => {
-    const newItem: Omit<MenuItem, 'id'> = {
+    // Create a temporary item that will be saved when user hits "Save"
+    const newItem: MenuItem = {
+      id: `temp-${Date.now()}`, // Temporary ID
       name: 'Nuevo plato',
       description: 'Descripción del nuevo plato',
       price: 0,
@@ -170,12 +180,27 @@ function DemoMenuContent() {
       img: 'https://vuzhpuvkkrtyiw2d.public.blob.vercel-storage.com/items/placeholder.png',
       isVisible: true,
     }
+
+    // Add to temporary state
+    setNewItems(prev => [...prev, newItem])
+  }
+
+  const handleSaveNewItem = async (newItem: MenuItem) => {
     try {
-      await createItem(newItem)
+      const { id, ...itemData } = newItem // Remove temp ID
+      await createItem(itemData)
+      // Remove from temporary state
+      setNewItems(prev => prev.filter(item => item.id !== newItem.id))
+      // Refresh items
+      refreshItems(isAdmin)
     } catch (e: any) {
       console.error(e)
       alert(e?.message || 'Error creando el plato')
     }
+  }
+
+  const handleCancelNewItem = (tempId: string) => {
+    setNewItems(prev => prev.filter(item => item.id !== tempId))
   }
 
   const handleAddCategory = async (newCategory: Category) => {
@@ -257,6 +282,8 @@ function DemoMenuContent() {
                     onItemDelete={handleItemDelete}
                     onAddItem={handleAddItem}
                     onImageUpload={handleImageUpload}
+                    onSaveNewItem={handleSaveNewItem}
+                    onCancelNewItem={handleCancelNewItem}
                   />
                 ),
               )}
