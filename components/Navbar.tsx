@@ -1,14 +1,17 @@
 'use client'
 
 import Button from './Button'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContextProvider'
+import { Menu, X } from 'lucide-react'
+import { useState } from 'react'
 
 export default function Navbar() {
   const pathname = usePathname()
   const { user, logout } = useAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
     <motion.nav
@@ -26,31 +29,24 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
-          <div className="flex items-center space-x-6">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/"
-                className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                  pathname === '/'
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium shadow-lg'
-                    : 'text-gray-300 hover:text-white hover:bg-white/10 backdrop-blur-sm'
-                }`}
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-6">
+            <Link href="/">
+              <Button
+                variant={pathname === '/' ? 'nav-active' : 'nav'}
+                size="sm"
               >
                 Inicio
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/demo-menu"
-                className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                  pathname === '/demo-menu'
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium shadow-lg'
-                    : 'text-gray-300 hover:text-white hover:bg-white/10 backdrop-blur-sm'
-                }`}
+              </Button>
+            </Link>
+            <Link href="/demo-menu">
+              <Button
+                variant={pathname === '/demo-menu' ? 'nav-active' : 'nav'}
+                size="sm"
               >
                 Demo
-              </Link>
-            </motion.div>
+              </Button>
+            </Link>
 
             {user ? (
               <div className="flex items-center space-x-4">
@@ -83,7 +79,80 @@ export default function Navbar() {
               </Link>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden border-t border-white/20 pt-4 pb-2"
+            >
+              <div className="space-y-2">
+                <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button
+                    variant={pathname === '/' ? 'nav-active' : 'nav'}
+                    size="sm"
+                    className="w-full justify-start"
+                  >
+                    Inicio
+                  </Button>
+                </Link>
+                <Link href="/demo-menu" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button
+                    variant={pathname === '/demo-menu' ? 'nav-active' : 'nav'}
+                    size="sm"
+                    className="w-full justify-start"
+                  >
+                    Demo
+                  </Button>
+                </Link>
+
+                {user ? (
+                  <div className="space-y-2 pt-2 border-t border-white/10">
+                    <div className="px-4 py-2">
+                      <span className="text-gray-300 text-sm">
+                        {user.displayName || user.email?.split('@')[0]}
+                      </span>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        logout()
+                        setIsMobileMenuOpen(false)
+                      }}
+                      variant="danger"
+                      size="sm"
+                      className="w-full"
+                      >
+                      Cerrar sesión
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="pt-2 border-t border-white/10">
+                    <Link href="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button variant="primary" size="sm" className="w-full">
+                        Iniciar sesión
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.nav>
   )
