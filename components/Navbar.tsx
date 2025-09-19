@@ -32,18 +32,12 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
             <Link href="/">
-              <Button
-                variant={pathname === '/' ? 'nav-active' : 'nav'}
-                size="sm"
-              >
+              <Button variant={pathname === '/' ? 'nav-active' : 'nav'} size="sm">
                 Inicio
               </Button>
             </Link>
             <Link href="/demo-menu">
-              <Button
-                variant={pathname === '/demo-menu' ? 'nav-active' : 'nav'}
-                size="sm"
-              >
+              <Button variant={pathname === '/demo-menu' ? 'nav-active' : 'nav'} size="sm">
                 Demo
               </Button>
             </Link>
@@ -136,7 +130,7 @@ export default function Navbar() {
                       variant="danger"
                       size="sm"
                       className="w-full"
-                      >
+                    >
                       Cerrar sesión
                     </Button>
                   </div>

@@ -182,7 +182,7 @@ function DemoMenuContent() {
     }
 
     // Add to temporary state
-    setNewItems(prev => [...prev, newItem])
+    setNewItems((prev) => [...prev, newItem])
   }
 
   const handleSaveNewItem = async (newItem: MenuItem) => {
@@ -190,7 +190,7 @@ function DemoMenuContent() {
       const { id, ...itemData } = newItem // Remove temp ID
       await createItem(itemData)
       // Remove from temporary state
-      setNewItems(prev => prev.filter(item => item.id !== newItem.id))
+      setNewItems((prev) => prev.filter((item) => item.id !== newItem.id))
       // Refresh items
       refreshItems(isAdmin)
     } catch (e: any) {
@@ -200,7 +200,7 @@ function DemoMenuContent() {
   }
 
   const handleCancelNewItem = (tempId: string) => {
-    setNewItems(prev => prev.filter(item => item.id !== tempId))
+    setNewItems((prev) => prev.filter((item) => item.id !== tempId))
   }
 
   const handleAddCategory = async (newCategory: Category) => {

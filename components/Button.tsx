@@ -8,7 +8,15 @@ export interface ButtonProps
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     'onAnimationStart' | 'onAnimationEnd' | 'onDragStart' | 'onDrag' | 'onDragEnd'
   > {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'success' | 'ghost' | 'nav' | 'nav-active'
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'danger'
+    | 'success'
+    | 'ghost'
+    | 'nav'
+    | 'nav-active'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
   children: React.ReactNode
