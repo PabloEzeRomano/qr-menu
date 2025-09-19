@@ -8,7 +8,7 @@ export interface ButtonProps
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     'onAnimationStart' | 'onAnimationEnd' | 'onDragStart' | 'onDrag' | 'onDragEnd'
   > {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'success' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'success' | 'ghost' | 'nav' | 'nav-active'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
   children: React.ReactNode
@@ -28,7 +28,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const baseClasses =
-      'font-semibold rounded-lg transition-all duration-200 shadow-lg backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none'
+      'font-semibold rounded-lg transition-all duration-200 shadow-lg backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none flex items-center justify-center'
 
     const variantClasses = {
       primary:
@@ -42,6 +42,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       success:
         'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white',
       ghost: 'bg-transparent text-gray-300 hover:text-white hover:bg-white/10',
+      nav: 'text-gray-300 hover:text-white hover:bg-white/10 backdrop-blur-sm',
+      'nav-active': 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium shadow-lg',
     }
 
     const sizeClasses = {
