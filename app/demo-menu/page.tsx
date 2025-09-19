@@ -8,13 +8,14 @@ import {
   deleteCategory,
   deleteItem,
   patchDailyMenu,
+  patchRestaurant,
   updateCategory,
   updateItem,
 } from '@/lib/menuCRUD'
 import { uploadItemImage } from '@/lib/uploadImage'
 import { Category, DailyMenu, MenuItem } from '@/types'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useMemo, useState, Suspense } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import {
   AddCategoryButton,
   AnimatedBackground,
@@ -27,28 +28,59 @@ import {
   LoadingScreen,
   PaymentStatusHandler,
 } from './components'
+import { useAuth } from '@/contexts/AuthContextProvider'
+
+type Predicate = { tag?: string; diet?: string }
+
+function matches(item: { tags?: string[]; diet?: string[] }, f?: Predicate) {
+  if (!f || (!f.tag && !f.diet)) return true
+
+  const tags = item.tags ?? []
+  const diet = item.diet ?? []
+
+  if (f.tag && tags.includes(f.tag)) return true
+  if (f.diet && diet.includes(f.diet)) return true
+
+  return false
+}
 
 function DemoMenuContent() {
-  const { loading: loadingMenu, categories, filters, items, dailyMenu, errors } = useMenuData()
+  const {
+    loading: loadingMenu,
+    categories,
+    filters,
+    items,
+    dailyMenu,
+    restaurant,
+    refreshItems,
+  } = useMenuData()
+  const { isAdmin } = useAuth()
   const [filter, setFilter] = useState('all')
   const [loadingAnim, setLoadingAnim] = useState(true)
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
 
-  const [title, setTitle] = useState('🍽️ Don Julio Parrilla')
-  const [subtitle, setSubtitle] = useState('Menú digital · Actualizado al instante')
-
   useEffect(() => {
     const t = setTimeout(() => setLoadingAnim(false), 1000)
     return () => clearTimeout(t)
   }, [])
 
+  // Refresh items when edit mode changes or admin status changes
+  // Admins always see all items, regular users only see visible items
+  useEffect(() => {
+    refreshItems(isAdmin)
+  }, [isAdmin, refreshItems])
+
+  const activeFilter = useMemo(
+    () => (filters || []).find((f) => f.key === filter),
+    [filters, filter],
+  )
+
   const filteredItems = useMemo(() => {
     if (!items) return []
-    if (filter === 'all') return items
-    return items.filter((i: MenuItem) => i.tags?.includes?.(filter) || i.diet?.includes?.(filter))
-  }, [filter, items])
+    return items.filter((it) => matches(it, activeFilter?.predicate))
+  }, [items, activeFilter])
 
   const filteredCategories = useMemo(() => {
     return (categories || []).map((category: Category) => {
@@ -62,8 +94,9 @@ function DemoMenuContent() {
     setIsModalOpen(true)
   }
 
-  const handleTitleChange = (newTitle: string) => setTitle(newTitle)
-  const handleSubtitleChange = (newSubtitle: string) => setSubtitle(newSubtitle)
+  const handleTitleChange = (newTitle: string) => patchRestaurant({ ...restaurant, name: newTitle })
+  const handleSubtitleChange = (newSubtitle: string) =>
+    patchRestaurant({ ...restaurant, description: newSubtitle })
 
   const handleDailyMenuChange = async (
     field: keyof DailyMenu,
@@ -109,6 +142,8 @@ function DemoMenuContent() {
     try {
       const { id, ...patch } = updatedItem
       await updateItem(id, patch)
+      // Refresh items to reflect visibility changes
+      refreshItems(isAdmin)
     } catch (e: any) {
       console.error(e)
       alert(e?.message || 'Error guardando el plato')
@@ -133,6 +168,7 @@ function DemoMenuContent() {
       tags: [],
       diet: [],
       img: 'https://vuzhpuvkkrtyiw2d.public.blob.vercel-storage.com/items/placeholder.png',
+      isVisible: true,
     }
     try {
       await createItem(newItem)
@@ -184,18 +220,9 @@ function DemoMenuContent() {
           >
             <AnimatedBackground />
 
-            {(errors.categories || errors.filters || errors.items || errors.dailyMenu) && (
-              <div className="mx-auto mb-4 max-w-3xl rounded-lg bg-red-600/20 border border-red-600/40 p-3 text-sm text-red-100">
-                {errors.categories && <div>Categories: {errors.categories}</div>}
-                {errors.filters && <div>Filters: {errors.filters}</div>}
-                {errors.items && <div>Items: {errors.items}</div>}
-                {errors.dailyMenu && <div>DailyMenu: {errors.dailyMenu}</div>}
-              </div>
-            )}
-
             <EditableHeader
-              title={title}
-              subtitle={subtitle}
+              title={restaurant?.name ?? '🍽️ Restaurant Name'}
+              subtitle={restaurant?.description ?? 'Menú digital · Actualizado al instante'}
               isEditMode={isEditMode}
               onTitleChange={handleTitleChange}
               onSubtitleChange={handleSubtitleChange}
@@ -244,7 +271,6 @@ function DemoMenuContent() {
       <AdminGuard>
         <EditModeToggle isEditMode={isEditMode} onToggle={() => setIsEditMode(!isEditMode)} />
       </AdminGuard>
-
 
       {/* Item Modal */}
       <ItemModal
