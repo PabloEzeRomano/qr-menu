@@ -19,7 +19,7 @@ const requiredServerEnvs = [
 ]
 
 export function validateClientEnv() {
-  const missing = requiredClientEnvs.filter(env => !process.env[env])
+  const missing = requiredClientEnvs.filter((env) => !process.env[env])
   if (missing.length > 0) {
     console.error('❌ Missing required client environment variables:', missing)
     throw new Error(`Missing client environment variables: ${missing.join(', ')}`)
@@ -28,7 +28,7 @@ export function validateClientEnv() {
 }
 
 export function validateServerEnv() {
-  const missing = requiredServerEnvs.filter(env => !process.env[env])
+  const missing = requiredServerEnvs.filter((env) => !process.env[env])
   if (missing.length > 0) {
     console.error('❌ Missing required server environment variables:', missing)
     throw new Error(`Missing server environment variables: ${missing.join(', ')}`)
