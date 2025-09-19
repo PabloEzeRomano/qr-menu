@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server'
 
 export function addCorsHeaders(response: NextResponse, origin?: string) {
   // Allow specific origins in production, all in development
-  const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? [process.env.NEXT_PUBLIC_BASE_URL, 'https://qr-menu.vercel.app']
-    : ['*']
+  const allowedOrigins =
+    process.env.NODE_ENV === 'production'
+      ? [process.env.NEXT_PUBLIC_BASE_URL, 'https://qr-menu.vercel.app']
+      : ['*']
 
   const requestOrigin = origin || '*'
   const isAllowed = allowedOrigins.includes('*') || allowedOrigins.includes(requestOrigin)

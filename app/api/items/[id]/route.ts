@@ -23,6 +23,12 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       ...allowed,
       updatedAt: serverTimestamp(),
     } as any)
+
+    // Invalidate cache when items are updated (especially visibility changes)
+    const { cache } = await import('@/lib/server/cache')
+    cache.delete('items:visible')
+    cache.delete('items:all')
+
     const out = await adminDB.doc(`items/${id}`).get()
     if (!out.exists) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json({ id: out.id, ...out.data() })
@@ -37,6 +43,12 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     await requireAdmin(req)
     const { id } = await params
     await adminDB.doc(`items/${id}`).delete()
+
+    // Invalidate cache
+    const { cache } = await import('@/lib/server/cache')
+    cache.delete('items:visible')
+    cache.delete('items:all')
+
     return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('Error deleting item:', error)

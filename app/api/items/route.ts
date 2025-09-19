@@ -9,13 +9,21 @@ import { corsResponse } from '@/lib/server/cors'
 
 export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url)
+    const showAll = searchParams.get('showAll') === 'true'
+
+    const cacheKey = showAll ? 'items:all' : 'items:visible'
+
     const data = await cacheOrFetch(
-      'items:all',
+      cacheKey,
       async () => {
-        const snap = await adminDB.collection('items').get()
+        const query = showAll
+          ? adminDB.collection('items')
+          : adminDB.collection('items').where('isVisible', '==', true)
+        const snap = await query.get()
         return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
       },
-      180000 // 3 minutes cache
+      180000, // 3 minutes cache
     )
 
     return corsResponse(data, 200, req.headers.get('origin') || undefined)
@@ -33,12 +41,14 @@ export async function POST(req: Request) {
 
     const ref = await adminDB.collection('items').add({
       ...parsed,
+      // isVisible: true, // New items are visible by default
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     } as any)
 
     // Invalidate cache when items are modified
     const { cache } = await import('@/lib/server/cache')
+    cache.delete('items:visible')
     cache.delete('items:all')
 
     const doc = await ref.get()

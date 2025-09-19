@@ -8,7 +8,8 @@ interface CacheEntry<T> {
 class MemoryCache {
   private cache = new Map<string, CacheEntry<any>>()
 
-  set<T>(key: string, data: T, ttlMs = 300000): void { // 5 minutes default
+  set<T>(key: string, data: T, ttlMs = 300000): void {
+    // 5 minutes default
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -58,7 +59,7 @@ if (typeof window === 'undefined') {
 export async function cacheOrFetch<T>(
   key: string,
   fetchFn: () => Promise<T>,
-  ttlMs = 300000
+  ttlMs = 300000,
 ): Promise<T> {
   const cached = cache.get<T>(key)
   if (cached !== null) return cached
