@@ -17,7 +17,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => {
       return cache.addAll(STATIC_ASSETS)
-    })
+    }),
   )
   self.skipWaiting()
 })
@@ -31,9 +31,9 @@ self.addEventListener('activate', (event) => {
           if (cacheName !== CACHE_NAME && cacheName !== STATIC_CACHE) {
             return caches.delete(cacheName)
           }
-        })
+        }),
       )
-    })
+    }),
   )
   self.clients.claim()
 })
@@ -54,7 +54,10 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           // Cache successful GET responses for menu data
-          if (response.ok && (url.pathname.includes('/items') || url.pathname.includes('/categories'))) {
+          if (
+            response.ok &&
+            (url.pathname.includes('/items') || url.pathname.includes('/categories'))
+          ) {
             const responseClone = response.clone()
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(request, responseClone)
@@ -65,7 +68,7 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           // Return cached version if network fails
           return caches.match(request)
-        })
+        }),
     )
     return
   }
@@ -87,7 +90,7 @@ self.addEventListener('fetch', (event) => {
         }
         return response
       })
-    })
+    }),
   )
 })
 

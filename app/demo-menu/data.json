@@ -6,10 +6,10 @@
   ],
   "filters": [
     { "key": "all", "label": "Todos" },
-    { "key": "recomendado", "label": "Recomendados" },
-    { "key": "nuevo", "label": "Nuevos" },
-    { "key": "vegetariano", "label": "Veggie" },
-    { "key": "sin-gluten", "label": "Sin gluten" }
+    { "key": "recomendado", "label": "Recomendados", "predicate": { "tag": "recomendado" } },
+    { "key": "nuevo", "label": "Nuevos", "predicate": { "tag": "nuevo" } },
+    { "key": "vegetariano", "label": "Veggie", "predicate": { "diet": "vegetariano" } },
+    { "key": "sin-gluten", "label": "Sin gluten", "predicate": { "diet": "sin-gluten" } }
   ],
   "dailyMenu": {
     "title": "Menú del día",
