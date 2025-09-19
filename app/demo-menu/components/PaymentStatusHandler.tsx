@@ -44,8 +44,8 @@ export default function PaymentStatusHandler() {
         mpStatus === 'success'
           ? 'bg-green-600/90 text-white'
           : mpStatus === 'pending'
-          ? 'bg-yellow-600/90 text-white'
-          : 'bg-red-600/90 text-white'
+            ? 'bg-yellow-600/90 text-white'
+            : 'bg-red-600/90 text-white'
       }`}
     >
       {mpStatus === 'success' && '🎉 ¡Pago exitoso! Tu pedido está confirmado'}

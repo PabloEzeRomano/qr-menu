@@ -1,11 +1,7 @@
 'use client'
 
 import Button from '@/components/Button'
-
-interface Filter {
-  key: string
-  label: string
-}
+import { Filter } from '@/types'
 
 interface FilterBarProps {
   filters: Filter[]

@@ -5,7 +5,7 @@ import { MenuItem } from '@/types'
 import { motion } from 'framer-motion'
 import { Check, Edit2, Trash2, Plus } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from '@/contexts/CartProvider'
 import { useAuth } from '@/contexts/AuthContextProvider'
 
@@ -48,13 +48,18 @@ export default function EditableMenuItem({
     setIsEditing(false)
   }
 
+  // Update tempItem when item prop changes (for real-time visibility updates)
+  useEffect(() => {
+    setTempItem({ ...item })
+  }, [item])
+
   const handleDelete = () => {
     if (confirm('¿Estás seguro de que quieres eliminar este item?')) {
       onDelete(item.id)
     }
   }
 
-  const updateField = (field: keyof MenuItem, value: string[] | number | string) => {
+  const updateField = (field: keyof MenuItem, value: string[] | number | string | boolean) => {
     setTempItem((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -167,6 +172,34 @@ export default function EditableMenuItem({
                   {diet}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Visibility Toggle */}
+          <div>
+            <label className="block text-cyan-200 text-sm font-medium mb-2">Visibilidad</label>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center">
+                <button
+                  onClick={() => updateField('isVisible', !tempItem.isVisible)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 ${
+                    tempItem.isVisible ? 'bg-green-500' : 'bg-gray-600'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      tempItem.isVisible ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+                <span
+                  className={`ml-3 text-sm font-medium ${
+                    tempItem.isVisible ? 'text-green-300' : 'text-gray-400'
+                  }`}
+                >
+                  {tempItem.isVisible ? 'Visible en el menú' : 'Oculto del menú'}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -286,7 +319,11 @@ export default function EditableMenuItem({
         stiffness: 260,
         damping: 18,
       }}
-      className="group relative bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 shadow-lg overflow-hidden cursor-pointer"
+      className={`group relative backdrop-blur-sm border rounded-2xl p-4 shadow-lg overflow-hidden cursor-pointer ${
+        tempItem.isVisible
+          ? 'bg-white/20 border-white/30'
+          : 'bg-red-500/10 border-red-500/30 opacity-60'
+      }`}
     >
       {/* Edit Button */}
       {isEditMode && (
@@ -299,6 +336,13 @@ export default function EditableMenuItem({
         >
           <Edit2 size={16} />
         </button>
+      )}
+
+      {/* Hidden indicator */}
+      {!tempItem.isVisible && (
+        <div className="absolute bottom-3 right-3 bg-red-500/90 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10">
+          OCULTO
+        </div>
       )}
 
       {/* Tags */}

@@ -1,6 +1,7 @@
 'use client'
 
 import { Component, ErrorInfo, ReactNode } from 'react'
+import Button from './Button'
 
 interface Props {
   children: ReactNode
@@ -34,12 +35,9 @@ export default class ErrorBoundary extends Component<Props, State> {
             <div className="text-center space-y-4">
               <h1 className="text-2xl font-bold text-red-400">Algo salió mal</h1>
               <p className="text-gray-300">Ha ocurrido un error inesperado</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors"
-              >
+              <Button onClick={() => window.location.reload()} variant="primary" size="md">
                 Recargar página
-              </button>
+              </Button>
             </div>
           </div>
         )
