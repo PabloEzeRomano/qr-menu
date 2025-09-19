@@ -75,7 +75,7 @@ function DemoMenuContent() {
 
   useEffect(() => {
     isEditMode && !isAdmin && setIsEditMode(false)
-  }, [isAdmin])
+  }, [isAdmin, isEditMode])
 
   const activeFilter = useMemo(
     () => (filters || []).find((f) => f.key === filter),
