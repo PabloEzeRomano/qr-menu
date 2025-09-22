@@ -31,6 +31,7 @@ export const RestaurantSchema = z.object({
   phone: z.string().min(1).optional(),
   email: z.email().optional(),
   website: z.url().optional(),
+  hasCart: z.boolean().default(true),
 })
 
 export const FilterSchema = z.object({

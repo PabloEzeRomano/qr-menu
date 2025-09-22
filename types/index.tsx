@@ -46,6 +46,7 @@ export interface Restaurant {
   phone: string
   email: string
   website: string
+  hasCart: boolean
   createdAt?: any
   updatedAt?: any
 }
