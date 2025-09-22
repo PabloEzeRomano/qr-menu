@@ -5,12 +5,14 @@ import CartButton from './CartButton'
 import CartDrawer from './CartDrawer'
 import StickyCartBar from './StickyCartBar'
 import { useAuth } from '@/contexts/AuthContextProvider'
+import { useCartEnabled } from '@/hooks/useCartEnabled'
 
 export default function CartWrapper() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const { isAdmin } = useAuth()
+  const isCartEnabled = useCartEnabled()
 
-  if (isAdmin) return null
+  if (isAdmin || !isCartEnabled) return null
 
   return (
     <>

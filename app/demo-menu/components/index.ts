@@ -9,3 +9,7 @@ export { default as ItemModal } from './ItemModal'
 export { default as EditModeToggle } from './EditModeToggle'
 export { default as AddCategoryButton } from './AddCategoryButton'
 export { default as PaymentStatusHandler } from './PaymentStatusHandler'
+
+// New architecture components
+export { MenuContent } from './MenuContent'
+export { MenuManager } from './MenuManager'
