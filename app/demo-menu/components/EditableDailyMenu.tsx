@@ -1,84 +1,74 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react'
 import Button from '@/components/Button'
+import { useMenuData } from '@/contexts/MenuDataProvider'
+import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'
+import { DailyMenu } from '@/types'
 
 interface EditableDailyMenuProps {
-  title: string
-  hours: string
-  price: number
-  items: string[]
   isEditMode: boolean
-  onTitleChange: (newTitle: string) => void
-  onHoursChange: (newHours: string) => void
-  onPriceChange: (newPrice: number) => void
-  onItemsChange: (newItems: string[]) => void
 }
 
-export default function EditableDailyMenu({
-  title,
-  hours,
-  price,
-  items,
-  isEditMode,
-  onTitleChange,
-  onHoursChange,
-  onPriceChange,
-  onItemsChange,
-}: EditableDailyMenuProps) {
+export default function EditableDailyMenu({ isEditMode }: EditableDailyMenuProps) {
+  const { dailyMenu } = useMenuData()
+  const { handleDailyMenuSave } = useRestaurantOperations()
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [isEditingHours, setIsEditingHours] = useState(false)
   const [isEditingPrice, setIsEditingPrice] = useState(false)
-  const [tempTitle, setTempTitle] = useState(title)
-  const [tempHours, setTempHours] = useState(hours)
-  const [tempPrice, setTempPrice] = useState(price.toString())
-  const [tempItems, setTempItems] = useState([...items])
+  const [patch, setPatch] = useState<Partial<DailyMenu>>(dailyMenu ?? {})
 
-  const handleTitleSave = () => {
-    if (tempTitle.trim()) {
-      onTitleChange(tempTitle.trim())
-    }
-    setIsEditingTitle(false)
-  }
+  // Update patch when dailyMenu changes
+  useEffect(() => {
+    setPatch(dailyMenu ?? {})
+  }, [dailyMenu])
 
-  const handleHoursSave = () => {
-    if (tempHours.trim()) {
-      onHoursChange(tempHours.trim())
-    }
-    setIsEditingHours(false)
-  }
+  const { title, hours, price, items } = patch
 
-  const handlePriceSave = () => {
-    const numPrice = parseInt(tempPrice)
-    if (!isNaN(numPrice) && numPrice > 0) {
-      onPriceChange(numPrice)
-    }
-    setIsEditingPrice(false)
-  }
+  // Check if there are any changes from the original data
+  const hasChanges = () => {
+    if (!dailyMenu) return false
 
-  const handleItemsSave = () => {
-    const validItems = tempItems.filter((item) => item.trim())
-    if (validItems.length > 0) {
-      onItemsChange(validItems)
-    }
+    return (
+      patch.title !== dailyMenu.title ||
+      patch.hours !== dailyMenu.hours ||
+      patch.price !== dailyMenu.price ||
+      JSON.stringify(patch.items) !== JSON.stringify(dailyMenu.items)
+    )
   }
 
   const addItem = () => {
-    setTempItems([...tempItems, ''])
+    setPatch({ ...patch, items: [...(patch.items ?? []), ''] })
   }
 
-  const removeItem = (index: number) => {
-    const newItems = tempItems.filter((_, i) => i !== index)
-    setTempItems(newItems)
-    onItemsChange(newItems)
+  const removeItem = async (index: number) => {
+    const newItems = patch.items?.filter((_, i) => i !== index)
+    setPatch({ ...patch, items: newItems })
+  }
+
+  const handlePatch = (field: keyof DailyMenu, value: string | number | string[]) => {
+    setPatch({ ...patch, [field]: value })
+  }
+
+  const handleCancel = (field: keyof DailyMenu) => {
+    setPatch({ ...patch, [field]: dailyMenu?.[field] })
   }
 
   const updateItem = (index: number, value: string) => {
-    const newItems = [...tempItems]
+    const newItems = [...(patch.items ?? [])]
     newItems[index] = value
-    setTempItems(newItems)
+    setPatch({ ...patch, items: newItems })
+  }
+
+  const handleSave = async () => {
+    await handleDailyMenuSave(patch)
+    setIsEditingTitle(false)
+    setIsEditingHours(false)
+    setIsEditingPrice(false)
+    // Reset patch to current dailyMenu data after saving
+    setPatch(dailyMenu ?? {})
   }
 
   return (
@@ -99,20 +89,20 @@ export default function EditableDailyMenu({
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  value={tempTitle}
-                  onChange={(e) => setTempTitle(e.target.value)}
+                  value={patch.title ?? ''}
+                  onChange={(e) => handlePatch('title', e.target.value)}
                   className="text-2xl md:text-3xl font-extrabold text-white bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300"
                   autoFocus
                 />
-                <button
+                {/* <button
                   onClick={handleTitleSave}
                   className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
                 >
                   <Check size={16} />
-                </button>
+                </button> */}
                 <button
                   onClick={() => {
-                    setTempTitle(title)
+                    handleCancel('title')
                     setIsEditingTitle(false)
                   }}
                   className="p-1 text-red-400 hover:text-red-300 transition-colors"
@@ -143,22 +133,22 @@ export default function EditableDailyMenu({
               <span className="text-cyan-100 font-medium">Disponible de</span>
               <input
                 type="text"
-                value={tempHours}
-                onChange={(e) => setTempHours(e.target.value)}
+                value={patch.hours ?? ''}
+                onChange={(e) => handlePatch('hours', e.target.value)}
                 className="text-cyan-100 bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 font-medium"
                 placeholder="12:00–15:00"
                 autoFocus
               />
               <span className="text-cyan-100 font-medium">· Entrada + Principal + Bebida</span>
-              <button
+              {/* <button
                 onClick={handleHoursSave}
                 className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
               >
                 <Check size={14} />
-              </button>
+              </button> */}
               <button
                 onClick={() => {
-                  setTempHours(hours)
+                  handleCancel('hours')
                   setIsEditingHours(false)
                 }}
                 className="p-1 text-red-400 hover:text-red-300 transition-colors"
@@ -185,7 +175,7 @@ export default function EditableDailyMenu({
         <div className="grid sm:grid-cols-3 gap-4 text-white mb-6">
           {isEditMode ? (
             <>
-              {tempItems.map((item, index) => (
+              {patch.items?.map((item, index) => (
                 <div key={index} className="relative">
                   <input
                     type="text"
@@ -211,7 +201,7 @@ export default function EditableDailyMenu({
               </button>
             </>
           ) : (
-            items.map((item, index) => (
+            items?.map((item, index) => (
               <div
                 key={index}
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 shadow-lg"
@@ -230,20 +220,20 @@ export default function EditableDailyMenu({
                 <span className="text-2xl font-extrabold text-white drop-shadow-lg">$</span>
                 <input
                   type="number"
-                  value={tempPrice}
-                  onChange={(e) => setTempPrice(e.target.value)}
+                  value={patch.price?.toString() ?? '0'}
+                  onChange={(e) => setPatch({ ...patch, price: parseInt(e.target.value) })}
                   className="text-2xl font-extrabold text-white bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 w-24"
                   autoFocus
                 />
-                <button
+                {/* <button
                   onClick={handlePriceSave}
                   className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
                 >
                   <Check size={16} />
-                </button>
+                </button> */}
                 <button
                   onClick={() => {
-                    setTempPrice(price.toString())
+                    handleCancel('price')
                     setIsEditingPrice(false)
                   }}
                   className="p-1 text-red-400 hover:text-red-300 transition-colors"
@@ -253,7 +243,7 @@ export default function EditableDailyMenu({
               </div>
             ) : (
               <div className="text-2xl font-extrabold text-white drop-shadow-lg">
-                ${price.toLocaleString('es-AR')}
+                ${price?.toLocaleString('es-AR') ?? '0'}
                 {isEditMode && (
                   <button
                     onClick={() => setIsEditingPrice(true)}
@@ -272,10 +262,11 @@ export default function EditableDailyMenu({
         {isEditMode && (
           <div className="mt-4 flex justify-end">
             <Button
-              onClick={handleItemsSave}
+              onClick={handleSave}
               variant="primary"
               size="md"
-              className="flex items-center gap-2"
+              disabled={!hasChanges()}
+              className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Check size={16} />
               Guardar cambios

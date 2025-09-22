@@ -6,19 +6,14 @@ import { Check, Edit2, Plus, Trash2, X } from 'lucide-react'
 import { useState } from 'react'
 import EditableMenuItem from './EditableMenuItem'
 import Button from '@/components/Button'
+import { useCategoryOperations } from '@/hooks/useCategoryOperations'
+import { useItemOperations } from '@/hooks/useItemOperations'
 interface EditableMenuCategoryProps {
   category: Category
   items: MenuItem[]
   onItemClick: (item: MenuItem) => void
   isEditMode: boolean
-  onCategoryUpdate: (categoryKey: string, updatedCategory: Category) => void
-  onCategoryDelete: (categoryKey: string, forceDelete: boolean) => void
-  onItemUpdate: (updatedItem: MenuItem) => void
-  onItemDelete: (itemId: string) => void
-  onAddItem: (categoryKey: string) => void
-  onImageUpload: (file: File, itemId: string) => Promise<string>
-  onSaveNewItem?: (newItem: MenuItem) => void
-  onCancelNewItem?: (tempId: string) => void
+  isCartEnabled: boolean
 }
 
 export default function EditableMenuCategory({
@@ -26,23 +21,20 @@ export default function EditableMenuCategory({
   items,
   onItemClick,
   isEditMode,
-  onCategoryUpdate,
-  onCategoryDelete,
-  onItemUpdate,
-  onItemDelete,
-  onAddItem,
-  onImageUpload,
-  onSaveNewItem,
-  onCancelNewItem,
+  isCartEnabled,
 }: EditableMenuCategoryProps) {
   const [isEditingCategory, setIsEditingCategory] = useState(false)
   const [tempCategory, setTempCategory] = useState({ ...category })
 
+  // Component gets its own operations
+  const { handleCategoryUpdate, handleCategoryDelete } = useCategoryOperations()
+  const { handleAddItem } = useItemOperations()
+
   if (!items.length && !isEditMode) return null
 
-  const handleCategorySave = () => {
+  const handleCategorySave = async () => {
     if (tempCategory.label.trim() && tempCategory.icon.trim()) {
-      onCategoryUpdate(category.key, tempCategory)
+      await handleCategoryUpdate(category.key, tempCategory)
       setIsEditingCategory(false)
     }
   }
@@ -52,19 +44,19 @@ export default function EditableMenuCategory({
     setIsEditingCategory(false)
   }
 
-  const handleCategoryDelete = () => {
+  const onCategoryDelete = async () => {
     if (
       !items.length &&
       confirm(`¿Estás seguro de que quieres eliminar la categoría "${category.label}"?`)
     ) {
-      onCategoryDelete(category.key, false)
+      await handleCategoryDelete(category.key, false)
     } else if (
       items.length &&
       confirm(
         `¿Estás seguro de que quieres eliminar la categoría "${category.label}" y sus ${items.length} items?`,
       )
     ) {
-      onCategoryDelete(category.key, true)
+      await handleCategoryDelete(category.key, true)
     }
   }
 
@@ -136,7 +128,7 @@ export default function EditableMenuCategory({
         {isEditMode && !isEditingCategory && (
           <div className="flex gap-2 ml-auto">
             <Button
-              onClick={() => onAddItem(category.key)}
+              onClick={() => handleAddItem(category.key)}
               variant="primary"
               size="sm"
               className="flex items-center gap-1"
@@ -145,7 +137,7 @@ export default function EditableMenuCategory({
               Agregar item
             </Button>
             <Button
-              onClick={handleCategoryDelete}
+              onClick={onCategoryDelete}
               variant="danger"
               size="sm"
               className="flex items-center gap-1"
@@ -186,11 +178,7 @@ export default function EditableMenuCategory({
               item={item}
               onItemClick={onItemClick}
               isEditMode={isEditMode}
-              onUpdate={onItemUpdate}
-              onDelete={onItemDelete}
-              onImageUpload={onImageUpload}
-              onSaveNew={onSaveNewItem}
-              onCancelNew={onCancelNewItem}
+              isCartEnabled={isCartEnabled}
             />
           </motion.div>
         ))}
@@ -205,7 +193,7 @@ export default function EditableMenuCategory({
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-dashed border-white/30">
               <p className="text-white/60 text-lg mb-4">Esta categoría no tiene items</p>
               <button
-                onClick={() => onAddItem(category.key)}
+                onClick={() => handleAddItem(category.key)}
                 className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2 mx-auto"
               >
                 <Plus size={20} />

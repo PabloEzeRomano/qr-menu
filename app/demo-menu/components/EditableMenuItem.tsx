@@ -1,52 +1,53 @@
 'use client'
 
 import Button from '@/components/Button'
+import { useAuth } from '@/contexts/AuthContextProvider'
+import { useCart } from '@/contexts/CartProvider'
+import { useImageOperations } from '@/hooks/useImageOperations'
+import { useItemOperations } from '@/hooks/useItemOperations'
+import { TEMP_ID_PREFIX } from '@/lib/constants'
 import { MenuItem } from '@/types'
 import { motion } from 'framer-motion'
-import { Check, Edit2, Trash2, Plus } from 'lucide-react'
+import { Check, Edit2, Plus, Trash2 } from 'lucide-react'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
-import { useCart } from '@/contexts/CartProvider'
-import { useAuth } from '@/contexts/AuthContextProvider'
+import { useEffect, useState } from 'react'
 
 interface EditableMenuItemProps {
   item: MenuItem
   onItemClick: (item: MenuItem) => void
   isEditMode: boolean
-  onUpdate: (updatedItem: MenuItem) => void
-  onDelete: (itemId: string) => void
-  onImageUpload: (file: File, itemId: string) => Promise<string>
-  onSaveNew?: (newItem: MenuItem) => void
-  onCancelNew?: (tempId: string) => void
+  isCartEnabled: boolean
+  isNewItem?: boolean
 }
 
 export default function EditableMenuItem({
   item,
   onItemClick,
   isEditMode,
-  onUpdate,
-  onDelete,
-  onImageUpload,
-  onSaveNew,
-  onCancelNew,
+  isCartEnabled,
+  isNewItem = false,
 }: EditableMenuItemProps) {
-  const isNewItem = item.id.startsWith('temp-')
-  const [isEditing, setIsEditing] = useState(isNewItem) // New items start in edit mode
+  const isNewItemCalculated = isNewItem || item.id.startsWith(TEMP_ID_PREFIX)
+  const [isEditing, setIsEditing] = useState(isNewItemCalculated) // New items start in edit mode
   const [tempItem, setTempItem] = useState({ ...item })
   const [imageUploading, setImageUploading] = useState(false)
   const [selectedFileName, setSelectedFileName] = useState('')
   const [addedToCart, setAddedToCart] = useState(false)
   const { add } = useCart()
   const { isAdmin } = useAuth()
+  // Component gets its own operations
+  const { handleItemUpdate, handleItemDelete, handleSaveNewItem } = useItemOperations()
+  const { handleImageUpload: uploadImage } = useImageOperations()
 
-  console.log('item', item)
+  // Use item data directly when not editing, tempItem when editing
+  const displayItem = isEditing ? tempItem : item
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (tempItem.name.trim() && tempItem.description.trim()) {
-      if (isNewItem && onSaveNew) {
-        onSaveNew(tempItem)
+      if (isNewItemCalculated) {
+        await handleSaveNewItem(tempItem)
       } else {
-        onUpdate(tempItem)
+        await handleItemUpdate(tempItem)
       }
       setSelectedFileName('')
       setIsEditing(false)
@@ -54,27 +55,32 @@ export default function EditableMenuItem({
   }
 
   const handleCancel = () => {
-    if (isNewItem && onCancelNew) {
-      onCancelNew(item.id)
-    } else {
-      setTempItem({ ...item })
-      setSelectedFileName('')
-      setIsEditing(false)
-    }
+    setTempItem({ ...item })
+    setSelectedFileName('')
+    setIsEditing(false)
   }
 
-  // Update tempItem when item prop changes (for real-time visibility updates)
+  // Only update tempItem when item prop changes AND we're not currently editing
+  // This prevents overriding user's changes while they're actively editing
   useEffect(() => {
+    if (!isEditing) {
+      setTempItem({ ...item })
+    }
+  }, [item, isEditing])
+
+  // When starting to edit, ensure tempItem is up to date with current item
+  const startEditing = () => {
     setTempItem({ ...item })
-  }, [item])
+    setIsEditing(true)
+  }
 
   useEffect(() => {
     isEditing && !isEditMode && setIsEditing(false)
   }, [isEditing, isEditMode])
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm('¿Estás seguro de que quieres eliminar este item?')) {
-      onDelete(item.id)
+      await handleItemDelete(item.id)
     }
   }
 
@@ -99,9 +105,9 @@ export default function EditableMenuItem({
     setSelectedFileName(file.name)
 
     try {
-      const url = await onImageUpload(file, item.id)
+      const url = await uploadImage(file, item.id)
       updateField('img', url)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading image:', error)
       setSelectedFileName('')
     } finally {
@@ -123,7 +129,7 @@ export default function EditableMenuItem({
             <label className="block text-cyan-200 text-sm font-medium mb-1">Nombre</label>
             <input
               type="text"
-              value={tempItem.name}
+              value={displayItem.name}
               onChange={(e) => updateField('name', e.target.value)}
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="Nombre del plato"
@@ -134,7 +140,7 @@ export default function EditableMenuItem({
           <div>
             <label className="block text-cyan-200 text-sm font-medium mb-1">Descripción</label>
             <textarea
-              value={tempItem.description}
+              value={displayItem.description}
               onChange={(e) => updateField('description', e.target.value)}
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400 resize-none"
               rows={3}
@@ -147,7 +153,7 @@ export default function EditableMenuItem({
             <label className="block text-cyan-200 text-sm font-medium mb-1">Precio</label>
             <input
               type="number"
-              value={tempItem.price}
+              value={displayItem.price}
               onChange={(e) => updateField('price', parseInt(e.target.value) || 0)}
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="0"
@@ -161,9 +167,9 @@ export default function EditableMenuItem({
               {['nuevo', 'recomendado'].map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => updateTags(tag, !tempItem.tags.includes(tag))}
+                  onClick={() => updateTags(tag, !displayItem.tags.includes(tag))}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    tempItem.tags.includes(tag)
+                    displayItem.tags.includes(tag)
                       ? 'bg-cyan-500 text-white'
                       : 'bg-white/20 text-cyan-200 hover:bg-white/30'
                   }`}
@@ -181,9 +187,9 @@ export default function EditableMenuItem({
               {['vegetariano', 'sin-gluten'].map((diet) => (
                 <button
                   key={diet}
-                  onClick={() => updateDiet(diet, !tempItem.diet.includes(diet))}
+                  onClick={() => updateDiet(diet, !displayItem.diet.includes(diet))}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    tempItem.diet.includes(diet)
+                    displayItem.diet.includes(diet)
                       ? 'bg-emerald-500 text-white'
                       : 'bg-white/20 text-emerald-200 hover:bg-white/30'
                   }`}
@@ -200,23 +206,23 @@ export default function EditableMenuItem({
             <div className="flex items-center gap-3">
               <div className="flex items-center">
                 <button
-                  onClick={() => updateField('isVisible', !tempItem.isVisible)}
+                  onClick={() => updateField('isVisible', !displayItem.isVisible)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 ${
-                    tempItem.isVisible ? 'bg-green-500' : 'bg-gray-600'
+                    displayItem.isVisible ? 'bg-green-500' : 'bg-gray-600'
                   }`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      tempItem.isVisible ? 'translate-x-6' : 'translate-x-1'
+                      displayItem.isVisible ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />
                 </button>
                 <span
                   className={`ml-3 text-sm font-medium ${
-                    tempItem.isVisible ? 'text-green-300' : 'text-gray-400'
+                    displayItem.isVisible ? 'text-green-300' : 'text-gray-400'
                   }`}
                 >
-                  {tempItem.isVisible ? 'Visible en el menú' : 'Oculto del menú'}
+                  {displayItem.isVisible ? 'Visible en el menú' : 'Oculto del menú'}
                 </span>
               </div>
             </div>
@@ -230,7 +236,10 @@ export default function EditableMenuItem({
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => handleImageUpload(e.target.files?.[0] ?? new File([], ''))}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleImageUpload(file)
+                  }}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                   id={`image-upload-${item.id}`}
                   disabled={imageUploading}
@@ -339,7 +348,7 @@ export default function EditableMenuItem({
         damping: 18,
       }}
       className={`group relative backdrop-blur-sm border rounded-2xl p-4 shadow-lg overflow-hidden cursor-pointer ${
-        tempItem.isVisible
+        displayItem.isVisible
           ? 'bg-white/20 border-white/30'
           : 'bg-red-500/10 border-red-500/30 opacity-60'
       }`}
@@ -349,7 +358,7 @@ export default function EditableMenuItem({
         <button
           onClick={(e) => {
             e.stopPropagation()
-            setIsEditing(true)
+            startEditing()
           }}
           className="absolute top-3 right-3 z-20 p-2 bg-cyan-500/80 hover:bg-cyan-600 text-white rounded-full transition-colors opacity-0 group-hover:opacity-100"
         >
@@ -358,14 +367,14 @@ export default function EditableMenuItem({
       )}
 
       {/* Hidden indicator */}
-      {!tempItem.isVisible && (
+      {!displayItem.isVisible && (
         <div className="absolute bottom-3 right-3 bg-red-500/90 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10">
           OCULTO
         </div>
       )}
 
       {/* Tags */}
-      {item.tags.includes('nuevo') && (
+      {displayItem.tags.includes('nuevo') && (
         <motion.span
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -379,7 +388,7 @@ export default function EditableMenuItem({
           NUEVO
         </motion.span>
       )}
-      {item.tags.includes('recomendado') && (
+      {displayItem.tags.includes('recomendado') && (
         <motion.span
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -398,8 +407,8 @@ export default function EditableMenuItem({
       <div className="relative mb-3">
         <div>
           <Image
-            src={item.img}
-            alt={item.name}
+            src={displayItem.img}
+            alt={displayItem.name}
             width={160}
             height={160}
             className="h-40 w-full object-cover rounded-lg shadow-md"
@@ -410,22 +419,22 @@ export default function EditableMenuItem({
       {/* Info */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
-          <h4 className="font-bold text-white leading-tight">{item.name}</h4>
+          <h4 className="font-bold text-white leading-tight">{displayItem.name}</h4>
           <div className="font-black text-lg bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-            ${item.price.toLocaleString('es-AR')}
+            ${displayItem.price.toLocaleString('es-AR')}
           </div>
         </div>
 
-        {/* Add to cart button - only show when not in edit mode and not admin */}
-        {!isEditMode && !isAdmin && (
+        {/* Add to cart button - only show when not in edit mode, not admin, and cart is enabled */}
+        {!isEditMode && !isAdmin && isCartEnabled && (
           <Button
             onClick={(e) => {
               e.stopPropagation()
               add({
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                img: item.img,
+                id: displayItem.id,
+                name: displayItem.name,
+                price: displayItem.price,
+                img: displayItem.img,
                 qty: 1,
               })
               setAddedToCart(true)

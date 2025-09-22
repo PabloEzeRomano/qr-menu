@@ -14,9 +14,16 @@ interface ItemModalProps {
   isOpen: boolean
   onClose: () => void
   isEditMode?: boolean
+  isCartEnabled?: boolean
 }
 
-export default function ItemModal({ item, isOpen, onClose, isEditMode = false }: ItemModalProps) {
+export default function ItemModal({
+  item,
+  isOpen,
+  onClose,
+  isEditMode = false,
+  isCartEnabled = true,
+}: ItemModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const { add } = useCart()
   const { isAdmin } = useAuth()
@@ -160,7 +167,7 @@ export default function ItemModal({ item, isOpen, onClose, isEditMode = false }:
 
                 {/* Action buttons */}
                 <div className="space-y-3">
-                  {!isEditMode && !isAdmin && (
+                  {!isEditMode && !isAdmin && isCartEnabled && (
                     <Button
                       onClick={() => {
                         add({
