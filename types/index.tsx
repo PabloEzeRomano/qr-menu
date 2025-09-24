@@ -2,6 +2,7 @@ export interface Category {
   key: string
   label: string
   icon: string // emoji o URL
+  isVisible: boolean
   createdAt?: any
   updatedAt?: any
 }
@@ -35,6 +36,7 @@ export interface DailyMenu {
   hours: string
   price: number
   items: string[]
+  isVisible: boolean
   createdAt?: any
   updatedAt?: any
 }
@@ -50,3 +52,24 @@ export interface Restaurant {
   createdAt?: any
   updatedAt?: any
 }
+
+export interface OrderItem {
+  id: string
+  title: string
+  quantity: number
+  unit_price: number
+}
+
+export interface Order {
+  id: string
+  items: OrderItem[]
+  total: number
+  table: string | null
+  status: 'pending' | 'approved' | 'rejected' | 'cancelled'
+  paymentId?: number
+  paymentRaw?: any
+  createdAt?: any
+  updatedAt?: any
+}
+
+export type AdminView = 'overview' | 'orders' | 'products' | 'visibility'
