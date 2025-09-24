@@ -1,158 +1,172 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContextProvider'
 import ProtectedRoute from '@/components/ProtectedRoute'
-import Link from 'next/link'
+import { AppProvider } from '@/contexts/AppProvider'
+import { AdminView } from '@/types'
+import { Eye, Home, Package, ShoppingCart } from 'lucide-react'
+import { useState } from 'react'
+import { AdminOrders, AdminOverview, AdminProducts, AdminVisibility } from './components'
 
 export default function AdminPage() {
-  const { user, isAdmin, logout } = useAuth()
+  // const { user, isAdmin, logout } = useAuth()
+  const [activeView, setActiveView] = useState<AdminView>('overview')
+
+  const navigationItems = [
+    { id: 'overview', label: 'Resumen', icon: Home, color: 'bg-blue-500' },
+    { id: 'orders', label: 'Ordenes', icon: ShoppingCart, color: 'bg-green-500' },
+    { id: 'products', label: 'Productos', icon: Package, color: 'bg-purple-500' },
+    { id: 'visibility', label: 'Visibilidad', icon: Eye, color: 'bg-orange-500' },
+  ]
+
+  const renderActiveView = () => {
+    switch (activeView) {
+      case 'overview':
+        return <AdminOverview />
+      case 'orders':
+        return <AdminOrders />
+      case 'products':
+        return <AdminProducts />
+      case 'visibility':
+        return <AdminVisibility />
+      default:
+        return <AdminOverview />
+    }
+  }
 
   return (
     <ProtectedRoute requireAdmin={true}>
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <div className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p className="text-gray-600">Manage your QR menu</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="text-sm text-gray-500">
-                  Welcome, {user?.displayName || user?.email}
-                  {isAdmin && (
-                    <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Admin
-                    </span>
-                  )}
-                </div>
-                <button
-                  onClick={logout}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Menu Management */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="p-5">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-indigo-500 rounded-md flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">🍽️</span>
-                      </div>
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">
-                          Menu Management
-                        </dt>
-                        <dd className="text-lg font-medium text-gray-900">Edit Menu Items</dd>
-                      </dl>
-                    </div>
+      <AppProvider>
+        <div className="min-h-screen bg-gray-50 px-4 py-12">
+          {/* Header */}
+          {/* <div className="bg-white shadow-sm border-b">
+            <div className="mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center py-4">
+                <div className="flex items-center space-x-4">
+                  <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
+                  <div className="hidden sm:block text-sm text-gray-500">
+                    Bienvenido, {user?.displayName || user?.email}
+                    {isAdmin && (
+                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Admin
+                      </span>
+                    )}
                   </div>
                 </div>
-                <div className="bg-gray-50 px-5 py-3">
-                  <div className="text-sm">
-                    <Link
-                      href="/demo-menu"
-                      className="font-medium text-indigo-700 hover:text-indigo-900"
-                    >
-                      Go to Menu Editor
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Analytics */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="p-5">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">📊</span>
-                      </div>
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Analytics</dt>
-                        <dd className="text-lg font-medium text-gray-900">View Statistics</dd>
-                      </dl>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-5 py-3">
-                  <div className="text-sm">
-                    <span className="font-medium text-gray-500">Coming Soon</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Settings */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="p-5">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">⚙️</span>
-                      </div>
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Settings</dt>
-                        <dd className="text-lg font-medium text-gray-900">App Configuration</dd>
-                      </dl>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-5 py-3">
-                  <div className="text-sm">
-                    <span className="font-medium text-gray-500">Coming Soon</span>
-                  </div>
+                <div className="flex items-center space-x-3">
+                  <Link
+                    href="/"
+                    className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Ver Menú
+                  </Link>
+                  <button
+                    onClick={() => window.print()}
+                    className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    <Printer className="w-4 h-4 mr-2" />
+                    Imprimir QR
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Cerrar Sesión
+                  </button>
                 </div>
               </div>
             </div>
+          </div> */}
 
-            {/* Quick Actions */}
-            <div className="mt-8">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
-              <div className="bg-white shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <div className="flex flex-wrap gap-4">
+          <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Sidebar Navigation */}
+              <div className="lg:w-64">
+                {/* Mobile Navigation - Row Layout */}
+                <div className="lg:hidden mb-6">
+                  <nav className="flex space-x-1 overflow-x-auto pb-2">
+                    {navigationItems.map((item) => {
+                      const Icon = item.icon
+                      const isActive = activeView === item.id
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => setActiveView(item.id as AdminView)}
+                          className={`flex-shrink-0 flex flex-col items-center px-3 py-2 text-xs font-medium rounded-md transition-colors ${
+                            isActive
+                              ? 'bg-gray-100 text-gray-900'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          <div
+                            className={`w-8 h-8 rounded-md flex items-center justify-center mb-1 ${item.color}`}
+                          >
+                            <Icon className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="text-center leading-tight">{item.label}</span>
+                        </button>
+                      )
+                    })}
+                  </nav>
+                </div>
+
+                {/* Desktop Navigation - Column Layout */}
+                <div className="hidden lg:block">
+                  <nav className="space-y-1">
+                    {navigationItems.map((item) => {
+                      const Icon = item.icon
+                      const isActive = activeView === item.id
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => setActiveView(item.id as AdminView)}
+                          className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                            isActive
+                              ? 'bg-gray-100 text-gray-900'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          <div
+                            className={`w-8 h-8 rounded-md flex items-center justify-center mr-3 ${item.color}`}
+                          >
+                            <Icon className="w-4 h-4 text-white" />
+                          </div>
+                          {item.label}
+                        </button>
+                      )
+                    })}
+                  </nav>
+                </div>
+
+                {/* Quick Actions */}
+                {/* <div className="mt-8">
+                  <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+                    Acciones Rápidas
+                  </h3>
+                  <div className="space-y-2">
                     <Link
                       href="/demo-menu"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                      className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
                     >
-                      Edit Menu
+                      Editar Items del Menú
                     </Link>
                     <Link
                       href="/"
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
                     >
-                      View Public Menu
+                      Ver Menú Público
                     </Link>
-                    <button
-                      onClick={() => window.print()}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                    >
-                      Print QR Code
-                    </button>
                   </div>
-                </div>
+                </div> */}
               </div>
+
+              {/* Main Content */}
+              <div className="flex-1">{renderActiveView()}</div>
             </div>
           </div>
         </div>
-      </div>
+      </AppProvider>
     </ProtectedRoute>
   )
 }
