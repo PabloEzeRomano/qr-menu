@@ -72,4 +72,16 @@ export interface Order {
   updatedAt?: any
 }
 
-export type AdminView = 'overview' | 'orders' | 'products' | 'visibility'
+export interface Tag {
+  id: string
+  key: string
+  label: string
+  color: string
+  category: 'diet' | 'feature' | 'custom'
+  isActive: boolean
+  order: number
+  createdAt?: any
+  updatedAt?: any
+}
+
+export type AdminView = 'overview' | 'orders' | 'products' | 'visibility' | 'tags'
