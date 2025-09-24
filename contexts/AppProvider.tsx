@@ -6,6 +6,8 @@ import { MenuDataProvider } from './MenuDataProvider'
 import { MenuProvider } from './MenuContextProvider'
 import { CartProvider } from './CartProvider'
 import { ErrorProvider } from './ErrorProvider'
+import { TagsProvider } from './TagsProvider'
+import { FiltersProvider } from './FiltersProvider'
 import CartWrapper from '@/components/cart/CartWrapper'
 
 interface AppProviderProps {
@@ -20,14 +22,18 @@ export function AppProvider({ children }: AppProviderProps) {
   return (
     <ErrorProvider>
       <AuthProvider>
-        <MenuDataProvider>
-          <MenuProvider>
-            <CartProvider>
-              {children}
-              <CartWrapper />
-            </CartProvider>
-          </MenuProvider>
-        </MenuDataProvider>
+        <TagsProvider>
+          <FiltersProvider>
+            <MenuDataProvider>
+              <MenuProvider>
+                <CartProvider>
+                  {children}
+                  <CartWrapper />
+                </CartProvider>
+              </MenuProvider>
+            </MenuDataProvider>
+          </FiltersProvider>
+        </TagsProvider>
       </AuthProvider>
     </ErrorProvider>
   )
