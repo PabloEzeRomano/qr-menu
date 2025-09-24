@@ -9,7 +9,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ key: s
   await requireAdmin(req)
   const { key } = await params
   const body = await req.json()
-  const patch = CategorySchema.pick({ label: true, icon: true }).partial().parse(body)
+  const patch = CategorySchema.partial().parse(body)
   await adminDB.doc(`categories/${key}`).update({
     ...patch,
     updatedAt: serverTimestamp(),

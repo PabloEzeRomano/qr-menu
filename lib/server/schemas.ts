@@ -15,6 +15,7 @@ export const CategorySchema = z.object({
   key: z.string().min(1),
   label: z.string().min(1),
   icon: z.string().min(1), // emoji o URL
+  isVisible: z.boolean().default(true),
 })
 
 export const DailyMenuSchema = z.object({
@@ -22,6 +23,7 @@ export const DailyMenuSchema = z.object({
   hours: z.string().min(1),
   price: z.number().nonnegative(),
   items: z.array(z.string()).default([]),
+  isVisible: z.boolean().default(true),
 })
 
 export const RestaurantSchema = z.object({
