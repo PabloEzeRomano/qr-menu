@@ -11,7 +11,7 @@ export function useRestaurantOperations() {
   const { restaurant, dailyMenu } = useMenuData()
   const { handleError, refreshRestaurant, refreshDailyMenu } = useSharedOperations()
 
-  const handleTitleChange = useCallback(
+  const handleTitleSave = useCallback(
     async (newTitle: string) => {
       if (!restaurant) return
       try {
@@ -24,7 +24,7 @@ export function useRestaurantOperations() {
     [restaurant, handleError, refreshRestaurant],
   )
 
-  const handleSubtitleChange = useCallback(
+  const handleSubtitleSave = useCallback(
     async (newSubtitle: string) => {
       if (!restaurant) return
       try {
@@ -38,9 +38,7 @@ export function useRestaurantOperations() {
   )
 
   const handleDailyMenuSave = useCallback(
-    async (
-      patch: Partial<DailyMenu>,
-    ) => {
+    async (patch: Partial<DailyMenu>) => {
       const next = { ...dailyMenu, ...patch } as DailyMenu
 
       try {
@@ -54,8 +52,8 @@ export function useRestaurantOperations() {
   )
 
   return {
-    handleTitleChange,
-    handleSubtitleChange,
+    handleTitleSave,
+    handleSubtitleSave,
     handleDailyMenuSave,
   }
 }

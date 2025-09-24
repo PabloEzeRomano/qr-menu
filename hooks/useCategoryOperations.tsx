@@ -16,6 +16,7 @@ export function useCategoryOperations() {
           key: newCategory.key,
           label: newCategory.label,
           icon: newCategory.icon,
+          isVisible: true,
         })
         refreshCategories()
       } catch (error) {
@@ -31,6 +32,7 @@ export function useCategoryOperations() {
         await updateCategory(categoryKey, {
           label: updated.label,
           icon: updated.icon,
+          isVisible: updated.isVisible,
         })
         refreshCategories()
       } catch (error) {

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMenuData } from '@/contexts/MenuDataProvider'
+import { useMemo } from 'react'
 
 /**
  * Hook to check if cart functionality should be enabled based on restaurant metadata
@@ -9,5 +10,7 @@ import { useMenuData } from '@/contexts/MenuDataProvider'
 export function useCartEnabled() {
   const { restaurant } = useMenuData()
 
-  return !!restaurant?.hasCart
+  const isCartEnabled = useMemo(() => !!restaurant?.hasCart, [restaurant?.hasCart])
+
+  return isCartEnabled
 }

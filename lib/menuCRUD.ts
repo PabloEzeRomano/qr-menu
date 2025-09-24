@@ -1,5 +1,5 @@
 import { apiGet, apiJson } from './apiClient'
-import type { DailyMenu, MenuItem, Category, Restaurant, Filter } from '@/types'
+import type { DailyMenu, MenuItem, Category, Restaurant, Filter, Order } from '@/types'
 
 export const listItems = (showAll = false) =>
   apiGet<MenuItem[]>(`/api/items${showAll ? '?showAll=true' : ''}`)
@@ -12,8 +12,9 @@ export const deleteItem = (id: string) => apiJson<{ ok: true }>(`/api/items/${id
 
 export const listCategories = () => apiGet<Category[]>('/api/categories')
 export const createCategory = (data: Category) => apiJson<Category>('/api/categories', 'POST', data)
-export const updateCategory = (key: string, patch: Partial<Omit<Category, 'key'>>) =>
-  apiJson<Category>(`/api/categories/${key}`, 'PATCH', patch)
+export const updateCategory = (key: string, patch: Partial<Omit<Category, 'key'>>) => {
+  return apiJson<Category>(`/api/categories/${key}`, 'PATCH', patch)
+}
 export const deleteCategory = (key: string, forceDelete: boolean) =>
   apiJson<{ ok: true }>(`/api/categories/${key}?forceDelete=${forceDelete}`, 'DELETE')
 
@@ -28,3 +29,11 @@ export const patchDailyMenu = (patch: Partial<DailyMenu>) =>
 export const getRestaurant = () => apiGet<Restaurant | null>('/api/restaurant')
 export const patchRestaurant = (patch: Partial<Restaurant>) =>
   apiJson<Restaurant>('/api/restaurant', 'PATCH', patch)
+
+export const listOrders = () => apiGet<Order[]>('/api/orders')
+export const createOrder = (data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) =>
+  apiJson<Order>('/api/orders', 'POST', data)
+export const patchOrder = (id: string, patch: Partial<Order>) =>
+  apiJson<Order>(`/api/orders/${id}`, 'PATCH', patch)
+export const deleteOrder = (id: string) => apiJson<{ ok: true }>(`/api/orders/${id}`, 'DELETE')
+export const getOrder = (id: string) => apiGet<Order>(`/api/orders/${id}`)
