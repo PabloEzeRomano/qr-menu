@@ -7,12 +7,32 @@ export interface Category {
   updatedAt?: any
 }
 
-export type Predicate = { tag?: string; diet?: string }
+export type FilterType = 'tag' | 'price_range' | 'category' | 'availability' | 'custom'
+
+export type FilterOperator = 'equals' | 'contains' | 'in' | 'range' | 'exists'
+
+export interface FilterCondition {
+  field: string
+  operator: FilterOperator
+  value: any
+}
+
+export interface FilterPredicate {
+  conditions: FilterCondition[]
+  logic: 'AND' | 'OR'
+}
+
 export interface Filter {
+  id: string
   key: string
   label: string
+  description?: string
   icon?: string
-  predicate?: Predicate
+  type: FilterType
+  predicate: FilterPredicate
+  isActive: boolean
+  order: number
+  color?: string
   createdAt?: any
   updatedAt?: any
 }
@@ -23,8 +43,7 @@ export interface MenuItem {
   description: string
   price: number
   category: string
-  tags: string[]
-  diet: string[]
+  tagIds?: string[] // Store tag IDs instead of hardcoded values (optional for migration)
   img: string
   isVisible: boolean
   createdAt?: any
@@ -84,4 +103,4 @@ export interface Tag {
   updatedAt?: any
 }
 
-export type AdminView = 'overview' | 'orders' | 'products' | 'visibility' | 'tags'
+export type AdminView = 'overview' | 'orders' | 'products' | 'visibility' | 'tags' | 'filters'
