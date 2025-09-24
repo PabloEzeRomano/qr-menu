@@ -19,3 +19,4 @@ export const adminApp = getApps().length ? getApps()[0] : initializeApp({ creden
 export const adminAuth = getAdminAuth(adminApp)
 export const adminDB = getAdminDB(adminApp)
 export const serverTimestamp = FieldValue.serverTimestamp
+export { FieldValue }
