@@ -7,7 +7,12 @@ import { useState } from 'react'
 
 interface AddCategoryButtonProps {
   isEditMode: boolean
-  onAddCategory: (category: { key: string; label: string; icon: string }) => void
+  onAddCategory: (category: {
+    key: string
+    label: string
+    icon: string
+    isVisible: boolean
+  }) => void
 }
 
 export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCategoryButtonProps) {
@@ -24,6 +29,7 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
         key: tempCategory.key.trim(),
         label: tempCategory.label.trim(),
         icon: tempCategory.icon.trim() || '🍽️',
+        isVisible: true,
       })
       setTempCategory({ key: '', label: '', icon: '🍽️' })
       setIsAdding(false)

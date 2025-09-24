@@ -1,15 +1,14 @@
 'use client'
 
-import { memo } from 'react'
 import { AdminGuard } from '@/components/AdminGuard'
 import { useMenuContext } from '@/contexts/MenuContextProvider'
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useCartEnabled } from '@/hooks/useCartEnabled'
 import { useCategoryOperations } from '@/hooks/useCategoryOperations'
 import { useMenuFilters } from '@/hooks/useMenuFilters'
-import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'
 import { Category, MenuItem } from '@/types'
 import { motion } from 'framer-motion'
+import { memo } from 'react'
 import {
   AddCategoryButton,
   AnimatedBackground,
@@ -23,7 +22,7 @@ import {
 } from './index'
 
 function MenuContentComponent() {
-  const { loading: loadingMenu, categories, filters, items, dailyMenu, restaurant } = useMenuData()
+  const { loading: loadingMenu, categories, filters, items, restaurant } = useMenuData()
 
   const {
     isEditMode,
@@ -35,7 +34,7 @@ function MenuContentComponent() {
     setIsEditMode,
   } = useMenuContext()
   const isCartEnabled = useCartEnabled()
-  const { handleTitleChange, handleSubtitleChange } = useRestaurantOperations()
+
   const { handleAddCategory } = useCategoryOperations()
 
   const { activeFilter, setActiveFilter, filteredCategories } = useMenuFilters(
@@ -72,8 +71,6 @@ function MenuContentComponent() {
           title={restaurant?.name ?? '🍽️ Restaurant Name'}
           subtitle={restaurant?.description ?? 'Menú digital · Actualizado al instante'}
           isEditMode={isEditMode}
-          onTitleChange={handleTitleChange}
-          onSubtitleChange={handleSubtitleChange}
         />
 
         <FilterBar
@@ -86,16 +83,17 @@ function MenuContentComponent() {
 
         <div className="max-w-6xl mx-auto space-y-12">
           {categoriesWithItems.map(
-            ({ category, items }: { category: Category; items: MenuItem[] }) => (
-              <EditableMenuCategory
-                key={category.key}
-                category={category}
-                items={items}
-                onItemClick={handleItemClick}
-                isEditMode={isEditMode}
-                isCartEnabled={isCartEnabled}
-              />
-            ),
+            ({ category, items }: { category: Category; items: MenuItem[] }) =>
+              !category.isVisible ? null : (
+                <EditableMenuCategory
+                  key={category.key}
+                  category={category}
+                  items={items}
+                  onItemClick={handleItemClick}
+                  isEditMode={isEditMode}
+                  isCartEnabled={isCartEnabled}
+                />
+              ),
           )}
 
           <AddCategoryButton isEditMode={isEditMode} onAddCategory={handleAddCategory} />

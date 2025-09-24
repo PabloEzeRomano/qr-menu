@@ -10,7 +10,7 @@ import { useState } from 'react'
 
 export default function Navbar() {
   const pathname = usePathname()
-  const { user, logout } = useAuth()
+  const { user, logout, isAdmin } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
@@ -41,25 +41,17 @@ export default function Navbar() {
                 Demo
               </Button>
             </Link>
+            {isAdmin && (
+              <Link href="/admin">
+                <Button variant={pathname === '/admin' ? 'nav-active' : 'nav'} size="sm">
+                  Admin
+                </Button>
+              </Link>
+            )}
 
             {user ? (
               <div className="flex items-center space-x-4">
-                {/* {isAdmin && (
-                  <Link
-                    href="/admin"
-                    className={`px-3 py-2 rounded-md transition-colors ${
-                      pathname === '/admin'
-                        ? 'bg-cyan-500/80 text-white font-medium'
-                        : 'text-cyan-200 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    Admin
-                  </Link>
-                )} */}
                 <div className="flex items-center space-x-3">
-                  <span className="text-gray-300 text-sm hidden sm:block">
-                    {user.displayName || user.email?.split('@')[0]}
-                  </span>
                   <Button onClick={logout} variant="danger" size="sm">
                     Cerrar sesión
                   </Button>
@@ -95,7 +87,7 @@ export default function Navbar() {
               transition={{ duration: 0.2 }}
               className="md:hidden border-t border-white/20 pt-4 pb-2"
             >
-              <div className="space-y-2">
+              <div className="space-x-1 space-y-1">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button
                     variant={pathname === '/' ? 'nav-active' : 'nav'}
@@ -114,14 +106,19 @@ export default function Navbar() {
                     Demo
                   </Button>
                 </Link>
-
+                {isAdmin && (
+                  <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button
+                      variant={pathname === '/admin' ? 'nav-active' : 'nav'}
+                      size="sm"
+                      className="w-full justify-start"
+                    >
+                      Admin
+                    </Button>
+                  </Link>
+                )}
                 {user ? (
                   <div className="space-y-2 pt-2 border-t border-white/10">
-                    <div className="px-4 py-2">
-                      <span className="text-gray-300 text-sm">
-                        {user.displayName || user.email?.split('@')[0]}
-                      </span>
-                    </div>
                     <Button
                       onClick={() => {
                         logout()

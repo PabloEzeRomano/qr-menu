@@ -3,37 +3,31 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { Edit2, Check, X } from 'lucide-react'
+import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'
 
 interface EditableHeaderProps {
   title: string
   subtitle: string
   isEditMode: boolean
-  onTitleChange: (newTitle: string) => void
-  onSubtitleChange: (newSubtitle: string) => void
 }
 
-export default function EditableHeader({
-  title,
-  subtitle,
-  isEditMode,
-  onTitleChange,
-  onSubtitleChange,
-}: EditableHeaderProps) {
+export default function EditableHeader({ title, subtitle, isEditMode }: EditableHeaderProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [isEditingSubtitle, setIsEditingSubtitle] = useState(false)
   const [tempTitle, setTempTitle] = useState(title)
   const [tempSubtitle, setTempSubtitle] = useState(subtitle)
+  const { handleTitleSave, handleSubtitleSave } = useRestaurantOperations()
 
-  const handleTitleSave = () => {
+  const onTitleSave = async () => {
     if (tempTitle.trim()) {
-      onTitleChange(tempTitle.trim())
+      await handleTitleSave(tempTitle.trim())
     }
     setIsEditingTitle(false)
   }
 
-  const handleSubtitleSave = () => {
+  const onSubtitleSave = async () => {
     if (tempSubtitle.trim()) {
-      onSubtitleChange(tempSubtitle.trim())
+      await handleSubtitleSave(tempSubtitle.trim())
     }
     setIsEditingSubtitle(false)
   }
@@ -67,7 +61,7 @@ export default function EditableHeader({
               autoFocus
             />
             <button
-              onClick={handleTitleSave}
+              onClick={onTitleSave}
               className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
             >
               <Check size={20} />
@@ -106,7 +100,7 @@ export default function EditableHeader({
               autoFocus
             />
             <button
-              onClick={handleSubtitleSave}
+              onClick={onSubtitleSave}
               className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors"
             >
               <Check size={16} />
