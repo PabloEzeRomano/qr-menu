@@ -3,9 +3,9 @@
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { AppProvider } from '@/contexts/AppProvider'
 import { AdminView } from '@/types'
-import { Eye, Home, Package, ShoppingCart } from 'lucide-react'
+import { Eye, Home, Package, ShoppingCart, Tag } from 'lucide-react'
 import { useState } from 'react'
-import { AdminOrders, AdminOverview, AdminProducts, AdminVisibility } from './components'
+import { AdminOrders, AdminOverview, AdminProducts, AdminVisibility, AdminTags } from './components'
 
 export default function AdminPage() {
   // const { user, isAdmin, logout } = useAuth()
@@ -16,6 +16,7 @@ export default function AdminPage() {
     { id: 'orders', label: 'Ordenes', icon: ShoppingCart, color: 'bg-green-500' },
     { id: 'products', label: 'Productos', icon: Package, color: 'bg-purple-500' },
     { id: 'visibility', label: 'Visibilidad', icon: Eye, color: 'bg-orange-500' },
+    { id: 'tags', label: 'Etiquetas', icon: Tag, color: 'bg-pink-500' },
   ]
 
   const renderActiveView = () => {
@@ -28,6 +29,8 @@ export default function AdminPage() {
         return <AdminProducts />
       case 'visibility':
         return <AdminVisibility />
+      case 'tags':
+        return <AdminTags />
       default:
         return <AdminOverview />
     }
