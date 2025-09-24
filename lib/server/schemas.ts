@@ -42,3 +42,13 @@ export const FilterSchema = z.object({
   icon: z.string().optional(),
   predicate: z.object({ tag: z.string().optional(), diet: z.string().optional() }).optional(),
 })
+
+export const TagSchema = z.object({
+  id: z.string().min(1),
+  key: z.string().min(1),
+  label: z.string().min(1),
+  color: z.string().min(1),
+  category: z.enum(['diet', 'feature', 'custom']),
+  isActive: z.boolean().default(true),
+  order: z.number().int().min(0),
+})
