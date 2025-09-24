@@ -6,6 +6,7 @@ import { MenuDataProvider } from './MenuDataProvider'
 import { MenuProvider } from './MenuContextProvider'
 import { CartProvider } from './CartProvider'
 import { ErrorProvider } from './ErrorProvider'
+import CartWrapper from '@/components/cart/CartWrapper'
 
 interface AppProviderProps {
   children: ReactNode
@@ -21,7 +22,10 @@ export function AppProvider({ children }: AppProviderProps) {
       <AuthProvider>
         <MenuDataProvider>
           <MenuProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+              {children}
+              <CartWrapper />
+            </CartProvider>
           </MenuProvider>
         </MenuDataProvider>
       </AuthProvider>

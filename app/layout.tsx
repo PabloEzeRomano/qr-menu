@@ -4,7 +4,6 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import { AuthProvider } from '@/contexts/AuthContextProvider'
 import { CartProvider } from '@/contexts/CartProvider'
-import CartWrapper from '@/components/cart/CartWrapper'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import '@/lib/env' // Validate environment on startup
@@ -43,7 +42,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CartProvider>
               <Navbar />
               {children}
-              <CartWrapper />
               <ServiceWorkerRegistration />
             </CartProvider>
           </AuthProvider>

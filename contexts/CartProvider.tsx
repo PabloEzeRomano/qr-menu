@@ -22,9 +22,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         }
         return { ...state, lines: newLines }
       }
+      const newItem = { ...action.item, qty: action.item.qty || 1 }
+      const newLines = [...state.lines, newItem]
       return {
         ...state,
-        lines: [...state.lines, { ...action.item, qty: action.item.qty || 1 }],
+        lines: newLines,
       }
     }
     case 'REMOVE': {
@@ -97,19 +99,46 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Load from localStorage on mount
   useEffect(() => {
+    // Check if we're on the client side
+    if (typeof window === 'undefined') {
+      return
+    }
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsedState = JSON.parse(stored) as CartState
-        dispatch({ type: 'LOAD_FROM_STORAGE', state: parsedState })
+
+        // Validate the parsed state structure
+        if (parsedState && typeof parsedState === 'object' && Array.isArray(parsedState.lines)) {
+          dispatch({ type: 'LOAD_FROM_STORAGE', state: parsedState })
+        } else {
+          console.warn('CartProvider - Invalid cart state structure, using initial state')
+        }
+      } else {
+        console.log('CartProvider - No stored data found')
       }
     } catch (error) {
       console.error('Failed to load cart from localStorage:', error)
+      if (error instanceof Error) {
+        console.error('Error details:', error.message)
+        console.error('Error stack:', error.stack)
+      }
+      // Clear corrupted data
+      localStorage.removeItem(STORAGE_KEY)
     }
   }, [])
 
   // Save to localStorage whenever state changes
   useEffect(() => {
+    // Check if we're on the client side
+    if (typeof window === 'undefined') return
+
+    // Don't save initial state or empty state immediately after loading
+    if (state.lines.length === 0 && !state.table) {
+      return
+    }
+
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
     } catch (error) {
@@ -138,7 +167,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const clear = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY)
+    }
     dispatch({ type: 'CLEAR' })
   }, [])
 
