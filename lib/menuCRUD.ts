@@ -1,5 +1,5 @@
 import { apiGet, apiJson } from './apiClient'
-import type { DailyMenu, MenuItem, Category, Restaurant, Filter, Order } from '@/types'
+import type { DailyMenu, MenuItem, Category, Restaurant, Filter, Order, Tag } from '@/types'
 
 export const listItems = (showAll = false) =>
   apiGet<MenuItem[]>(`/api/items${showAll ? '?showAll=true' : ''}`)
@@ -37,3 +37,8 @@ export const patchOrder = (id: string, patch: Partial<Order>) =>
   apiJson<Order>(`/api/orders/${id}`, 'PATCH', patch)
 export const deleteOrder = (id: string) => apiJson<{ ok: true }>(`/api/orders/${id}`, 'DELETE')
 export const getOrder = (id: string) => apiGet<Order>(`/api/orders/${id}`)
+
+// Tags CRUD
+export const listTags = () => apiGet<Tag[]>('/api/tags')
+export const createTags = (data: { tags: Tag[] }) => apiJson<{ ok: true }>('/api/tags', 'POST', data)
+export const updateTags = (data: { tags: Tag[] }) => apiJson<{ ok: true }>('/api/tags', 'PATCH', data)
