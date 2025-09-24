@@ -2,15 +2,7 @@
 
 import { useTagOperations } from '@/hooks/useTagOperations'
 import { Tag } from '@/types'
-import {
-  Plus,
-  Edit2,
-  Trash2,
-  GripVertical,
-  Eye,
-  EyeOff,
-  Tag as TagIcon,
-} from 'lucide-react'
+import { Plus, Edit2, Trash2, GripVertical, Eye, EyeOff, Tag as TagIcon } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Button from '@/components/Button'
 
@@ -88,7 +80,9 @@ export default function AdminTags() {
   const handleUpdateTag = async (tagId: string, updates: Partial<Tag>) => {
     try {
       const updatedTag = await updateTag(tagId, updates)
-      setTags(tags.map((tag) => (tag.id === tagId ? updatedTag : tag)).sort((a, b) => a.order - b.order))
+      setTags(
+        tags.map((tag) => (tag.id === tagId ? updatedTag : tag)).sort((a, b) => a.order - b.order),
+      )
       setEditingTag(null)
     } catch (error) {
       console.error('Error updating tag:', error)
@@ -162,7 +156,9 @@ export default function AdminTags() {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Gestión de Etiquetas</h2>
-        <p className="text-gray-600">Administra las etiquetas disponibles para los items del menú</p>
+        <p className="text-gray-600">
+          Administra las etiquetas disponibles para los items del menú
+        </p>
       </div>
 
       {/* Create New Tag */}
@@ -186,9 +182,7 @@ export default function AdminTags() {
           <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Clave (ID)
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Clave (ID)</label>
                 <input
                   type="text"
                   value={newTag.key || ''}
@@ -198,9 +192,7 @@ export default function AdminTags() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Etiqueta
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Etiqueta</label>
                 <input
                   type="text"
                   value={newTag.label || ''}
@@ -210,12 +202,12 @@ export default function AdminTags() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Categoría
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
                 <select
                   value={newTag.category || 'custom'}
-                  onChange={(e) => setNewTag({ ...newTag, category: e.target.value as Tag['category'] })}
+                  onChange={(e) =>
+                    setNewTag({ ...newTag, category: e.target.value as Tag['category'] })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   {TAG_CATEGORIES.map((category) => (
@@ -226,9 +218,7 @@ export default function AdminTags() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Color
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
                 <div className="flex flex-wrap gap-2">
                   {TAG_COLORS.map((color) => (
                     <button
@@ -252,11 +242,7 @@ export default function AdminTags() {
               >
                 Crear Etiqueta
               </Button>
-              <Button
-                onClick={() => setIsCreating(false)}
-                variant="secondary"
-                size="sm"
-              >
+              <Button onClick={() => setIsCreating(false)} variant="secondary" size="sm">
                 Cancelar
               </Button>
             </div>
@@ -267,9 +253,7 @@ export default function AdminTags() {
       {/* Tags List */}
       <div className="bg-white shadow rounded-lg">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
-            Etiquetas ({tags.length})
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900">Etiquetas ({tags.length})</h3>
         </div>
         <div className="divide-y divide-gray-200">
           {tags.length === 0 ? (
@@ -297,7 +281,8 @@ export default function AdminTags() {
                         <span className="text-sm text-gray-500">({tag.key})</span>
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            TAG_CATEGORIES.find((c) => c.value === tag.category)?.color || 'bg-gray-100 text-gray-800'
+                            TAG_CATEGORIES.find((c) => c.value === tag.category)?.color ||
+                            'bg-gray-100 text-gray-800'
                           }`}
                         >
                           {TAG_CATEGORIES.find((c) => c.value === tag.category)?.label}
@@ -344,9 +329,7 @@ export default function AdminTags() {
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
             <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Editar Etiqueta
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Etiqueta</h3>
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -361,9 +344,7 @@ export default function AdminTags() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Etiqueta
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Etiqueta</label>
                     <input
                       type="text"
                       value={editingTag.label}
@@ -377,7 +358,12 @@ export default function AdminTags() {
                     </label>
                     <select
                       value={editingTag.category}
-                      onChange={(e) => setEditingTag({ ...editingTag, category: e.target.value as Tag['category'] })}
+                      onChange={(e) =>
+                        setEditingTag({
+                          ...editingTag,
+                          category: e.target.value as Tag['category'],
+                        })
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       {TAG_CATEGORIES.map((category) => (
@@ -388,9 +374,7 @@ export default function AdminTags() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Color
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
                     <div className="flex flex-wrap gap-2">
                       {TAG_COLORS.map((color) => (
                         <button
@@ -406,11 +390,7 @@ export default function AdminTags() {
                   </div>
                 </div>
                 <div className="flex items-center justify-end gap-3">
-                  <Button
-                    onClick={() => setEditingTag(null)}
-                    variant="secondary"
-                    size="sm"
-                  >
+                  <Button onClick={() => setEditingTag(null)} variant="secondary" size="sm">
                     Cancelar
                   </Button>
                   <Button

@@ -1,6 +1,8 @@
 'use client'
 
 import Button from '@/components/Button'
+import TagDisplay from '@/components/TagDisplay'
+import TagSelector from '@/components/TagSelector'
 import { useAuth } from '@/contexts/AuthContextProvider'
 import { useCart } from '@/contexts/CartProvider'
 import { useImageOperations } from '@/hooks/useImageOperations'
@@ -90,14 +92,13 @@ export default function EditableMenuItem({
     setTempItem((prev) => ({ ...prev, [field]: value }))
   }
 
-  const updateTags = (tag: string, add: boolean) => {
-    const newTags = add ? [...tempItem.tags, tag] : tempItem.tags.filter((t) => t !== tag)
-    updateField('tags', newTags)
+  const updateTagIds = (tagIds: string[]) => {
+    updateField('tagIds', tagIds)
   }
 
-  const updateDiet = (diet: string, add: boolean) => {
-    const newDiet = add ? [...tempItem.diet, diet] : tempItem.diet.filter((d) => d !== diet)
-    updateField('diet', newDiet)
+  // Ensure tagIds is always an array
+  const getTagIds = () => {
+    return displayItem.tagIds || []
   }
 
   const handleImageUpload = async (file: File) => {
@@ -165,40 +166,8 @@ export default function EditableMenuItem({
           {/* Tags */}
           <div>
             <label className="block text-cyan-200 text-sm font-medium mb-2">Etiquetas</label>
-            <div className="flex flex-wrap gap-2">
-              {['nuevo', 'recomendado'].map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => updateTags(tag, !displayItem.tags.includes(tag))}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    displayItem.tags.includes(tag)
-                      ? 'bg-cyan-500 text-white'
-                      : 'bg-white/20 text-cyan-200 hover:bg-white/30'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Diet */}
-          <div>
-            <label className="block text-cyan-200 text-sm font-medium mb-2">Dieta</label>
-            <div className="flex flex-wrap gap-2">
-              {['vegetariano', 'sin-gluten'].map((diet) => (
-                <button
-                  key={diet}
-                  onClick={() => updateDiet(diet, !displayItem.diet.includes(diet))}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    displayItem.diet.includes(diet)
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-white/20 text-emerald-200 hover:bg-white/30'
-                  }`}
-                >
-                  {diet}
-                </button>
-              ))}
+            <div className="bg-white/10 border border-white/20 rounded-lg p-4">
+              <TagSelector selectedTagIds={getTagIds()} onTagChange={updateTagIds} />
             </div>
           </div>
 
@@ -376,34 +345,11 @@ export default function EditableMenuItem({
       )}
 
       {/* Tags */}
-      {displayItem.tags.includes('nuevo') && (
-        <motion.span
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{
-            repeat: Infinity,
-            repeatType: 'reverse',
-            duration: 1.2,
-          }}
-          className="absolute top-3 left-3 text-[10px] font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-1 rounded-full shadow-lg z-10"
-        >
-          NUEVO
-        </motion.span>
-      )}
-      {displayItem.tags.includes('recomendado') && (
-        <motion.span
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{
-            repeat: Infinity,
-            repeatType: 'reverse',
-            duration: 1.6,
-          }}
-          className="absolute top-3 right-3 text-[10px] font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-2 py-1 rounded-full shadow-lg z-10"
-        >
-          RECOMENDADO
-        </motion.span>
-      )}
+      <TagDisplay
+        tagIds={getTagIds()}
+        className="absolute top-3 left-3 flex flex-col gap-1 z-10"
+        maxTags={2}
+      />
 
       {/* Image */}
       <div className="relative mb-3">

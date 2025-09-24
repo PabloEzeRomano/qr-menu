@@ -88,10 +88,12 @@ export function useTagOperations() {
       try {
         setLoading(true)
         const existingTags = await listTags()
-        const reorderedTags = tagIds.map((id, index) => {
-          const tag = existingTags.find((t) => t.id === id)
-          return tag ? { ...tag, order: index, updatedAt: new Date() } : null
-        }).filter(Boolean) as Tag[]
+        const reorderedTags = tagIds
+          .map((id, index) => {
+            const tag = existingTags.find((t) => t.id === id)
+            return tag ? { ...tag, order: index, updatedAt: new Date() } : null
+          })
+          .filter(Boolean) as Tag[]
 
         // Add any remaining tags that weren't in the reorder list
         const remainingTags = existingTags.filter((tag) => !tagIds.includes(tag.id))

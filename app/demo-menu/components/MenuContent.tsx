@@ -22,7 +22,7 @@ import {
 } from './index'
 
 function MenuContentComponent() {
-  const { loading: loadingMenu, categories, filters, items, restaurant } = useMenuData()
+  const { loading: loadingMenu, categories, items, restaurant } = useMenuData()
 
   const {
     isEditMode,
@@ -37,10 +37,7 @@ function MenuContentComponent() {
 
   const { handleAddCategory } = useCategoryOperations()
 
-  const { activeFilter, setActiveFilter, filteredCategories } = useMenuFilters(
-    items || [],
-    filters || [],
-  )
+  const { activeFilter, filteredCategories } = useMenuFilters(items || [])
 
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item)
@@ -73,11 +70,7 @@ function MenuContentComponent() {
           isEditMode={isEditMode}
         />
 
-        <FilterBar
-          filters={filters || []}
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-        />
+        <FilterBar items={items || []} />
 
         <EditableDailyMenu isEditMode={isEditMode} />
 
