@@ -1,4 +1,4 @@
-yimport { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 import { z } from 'zod'
 import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
