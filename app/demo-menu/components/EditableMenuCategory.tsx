@@ -163,7 +163,7 @@ export default function EditableMenuCategory({
         viewport={{ once: true, amount: 0.1 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <motion.div
             key={item.id}
             variants={{
@@ -179,6 +179,7 @@ export default function EditableMenuCategory({
               onItemClick={onItemClick}
               isEditMode={isEditMode}
               isCartEnabled={isCartEnabled}
+              isPriority={index < 3} // Prioritize first 3 items in each category
             />
           </motion.div>
         ))}

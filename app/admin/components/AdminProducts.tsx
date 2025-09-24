@@ -3,6 +3,7 @@
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useOrders } from '@/hooks/useOrders'
 import { DollarSign, Eye, EyeOff, Package, Search } from 'lucide-react'
+import Image from 'next/image'
 import { useState } from 'react'
 
 export default function AdminProducts() {
@@ -190,10 +191,12 @@ export default function AdminProducts() {
                       <span className="text-sm font-medium text-gray-500">#{index + 1}</span>
                     </div>
                     <div className="flex-shrink-0">
-                      <img
+                      <Image
                         src={item.img}
                         alt={item.name}
-                        className="w-10 h-10 rounded-lg object-cover"
+                        width={40}
+                        height={40}
+                        className="rounded-lg object-cover"
                       />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -222,10 +225,12 @@ export default function AdminProducts() {
                       <span className="text-sm font-medium text-gray-500">#{index + 1}</span>
                     </div>
                     <div className="flex-shrink-0">
-                      <img
+                      <Image
                         src={item.img}
                         alt={item.name}
-                        className="w-10 h-10 rounded-lg object-cover"
+                        width={40}
+                        height={40}
+                        className="rounded-lg object-cover"
                       />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -332,8 +337,10 @@ export default function AdminProducts() {
                       <td className="px-3 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
-                            <img
-                              className="h-10 w-10 rounded-lg object-cover"
+                            <Image
+                              width={40}
+                              height={40}
+                              className="rounded-lg object-cover"
                               src={item.img}
                               alt={item.name}
                             />

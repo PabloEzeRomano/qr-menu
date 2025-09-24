@@ -14,12 +14,7 @@ export default function CartWrapper() {
   const { loading } = useMenuData()
   const isCartEnabled = useCartEnabled()
 
-  // Don't render anything while loading restaurant data
-  if (loading) {
-    return null
-  }
-
-  if (isAdmin || !isCartEnabled) {
+  if (isAdmin || !isCartEnabled || loading) {
     return null
   }
 

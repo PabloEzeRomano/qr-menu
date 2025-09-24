@@ -18,6 +18,7 @@ interface EditableMenuItemProps {
   isEditMode: boolean
   isCartEnabled: boolean
   isNewItem?: boolean
+  isPriority?: boolean
 }
 
 export default function EditableMenuItem({
@@ -26,6 +27,7 @@ export default function EditableMenuItem({
   isEditMode,
   isCartEnabled,
   isNewItem = false,
+  isPriority = false,
 }: EditableMenuItemProps) {
   const isNewItemCalculated = isNewItem || item.id.startsWith(TEMP_ID_PREFIX)
   const [isEditing, setIsEditing] = useState(isNewItemCalculated) // New items start in edit mode
@@ -405,13 +407,14 @@ export default function EditableMenuItem({
 
       {/* Image */}
       <div className="relative mb-3">
-        <div>
+        <div className="relative h-40 w-full">
           <Image
             src={displayItem.img}
             alt={displayItem.name}
-            width={160}
-            height={160}
-            className="h-40 w-full object-cover rounded-lg shadow-md"
+            fill
+            className="object-cover rounded-lg shadow-md"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={isPriority}
           />
         </div>
       </div>
