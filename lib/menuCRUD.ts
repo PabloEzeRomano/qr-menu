@@ -1,6 +1,7 @@
 import { apiGet, apiJson } from './apiClient'
 import type { DailyMenu, MenuItem, Category, Restaurant, Filter, Order, Tag } from '@/types'
 
+// Items CRUD
 export const listItems = (showAll = false) =>
   apiGet<MenuItem[]>(`/api/items${showAll ? '?showAll=true' : ''}`)
 export const getItem = (id: string) => apiGet<MenuItem>(`/api/items/${id}`)
@@ -10,6 +11,7 @@ export const updateItem = (id: string, patch: Partial<Omit<MenuItem, 'id'>>) =>
   apiJson<MenuItem>(`/api/items/${id}`, 'PATCH', patch)
 export const deleteItem = (id: string) => apiJson<{ ok: true }>(`/api/items/${id}`, 'DELETE')
 
+// Categories CRUD
 export const listCategories = () => apiGet<Category[]>('/api/categories')
 export const createCategory = (data: Category) => apiJson<Category>('/api/categories', 'POST', data)
 export const updateCategory = (key: string, patch: Partial<Omit<Category, 'key'>>) => {
@@ -18,18 +20,17 @@ export const updateCategory = (key: string, patch: Partial<Omit<Category, 'key'>
 export const deleteCategory = (key: string, forceDelete: boolean) =>
   apiJson<{ ok: true }>(`/api/categories/${key}?forceDelete=${forceDelete}`, 'DELETE')
 
-export const listFilters = () => apiGet<Filter[]>('/api/filters')
-export const patchFilters = (patch: Partial<Filter>) =>
-  apiJson<Filter>('/api/filters', 'PATCH', patch)
-
+// Daily Menu CRUD
 export const getDailyMenu = () => apiGet<DailyMenu | null>('/api/daily-menu')
 export const patchDailyMenu = (patch: Partial<DailyMenu>) =>
   apiJson<DailyMenu>('/api/daily-menu', 'PATCH', patch)
 
+// Restaurant CRUD
 export const getRestaurant = () => apiGet<Restaurant | null>('/api/restaurant')
 export const patchRestaurant = (patch: Partial<Restaurant>) =>
   apiJson<Restaurant>('/api/restaurant', 'PATCH', patch)
 
+// Orders CRUD
 export const listOrders = () => apiGet<Order[]>('/api/orders')
 export const createOrder = (data: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) =>
   apiJson<Order>('/api/orders', 'POST', data)
@@ -46,6 +47,7 @@ export const updateTags = (data: { tags: Tag[] }) =>
   apiJson<{ ok: true }>('/api/tags', 'PATCH', data)
 
 // Additional Filters CRUD
+export const listFilters = () => apiGet<Filter[]>('/api/filters')
 export const createFilters = (data: { filters: Filter[] }) =>
   apiJson<{ ok: true }>('/api/filters', 'POST', data)
 export const updateFilters = (data: { filters: Filter[] }) =>
