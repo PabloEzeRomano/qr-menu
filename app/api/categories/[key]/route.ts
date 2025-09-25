@@ -9,11 +9,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ key: s
   await requireAdmin(req)
   const { key } = await params
   const body = await req.json()
-  const patch = CategorySchema.partial().parse(body)
+  // Validate that the body is a valid partial of the schema
+  const parseResult = CategorySchema.partial().safeParse(body)
+  if (!parseResult.success) {
+    return NextResponse.json({ error: 'Invalid data', details: parseResult.error }, { status: 400 })
+  }
+
   await adminDB.doc(`categories/${key}`).update({
-    ...patch,
+    ...body,
     updatedAt: serverTimestamp(),
-  } as any)
+  })
   const doc = await adminDB.doc(`categories/${key}`).get()
   return NextResponse.json({ key: doc.id, ...doc.data() })
 }

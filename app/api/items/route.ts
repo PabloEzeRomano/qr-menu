@@ -3,7 +3,7 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
 import { requireAdmin } from '@/lib/server/verifyAdmin'
-import { MenuItemSchema } from '@/server/schemas'
+import { MenuItemSchema } from '@/lib/server/schemas'
 import { cacheOrFetch } from '@/lib/server/cache'
 import { corsResponse } from '@/lib/server/cors'
 

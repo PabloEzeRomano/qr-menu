@@ -17,12 +17,19 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     await requireAdmin(req)
     const { id } = await params
     const body = await req.json()
-    const allowed = MenuItemSchema.partial().parse(body)
+    // Validate that the body is a valid partial of the schema
+    const parseResult = MenuItemSchema.partial().safeParse(body)
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: parseResult.error },
+        { status: 400 },
+      )
+    }
 
     await adminDB.doc(`items/${id}`).update({
-      ...allowed,
+      ...body,
       updatedAt: serverTimestamp(),
-    } as any)
+    })
 
     // Invalidate cache when items are updated (especially visibility changes)
     const { cache } = await import('@/lib/server/cache')
