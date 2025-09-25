@@ -17,11 +17,7 @@ import { useEffect } from 'react'
 
 export default function AdminOverview() {
   const { orders, loading: ordersLoading, getTotalRevenue, getOrdersCount } = useOrders()
-  const { items, categories, restaurant, refreshItems } = useMenuData()
-
-  useEffect(() => {
-    refreshItems(true)
-  }, [refreshItems])
+  const { items, categories, restaurant } = useMenuData()
 
   const revenue = getTotalRevenue()
   const orderStats = getOrdersCount()

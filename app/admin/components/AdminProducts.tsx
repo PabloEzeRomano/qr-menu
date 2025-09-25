@@ -19,11 +19,6 @@ export default function AdminProducts() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
-  // Ensure we load all items (including hidden ones) when component mounts
-  useEffect(() => {
-    refreshItems(true)
-  }, [refreshItems])
-
   // Calculate product analytics
   const getProductAnalytics = () => {
     if (!items || !orders) return []
@@ -106,7 +101,7 @@ export default function AdminProducts() {
       await updateItem(productId, { isVisible: newVisibility })
 
       // Refresh the items to get the updated data
-      await refreshItems(true) // Pass true to show all items (including hidden ones)
+      await refreshItems()
 
       console.log(`Product ${productId} visibility toggled to: ${newVisibility}`)
     } catch (error) {
@@ -130,7 +125,7 @@ export default function AdminProducts() {
         await deleteItem(productId)
 
         // Refresh the items to get the updated data
-        await refreshItems(true) // Pass true to show all items (including hidden ones)
+        await refreshItems()
 
         console.log(`Product ${productId} deleted successfully`)
       } catch (error) {
@@ -155,7 +150,7 @@ export default function AdminProducts() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Analytics de Productos</h2>
@@ -165,9 +160,9 @@ export default function AdminProducts() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
+          <div className="p-4 sm:p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 rounded-md flex items-center justify-center bg-blue-100">
@@ -185,7 +180,7 @@ export default function AdminProducts() {
         </div>
 
         <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
+          <div className="p-4 sm:p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 rounded-md flex items-center justify-center bg-green-100">
@@ -203,7 +198,7 @@ export default function AdminProducts() {
         </div>
 
         <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
+          <div className="p-4 sm:p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 rounded-md flex items-center justify-center bg-red-100">
@@ -221,7 +216,7 @@ export default function AdminProducts() {
         </div>
 
         <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
+          <div className="p-4 sm:p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 rounded-md flex items-center justify-center bg-purple-100">
@@ -242,10 +237,10 @@ export default function AdminProducts() {
       </div>
 
       {/* Top Performers */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
         {/* Top Selling Items */}
         <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
+          <div className="px-4 py-4 sm:py-5 sm:p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Top Ventas</h3>
             <div className="space-y-3">
               {getTopSellingItems().map((item, index) => (
@@ -265,7 +260,7 @@ export default function AdminProducts() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-                      <p className="text-sm">{item.totalQuantity} vendidos</p>
+                      <p className="text-sm text-blue-600">{item.totalQuantity} vendidos</p>
                     </div>
                   </div>
                   <div className="text-sm font-medium text-gray-900">
@@ -279,7 +274,7 @@ export default function AdminProducts() {
 
         {/* Top Revenue Items */}
         <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
+          <div className="px-4 py-4 sm:py-5 sm:p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Top Ingresos</h3>
             <div className="space-y-3">
               {getTopRevenueItems().map((item, index) => (
@@ -314,7 +309,7 @@ export default function AdminProducts() {
 
       {/* Filters */}
       <div className="bg-white shadow rounded-lg p-4">
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -327,7 +322,7 @@ export default function AdminProducts() {
               />
             </div>
           </div>
-          <div className="sm:w-48">
+          <div className="w-full sm:w-48">
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
@@ -341,7 +336,7 @@ export default function AdminProducts() {
               ))}
             </select>
           </div>
-          <div className="sm:w-32">
+          <div className="w-full sm:w-32">
             <select
               value={visibilityFilter}
               onChange={(e) => setVisibilityFilter(e.target.value as 'all' | 'visible' | 'hidden')}
@@ -357,7 +352,7 @@ export default function AdminProducts() {
 
       {/* Products Table */}
       <div className="bg-white shadow rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
+        <div className="px-4 py-5 sm:p-6 overflow-hidden">
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             Productos ({filteredItems.length})
           </h3>
