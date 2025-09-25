@@ -109,7 +109,7 @@ export default function ItemModal({
                     {item.tagIds?.map((tagId) => {
                       const tag = getTagById(tagId)
                       if (!tag) return null
-                      
+
                       if (tag.key === 'nuevo') {
                         return (
                           <span key={tagId} className="text-xs font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full shadow-lg">
@@ -117,7 +117,7 @@ export default function ItemModal({
                           </span>
                         )
                       }
-                      
+
                       if (tag.key === 'recomendado') {
                         return (
                           <span key={tagId} className="text-xs font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-lg">
@@ -125,7 +125,7 @@ export default function ItemModal({
                           </span>
                         )
                       }
-                      
+
                       return null
                     })}
                   </div>
