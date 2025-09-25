@@ -2,11 +2,11 @@
 
 import { useCallback } from 'react'
 import { uploadItemImage } from '@/lib/uploadImage'
-import { useSharedOperations } from './useSharedOperations'
+import { useErrorHandler } from './useErrorHandler'
 import { ERROR_MESSAGES } from '@/lib/constants'
 
 export function useImageOperations() {
-  const { handleError } = useSharedOperations()
+  const { handleError } = useErrorHandler()
 
   const handleImageUpload = useCallback(
     async (file: File, itemId: string): Promise<string> => {

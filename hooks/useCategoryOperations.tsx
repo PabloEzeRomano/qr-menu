@@ -3,11 +3,13 @@
 import { useCallback } from 'react'
 import { createCategory, updateCategory, deleteCategory } from '@/lib/menuCRUD'
 import { Category } from '@/types'
-import { useSharedOperations } from './useSharedOperations'
+import { useMenuData } from '@/contexts/MenuDataProvider'
+import { useErrorHandler } from './useErrorHandler'
 import { ERROR_MESSAGES } from '@/lib/constants'
 
 export function useCategoryOperations() {
-  const { refreshCategories, handleError } = useSharedOperations()
+  const { refreshCategories } = useMenuData()
+  const { handleError } = useErrorHandler()
 
   const handleAddCategory = useCallback(
     async (newCategory: Category) => {

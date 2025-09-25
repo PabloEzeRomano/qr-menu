@@ -4,12 +4,14 @@ import { useCallback } from 'react'
 import { createItem, updateItem, deleteItem } from '@/lib/menuCRUD'
 import { MenuItem } from '@/types'
 import { useMenuContext } from '@/contexts/MenuContextProvider'
-import { useSharedOperations } from './useSharedOperations'
+import { useMenuData } from '@/contexts/MenuDataProvider'
+import { useErrorHandler } from './useErrorHandler'
 import { ERROR_MESSAGES, DEFAULT_VALUES, TEMP_ID_PREFIX } from '@/lib/constants'
 
 export function useItemOperations() {
   const { addNewItem, removeNewItem } = useMenuContext()
-  const { refreshData, handleError } = useSharedOperations()
+  const { refreshItems } = useMenuData()
+  const { handleError } = useErrorHandler()
 
   const createNewItem = useCallback((categoryKey: string): MenuItem => {
     return {
@@ -43,12 +45,12 @@ export function useItemOperations() {
         const { id, ...itemData } = newItem // Remove temp ID
         await createItem(itemData)
         removeNewItem(newItem.id)
-        refreshData()
+        refreshItems()
       } catch (error) {
         handleError(error, ERROR_MESSAGES.ITEM_CREATE)
       }
     },
-    [removeNewItem, refreshData, handleError],
+    [removeNewItem, refreshItems, handleError],
   )
 
   const handleCancelNewItem = useCallback(
@@ -63,24 +65,24 @@ export function useItemOperations() {
       try {
         const { id, ...patch } = updatedItem
         await updateItem(id, patch)
-        refreshData()
+        refreshItems()
       } catch (error) {
         handleError(error, ERROR_MESSAGES.ITEM_UPDATE)
       }
     },
-    [refreshData, handleError],
+    [refreshItems, handleError],
   )
 
   const handleItemDelete = useCallback(
     async (itemId: string) => {
       try {
         await deleteItem(itemId)
-        refreshData()
+        refreshItems()
       } catch (error) {
         handleError(error, ERROR_MESSAGES.ITEM_DELETE)
       }
     },
-    [refreshData, handleError],
+    [refreshItems, handleError],
   )
 
   return {

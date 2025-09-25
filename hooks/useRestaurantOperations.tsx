@@ -5,11 +5,11 @@ import { ERROR_MESSAGES } from '@/lib/constants'
 import { patchDailyMenu, patchRestaurant } from '@/lib/menuCRUD'
 import { DailyMenu } from '@/types'
 import { useCallback } from 'react'
-import { useSharedOperations } from './useSharedOperations'
+import { useErrorHandler } from './useErrorHandler'
 
 export function useRestaurantOperations() {
-  const { restaurant, dailyMenu } = useMenuData()
-  const { handleError, refreshRestaurant, refreshDailyMenu } = useSharedOperations()
+  const { restaurant, dailyMenu, refreshRestaurant, refreshDailyMenu } = useMenuData()
+  const { handleError } = useErrorHandler()
 
   const handleTitleSave = useCallback(
     async (newTitle: string) => {
