@@ -135,7 +135,6 @@ export function useMenuFilters(items: MenuItem[]) {
       return items
     }
 
-
     // Filter items based on the current filter's predicate
     const filtered = items.filter((item) => {
       return evaluatePredicate(item, currentFilter.predicate, tags)
@@ -153,7 +152,7 @@ export function useMenuFilters(items: MenuItem[]) {
         return { category, items: allItems }
       })
     }
-    }, [filteredItems])
+  }, [filteredItems])
 
   return {
     activeFilter,
