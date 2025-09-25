@@ -266,40 +266,6 @@ export default function AdminFilters() {
         <p className="text-gray-600">Administra los filtros disponibles para el menú</p>
       </div>
 
-      {/* Quick Actions */}
-      <div className="bg-white shadow rounded-lg p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Acciones Rápidas</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Button
-            onClick={handleCreateTagFilters}
-            variant="secondary"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <Tag size={16} />
-            Crear Filtros de Etiquetas
-          </Button>
-          <Button
-            onClick={handleCreatePriceFilters}
-            variant="secondary"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <DollarSign size={16} />
-            Crear Filtros de Precio
-          </Button>
-          <Button
-            onClick={handleCreateCategoryFilters}
-            variant="secondary"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <Folder size={16} />
-            Crear Filtros de Categoría
-          </Button>
-        </div>
-      </div>
-
       {/* Create New Filter */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
@@ -316,7 +282,6 @@ export default function AdminFilters() {
             {isCreating ? 'Cancelar' : 'Nuevo Filtro'}
           </Button>
         </div>
-
         {isCreating && (
           <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -379,6 +344,40 @@ export default function AdminFilters() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="bg-white shadow rounded-lg p-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Acciones Rápidas</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Button
+            onClick={handleCreateTagFilters}
+            variant="secondary"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Tag size={16} />
+            Crear Filtros de Etiquetas
+          </Button>
+          <Button
+            onClick={handleCreatePriceFilters}
+            variant="secondary"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <DollarSign size={16} />
+            Crear Filtros de Precio
+          </Button>
+          <Button
+            onClick={handleCreateCategoryFilters}
+            variant="secondary"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Folder size={16} />
+            Crear Filtros de Categoría
+          </Button>
+        </div>
       </div>
 
       {/* Edit Filter Modal */}
