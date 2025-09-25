@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { MenuItem } from '@/types'
 import { useCart } from '@/contexts/CartProvider'
 import { useAuth } from '@/contexts/AuthContextProvider'
+import { useTags } from '@/contexts/TagsProvider'
 import Button from '@/components/Button'
 
 interface ItemModalProps {
@@ -27,6 +28,7 @@ export default function ItemModal({
   const modalRef = useRef<HTMLDivElement>(null)
   const { add } = useCart()
   const { isAdmin } = useAuth()
+  const { getTagById } = useTags()
   const [addedToCart, setAddedToCart] = useState(false)
 
   useEffect(() => {
@@ -56,14 +58,6 @@ export default function ItemModal({
     return categories[categoryKey as keyof typeof categories] || categoryKey
   }
 
-  const getDietLabel = (dietKey: string) => {
-    const dietLabels = {
-      vegetariano: 'Vegetariano',
-      vegano: 'Vegano',
-      'sin-gluten': 'Sin gluten',
-    }
-    return dietLabels[dietKey as keyof typeof dietLabels] || dietKey
-  }
 
   return (
     <AnimatePresence>
@@ -112,16 +106,28 @@ export default function ItemModal({
                   />
                   {/* Tags overlay */}
                   <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                    {item.tags.includes('nuevo') && (
-                      <span className="text-xs font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full shadow-lg">
-                        NUEVO
-                      </span>
-                    )}
-                    {item.tags.includes('recomendado') && (
-                      <span className="text-xs font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-lg">
-                        RECOMENDADO
-                      </span>
-                    )}
+                    {item.tagIds?.map((tagId) => {
+                      const tag = getTagById(tagId)
+                      if (!tag) return null
+                      
+                      if (tag.key === 'nuevo') {
+                        return (
+                          <span key={tagId} className="text-xs font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full shadow-lg">
+                            NUEVO
+                          </span>
+                        )
+                      }
+                      
+                      if (tag.key === 'recomendado') {
+                        return (
+                          <span key={tagId} className="text-xs font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-lg">
+                            RECOMENDADO
+                          </span>
+                        )
+                      }
+                      
+                      return null
+                    })}
                   </div>
                 </div>
               </div>
@@ -147,20 +153,29 @@ export default function ItemModal({
                 </div>
 
                 {/* Diet information */}
-                {item.diet.length > 0 && (
+                {item.tagIds?.some(tagId => {
+                  const tag = getTagById(tagId)
+                  return tag && ['vegetariano', 'vegano', 'sin-gluten', 'sin-lactosa'].includes(tag.key)
+                }) && (
                   <div className="mb-6">
                     <h4 className="text-sm font-semibold text-cyan-100 mb-2">
                       Información dietética
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {item.diet.map((diet) => (
-                        <span
-                          key={diet}
-                          className="text-xs bg-cyan-900/50 text-cyan-200 px-3 py-1 rounded-full border border-cyan-700/50"
-                        >
-                          {getDietLabel(diet)}
-                        </span>
-                      ))}
+                      {item.tagIds?.map((tagId) => {
+                        const tag = getTagById(tagId)
+                        if (!tag || !['vegetariano', 'vegano', 'sin-gluten', 'sin-lactosa'].includes(tag.key)) {
+                          return null
+                        }
+                        return (
+                          <span
+                            key={tagId}
+                            className="text-xs bg-cyan-900/50 text-cyan-200 px-3 py-1 rounded-full border border-cyan-700/50"
+                          >
+                            {tag.label}
+                          </span>
+                        )
+                      })}
                     </div>
                   </div>
                 )}
