@@ -104,10 +104,7 @@ export default function OrdersTable({
 
   return (
     <div className="overflow-x-auto w-full">
-      <table
-        className="w-full divide-y divide-gray-200"
-        style={{ minWidth: showActions ? '800px' : '600px' }}
-      >
+      <table className="w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
             <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
