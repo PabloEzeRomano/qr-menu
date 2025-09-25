@@ -58,7 +58,6 @@ export default function ItemModal({
     return categories[categoryKey as keyof typeof categories] || categoryKey
   }
 
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -112,7 +111,10 @@ export default function ItemModal({
 
                       if (tag.key === 'nuevo') {
                         return (
-                          <span key={tagId} className="text-xs font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full shadow-lg">
+                          <span
+                            key={tagId}
+                            className="text-xs font-black tracking-wide bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full shadow-lg"
+                          >
                             NUEVO
                           </span>
                         )
@@ -120,7 +122,10 @@ export default function ItemModal({
 
                       if (tag.key === 'recomendado') {
                         return (
-                          <span key={tagId} className="text-xs font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-lg">
+                          <span
+                            key={tagId}
+                            className="text-xs font-black tracking-wide bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-lg"
+                          >
                             RECOMENDADO
                           </span>
                         )
@@ -153,9 +158,11 @@ export default function ItemModal({
                 </div>
 
                 {/* Diet information */}
-                {item.tagIds?.some(tagId => {
+                {item.tagIds?.some((tagId) => {
                   const tag = getTagById(tagId)
-                  return tag && ['vegetariano', 'vegano', 'sin-gluten', 'sin-lactosa'].includes(tag.key)
+                  return (
+                    tag && ['vegetariano', 'vegano', 'sin-gluten', 'sin-lactosa'].includes(tag.key)
+                  )
                 }) && (
                   <div className="mb-6">
                     <h4 className="text-sm font-semibold text-cyan-100 mb-2">
@@ -164,7 +171,10 @@ export default function ItemModal({
                     <div className="flex flex-wrap gap-2">
                       {item.tagIds?.map((tagId) => {
                         const tag = getTagById(tagId)
-                        if (!tag || !['vegetariano', 'vegano', 'sin-gluten', 'sin-lactosa'].includes(tag.key)) {
+                        if (
+                          !tag ||
+                          !['vegetariano', 'vegano', 'sin-gluten', 'sin-lactosa'].includes(tag.key)
+                        ) {
                           return null
                         }
                         return (
