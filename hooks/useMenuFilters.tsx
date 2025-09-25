@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { Category, MenuItem, FilterCondition, FilterPredicate } from '@/types'
 import { useTags } from '@/contexts/TagsProvider'
 import { useFilters } from '@/contexts/FiltersProvider'
+import { useAuth } from '@/contexts/AuthContextProvider'
 
 function evaluateCondition(item: MenuItem, condition: FilterCondition, tags: any[]): boolean {
   const { field, operator, value } = condition
@@ -121,6 +122,7 @@ function evaluatePredicate(item: MenuItem, predicate: FilterPredicate, tags: any
 export function useMenuFilters(items: MenuItem[]) {
   const { tags } = useTags()
   const { filters, activeFilter } = useFilters()
+  const { isAdmin } = useAuth()
 
   const currentFilter = useMemo(
     () => filters.find((f) => f.key === activeFilter),
@@ -130,18 +132,21 @@ export function useMenuFilters(items: MenuItem[]) {
   const filteredItems = useMemo(() => {
     if (!items) return []
 
-    // If no filter is selected or filter is 'all', return all items
+    // First, filter out hidden items for non-admin users
+    const visibleItems = isAdmin ? items : items.filter((item) => item.isVisible)
+
+    // If no filter is selected or filter is 'all', return visible items
     if (!currentFilter || currentFilter.key === 'all') {
-      return items
+      return visibleItems
     }
 
     // Filter items based on the current filter's predicate
-    const filtered = items.filter((item) => {
+    const filtered = visibleItems.filter((item) => {
       return evaluatePredicate(item, currentFilter.predicate, tags)
     })
 
     return filtered
-  }, [items, currentFilter, tags])
+  }, [items, currentFilter, tags, isAdmin])
 
   const filteredCategories = useMemo(() => {
     return (categories: Category[], newItems: MenuItem[]) => {
