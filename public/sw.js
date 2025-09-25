@@ -2,6 +2,9 @@
 const CACHE_NAME = 'qr-menu-v1'
 const STATIC_CACHE = 'qr-menu-static-v1'
 
+// Skip caching in development
+const IS_DEVELOPMENT = self.location.hostname === 'localhost'
+
 // Files to cache for offline use
 const STATIC_ASSETS = [
   '/',
@@ -14,6 +17,12 @@ const STATIC_ASSETS = [
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
+  if (IS_DEVELOPMENT) {
+    console.log('Service Worker: Skipping cache installation in development')
+    self.skipWaiting()
+    return
+  }
+
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => {
       return cache.addAll(STATIC_ASSETS)
@@ -24,6 +33,18 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
+  if (IS_DEVELOPMENT) {
+    // Clear all caches in development
+    event.waitUntil(
+      caches.keys().then((cacheNames) => {
+        console.log('Service Worker: Clearing all caches in development', cacheNames)
+        return Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)))
+      }),
+    )
+    self.clients.claim()
+    return
+  }
+
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -42,6 +63,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
+
+  // Skip caching in development
+  if (IS_DEVELOPMENT) {
+    return
+  }
 
   // Skip non-GET requests and external URLs
   if (request.method !== 'GET' || !url.origin.includes(self.location.origin)) {
