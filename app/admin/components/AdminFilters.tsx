@@ -18,7 +18,7 @@ import {
   Clock,
   Settings,
 } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Button from '@/components/Button'
 
 const FILTER_TYPES = [
@@ -42,17 +42,6 @@ const FILTER_TYPES = [
     color: 'bg-orange-100 text-orange-800',
   },
   { value: 'custom', label: 'Personalizado', icon: Settings, color: 'bg-gray-100 text-gray-800' },
-] as const
-
-const FILTER_COLORS = [
-  { value: 'bg-red-500', label: 'Rojo' },
-  { value: 'bg-blue-500', label: 'Azul' },
-  { value: 'bg-green-500', label: 'Verde' },
-  { value: 'bg-yellow-500', label: 'Amarillo' },
-  { value: 'bg-purple-500', label: 'Morado' },
-  { value: 'bg-pink-500', label: 'Rosa' },
-  { value: 'bg-indigo-500', label: 'Índigo' },
-  { value: 'bg-orange-500', label: 'Naranja' },
 ] as const
 
 export default function AdminFilters() {
@@ -85,25 +74,28 @@ export default function AdminFilters() {
     },
   })
 
-  useEffect(() => {
-    loadFilters()
-  }, [])
-
-  const loadFilters = async () => {
+  const loadFilters = useCallback(async () => {
     try {
       const fetchedFilters = await fetchFilters()
       setFilters(fetchedFilters.sort((a, b) => a.order - b.order))
     } catch (error) {
       console.error('Error loading filters:', error)
     }
-  }
+  }, [fetchFilters])
+
+  useEffect(() => {
+    loadFilters()
+  }, [loadFilters])
 
   const handleCreateFilter = async () => {
     if (!newFilter.key || !newFilter.label) return
 
     // For custom type filters (like "all"), allow empty conditions
     // For other types, ensure at least one condition exists
-    if (newFilter.type !== 'custom' && (!newFilter.predicate || newFilter.predicate.conditions.length === 0)) {
+    if (
+      newFilter.type !== 'custom' &&
+      (!newFilter.predicate || newFilter.predicate.conditions.length === 0)
+    ) {
       console.error('Filter must have at least one condition')
       return
     }
@@ -118,7 +110,6 @@ export default function AdminFilters() {
         predicate: newFilter.predicate || { conditions: [], logic: 'AND' },
         isActive: newFilter.isActive ?? true,
         order: filters.length,
-        color: newFilter.color,
       })
       setFilters([...filters, createdFilter].sort((a, b) => a.order - b.order))
       setNewFilter({
@@ -168,6 +159,54 @@ export default function AdminFilters() {
     const filter = filters.find((f) => f.id === filterId)
     if (filter) {
       await handleUpdateFilter(filterId, { isActive: !filter.isActive })
+    }
+  }
+
+  // Quick action handlers - moved outside render and made async
+  const handleCreateTagFilters = async () => {
+    try {
+      const commonTags = tags.filter((tag) =>
+        ['nuevo', 'recomendado', 'vegetariano', 'sin-gluten'].includes(tag.key),
+      )
+
+      const commonTagsPromises = commonTags.map((tag) =>
+        createTagFilter(tag.key, tag.label, tag.key, '🏷️'),
+      )
+
+      await Promise.all(commonTagsPromises)
+
+      // Refetch filters after creation
+      await loadFilters()
+    } catch (error) {
+      console.error('Error creating tag filters:', error)
+    }
+  }
+
+  const handleCreatePriceFilters = async () => {
+    try {
+      await createPriceRangeFilter('economico', 'Económico', 0, 3000, '💰')
+      await createPriceRangeFilter('medio', 'Precio Medio', 3001, 8000, '💵')
+      await createPriceRangeFilter('premium', 'Premium', 8001, 50000, '💎')
+
+      // Refetch filters after creation
+      await loadFilters()
+    } catch (error) {
+      console.error('Error creating price filters:', error)
+    }
+  }
+
+  const handleCreateCategoryFilters = async () => {
+    try {
+      const commonCategories = categories.map((category) =>
+        createCategoryFilter(category.key, category.label, category.key, category.icon),
+      )
+
+      await Promise.all(commonCategories)
+
+      // Refetch filters after creation
+      await loadFilters()
+    } catch (error) {
+      console.error('Error creating category filters:', error)
     }
   }
 
@@ -232,16 +271,7 @@ export default function AdminFilters() {
         <h3 className="text-lg font-medium text-gray-900 mb-4">Acciones Rápidas</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Button
-            onClick={() => {
-              // Create common tag filters
-              const commonTags = tags.filter((tag) =>
-                ['nuevo', 'recomendado', 'vegetariano', 'sin-gluten'].includes(tag.key),
-              )
-              commonTags.forEach((tag) => {
-                createTagFilter(tag.key, tag.label, tag.key, '🏷️', tag.color)
-              })
-              loadFilters()
-            }}
+            onClick={handleCreateTagFilters}
             variant="secondary"
             size="sm"
             className="flex items-center gap-2"
@@ -250,13 +280,7 @@ export default function AdminFilters() {
             Crear Filtros de Etiquetas
           </Button>
           <Button
-            onClick={() => {
-              // Create price range filters
-              createPriceRangeFilter('economico', 'Económico', 0, 1000, '💰', 'bg-green-500')
-              createPriceRangeFilter('medio', 'Precio Medio', 1000, 2500, '💵', 'bg-yellow-500')
-              createPriceRangeFilter('premium', 'Premium', 2500, 5000, '💎', 'bg-purple-500')
-              loadFilters()
-            }}
+            onClick={handleCreatePriceFilters}
             variant="secondary"
             size="sm"
             className="flex items-center gap-2"
@@ -265,19 +289,7 @@ export default function AdminFilters() {
             Crear Filtros de Precio
           </Button>
           <Button
-            onClick={() => {
-              // Create category filters
-              categories.forEach((category) => {
-                createCategoryFilter(
-                  category.key,
-                  category.label,
-                  category.key,
-                  category.icon,
-                  'bg-blue-500',
-                )
-              })
-              loadFilters()
-            }}
+            onClick={handleCreateCategoryFilters}
             variant="secondary"
             size="sm"
             className="flex items-center gap-2"
@@ -337,7 +349,7 @@ export default function AdminFilters() {
                   onChange={(e) =>
                     setNewFilter({ ...newFilter, type: e.target.value as FilterType })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   {FILTER_TYPES.map((type) => (
                     <option key={type.value} value={type.value}>
@@ -345,21 +357,6 @@ export default function AdminFilters() {
                     </option>
                   ))}
                 </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                <div className="flex flex-wrap gap-2">
-                  {FILTER_COLORS.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => setNewFilter({ ...newFilter, color: color.value })}
-                      className={`w-8 h-8 rounded-full ${color.value} ${
-                        newFilter.color === color.value ? 'ring-2 ring-gray-400' : ''
-                      }`}
-                      title={color.label}
-                    />
-                  ))}
-                </div>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -370,7 +367,8 @@ export default function AdminFilters() {
                 disabled={
                   !newFilter.key ||
                   !newFilter.label ||
-                  (newFilter.type !== 'custom' && (!newFilter.predicate || newFilter.predicate.conditions.length === 0))
+                  (newFilter.type !== 'custom' &&
+                    (!newFilter.predicate || newFilter.predicate.conditions.length === 0))
                 }
               >
                 Crear Filtro
@@ -382,6 +380,129 @@ export default function AdminFilters() {
           </div>
         )}
       </div>
+
+      {/* Edit Filter Modal */}
+      {editingFilter && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Editar Filtro</h3>
+              <button
+                onClick={() => setEditingFilter(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <span className="sr-only">Cerrar</span>
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Clave (ID)</label>
+                  <input
+                    type="text"
+                    value={editingFilter.key}
+                    onChange={(e) => setEditingFilter({ ...editingFilter, key: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="ej: vegetariano, economico"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Etiqueta</label>
+                  <input
+                    type="text"
+                    value={editingFilter.label}
+                    onChange={(e) => setEditingFilter({ ...editingFilter, label: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="ej: Vegetariano, Económico"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Descripción
+                  </label>
+                  <input
+                    type="text"
+                    value={editingFilter.description || ''}
+                    onChange={(e) =>
+                      setEditingFilter({ ...editingFilter, description: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Descripción opcional"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ícono</label>
+                  <input
+                    type="text"
+                    value={editingFilter.icon || ''}
+                    onChange={(e) => setEditingFilter({ ...editingFilter, icon: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="🏷️, 💰, etc."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tipo de Filtro
+                  </label>
+                  <select
+                    value={editingFilter.type}
+                    onChange={(e) =>
+                      setEditingFilter({ ...editingFilter, type: e.target.value as FilterType })
+                    }
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    {FILTER_TYPES.map((type) => (
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={editingFilter.isActive}
+                    onChange={(e) =>
+                      setEditingFilter({ ...editingFilter, isActive: e.target.checked })
+                    }
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Filtro activo</span>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+                <Button onClick={() => setEditingFilter(null)} variant="secondary" size="sm">
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={async () => {
+                    if (!editingFilter.key || !editingFilter.label) return
+                    await handleUpdateFilter(editingFilter.id, editingFilter)
+                  }}
+                  variant="primary"
+                  size="sm"
+                  disabled={!editingFilter.key || !editingFilter.label}
+                >
+                  Guardar Cambios
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters List */}
       <div className="bg-white shadow rounded-lg">
@@ -411,7 +532,6 @@ export default function AdminFilters() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
-                      <div className={`w-4 h-4 rounded-full ${filter.color || 'bg-gray-500'}`} />
                       <Icon className="w-5 h-5 text-gray-600" />
                       <div>
                         <div className="flex items-center gap-2">
