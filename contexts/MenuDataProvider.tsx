@@ -64,7 +64,7 @@ const MenuDataProviderComponent = ({ children }: { children: React.ReactNode }) 
         const [categories, filters, items, dailyMenu, restaurant] = await Promise.all([
           listCategories(),
           listFilters(),
-          listItems(false), // Always fetch visible items initially
+          listItems(true), // Always fetch all items (including hidden)
           getDailyMenu(),
           getRestaurant(),
         ])
@@ -86,8 +86,8 @@ const MenuDataProviderComponent = ({ children }: { children: React.ReactNode }) 
     loadInitialData()
   }, [authLoading]) // Only depend on authLoading
 
-  const refreshItems = useCallback(async (showAll = false) => {
-    const items = await listItems(showAll)
+  const refreshItems = useCallback(async () => {
+    const items = await listItems(true) // Always fetch all items
     setState((prev) => ({
       ...prev,
       items,
