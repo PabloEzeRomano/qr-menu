@@ -15,7 +15,6 @@ import {
 } from './components'
 
 export default function AdminPage() {
-  // const { user, isAdmin, logout } = useAuth()
   const [activeView, setActiveView] = useState<AdminView>('overview')
 
   const navigationItems = [
