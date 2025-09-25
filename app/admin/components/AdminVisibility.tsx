@@ -121,8 +121,8 @@ export default function AdminVisibility() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Visibility Management</h2>
-          <p className="text-gray-600">Control what customers can see on the menu</p>
+          <h2 className="text-2xl font-bold text-gray-900">Gestión de Visibilidad</h2>
+          <p className="text-gray-600">Control lo que los clientes pueden ver en el menú</p>
         </div>
         <button
           onClick={handleSaveAll}
@@ -134,7 +134,7 @@ export default function AdminVisibility() {
           ) : (
             <Save className="w-4 h-4 mr-2" />
           )}
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? 'Guardando...' : 'Guardar Cambios'}
         </button>
       </div>
 
@@ -147,9 +147,9 @@ export default function AdminVisibility() {
                 <Calendar className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-900">Daily Menu</h3>
+                <h3 className="text-lg font-medium text-gray-900">Menú Diario</h3>
                 <p className="text-sm text-gray-500">
-                  {dailyMenu?.title || 'No daily menu configured'}
+                  {dailyMenu?.title || 'No menu diario configurado'}
                 </p>
               </div>
             </div>
@@ -165,7 +165,7 @@ export default function AdminVisibility() {
               ) : (
                 <>
                   <ToggleLeft className="w-6 h-6 text-gray-400" />
-                  <span className="text-gray-500">Hidden</span>
+                  <span className="text-gray-500">Oculto</span>
                 </>
               )}
             </button>
@@ -178,15 +178,15 @@ export default function AdminVisibility() {
         <div className="px-4 py-5 sm:p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-medium text-gray-900">
-              Categories ({categories?.length || 0})
+              Categorías ({categories?.length || 0})
             </h3>
-            <div className="text-sm text-gray-500">Toggle visibility for each category</div>
+            <div className="text-sm text-gray-500">Cambiar la visibilidad de cada categoría</div>
           </div>
 
           {!categories || categories.length === 0 ? (
             <div className="text-center py-8">
               <Tag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No categories found</p>
+              <p className="text-gray-500">No categorías encontradas</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -217,7 +217,7 @@ export default function AdminVisibility() {
                           </div>
                           <div className="flex items-center space-x-1 text-xs text-red-600">
                             <EyeOff className="w-3 h-3" />
-                            <span>{stats.hidden} hidden</span>
+                            <span>{stats.hidden} oculto</span>
                           </div>
                         </div>
                       </div>
@@ -234,7 +234,7 @@ export default function AdminVisibility() {
                       ) : (
                         <>
                           <ToggleLeft className="w-6 h-6 text-gray-400" />
-                          <span className="text-gray-500">Hidden</span>
+                          <span className="text-gray-500">Oculto</span>
                         </>
                       )}
                     </button>
@@ -248,24 +248,24 @@ export default function AdminVisibility() {
 
       {/* Summary */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="text-sm font-medium text-blue-900 mb-2">Visibility Summary</h4>
+        <h4 className="text-sm font-medium text-blue-900 mb-2">Resumen de Visibilidad</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
-            <span className="text-blue-700">Daily Menu:</span>
+            <span className="text-blue-700">Menu Diario:</span>
             <span
               className={`ml-2 font-medium ${dailyMenuVisibility ? 'text-green-600' : 'text-red-600'}`}
             >
-              {dailyMenuVisibility ? 'Visible' : 'Hidden'}
+              {dailyMenuVisibility ? 'Visible' : 'Oculto'}
             </span>
           </div>
           <div>
-            <span className="text-blue-700">Visible Categories:</span>
+            <span className="text-blue-700">Categorías Visibles:</span>
             <span className="ml-2 font-medium text-blue-900">
               {Object.values(categoryVisibility).filter(Boolean).length} / {categories?.length || 0}
             </span>
           </div>
           <div>
-            <span className="text-blue-700">Total Items:</span>
+            <span className="text-blue-700">Total de Items:</span>
             <span className="ml-2 font-medium text-blue-900">{items?.length || 0}</span>
           </div>
         </div>
