@@ -19,17 +19,25 @@ export default function ProtectedRoute({
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.push('/auth')
-        return
-      }
+    // Add a small delay to allow cache to load
+    const timeoutId = setTimeout(() => {
+      // Only redirect if we're not loading AND we have definitive information
+      if (!loading) {
+        if (!user) {
+          router.push('/auth')
+          return
+        }
 
-      if (requireAdmin && !isAdmin) {
-        router.push('/')
-        return
+        // For admin routes, only redirect if we're sure the user is not an admin
+        // This prevents redirecting during the brief moment when admin status is being verified
+        if (requireAdmin && !isAdmin) {
+          router.push('/')
+          return
+        }
       }
-    }
+    }, 100) // Small delay to allow cache to load
+
+    return () => clearTimeout(timeoutId)
   }, [user, isAdmin, loading, requireAdmin, router])
 
   if (loading) {
