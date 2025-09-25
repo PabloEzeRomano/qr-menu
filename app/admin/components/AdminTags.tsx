@@ -3,7 +3,7 @@
 import { useTagOperations } from '@/hooks/useTagOperations'
 import { Tag } from '@/types'
 import { Plus, Edit2, Trash2, GripVertical, Eye, EyeOff, Tag as TagIcon } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Button from '@/components/Button'
 
 const TAG_CATEGORIES = [
@@ -37,18 +37,18 @@ export default function AdminTags() {
     order: 0,
   })
 
-  useEffect(() => {
-    loadTags()
-  }, [])
-
-  const loadTags = async () => {
+  const loadTags = useCallback(async () => {
     try {
       const fetchedTags = await fetchTags()
       setTags(fetchedTags.sort((a, b) => a.order - b.order))
     } catch (error) {
       console.error('Error loading tags:', error)
     }
-  }
+  }, [fetchTags])
+
+  useEffect(() => {
+    loadTags()
+  }, [loadTags])
 
   const handleCreateTag = async () => {
     if (!newTag.key || !newTag.label) return
@@ -364,7 +364,7 @@ export default function AdminTags() {
                           category: e.target.value as Tag['category'],
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       {TAG_CATEGORIES.map((category) => (
                         <option key={category.value} value={category.value}>

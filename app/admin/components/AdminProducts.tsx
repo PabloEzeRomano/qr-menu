@@ -4,14 +4,25 @@ import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useOrders } from '@/hooks/useOrders'
 import { DollarSign, Eye, EyeOff, Package, Search } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useTags } from '@/contexts/TagsProvider'
+import ProductsTable from './ProductsTable'
+import { updateItem, deleteItem } from '@/lib/menuCRUD'
 
 export default function AdminProducts() {
-  const { items, categories, loading } = useMenuData()
+  const { items, categories, loading, refreshItems } = useMenuData()
   const { orders } = useOrders()
+  const { getTagById } = useTags()
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'visible' | 'hidden'>('all')
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
+
+  // Ensure we load all items (including hidden ones) when component mounts
+  useEffect(() => {
+    refreshItems(true)
+  }, [refreshItems])
 
   // Calculate product analytics
   const getProductAnalytics = () => {
@@ -75,6 +86,59 @@ export default function AdminProducts() {
 
   const getTopRevenueItems = () => {
     return [...productAnalytics].sort((a, b) => b.totalRevenue - a.totalRevenue).slice(0, 5)
+  }
+
+  // Action handlers
+  const handleToggleVisibility = async (productId: string) => {
+    setActionLoading(productId)
+    try {
+      // Find the current product to get its current visibility state
+      const currentProduct = items.find((item) => item.id === productId)
+      if (!currentProduct) {
+        console.error('Product not found:', productId)
+        return
+      }
+
+      // Toggle the visibility
+      const newVisibility = !currentProduct.isVisible
+
+      // Update the item via API
+      await updateItem(productId, { isVisible: newVisibility })
+
+      // Refresh the items to get the updated data
+      await refreshItems(true) // Pass true to show all items (including hidden ones)
+
+      console.log(`Product ${productId} visibility toggled to: ${newVisibility}`)
+    } catch (error) {
+      console.error('Error toggling product visibility:', error)
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleEditProduct = (product: any) => {
+    setSelectedProduct(product)
+    // TODO: Open edit modal or navigate to edit page
+    console.log('Edit product:', product)
+  }
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+      setActionLoading(productId)
+      try {
+        // Delete the product via API
+        await deleteItem(productId)
+
+        // Refresh the items to get the updated data
+        await refreshItems(true) // Pass true to show all items (including hidden ones)
+
+        console.log(`Product ${productId} deleted successfully`)
+      } catch (error) {
+        console.error('Error deleting product:', error)
+      } finally {
+        setActionLoading(null)
+      }
+    }
   }
 
   const totalRevenue = productAnalytics.reduce((sum, item) => sum + item.totalRevenue, 0)
@@ -201,7 +265,7 @@ export default function AdminProducts() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-                      <p className="text-sm text-gray-500">{item.totalQuantity} vendidos</p>
+                      <p className="text-sm">{item.totalQuantity} vendidos</p>
                     </div>
                   </div>
                   <div className="text-sm font-medium text-gray-900">
@@ -304,118 +368,17 @@ export default function AdminProducts() {
               <p className="text-gray-500">No se encontraron productos</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200" style={{ minWidth: '900px' }}>
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Producto
-                    </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
-                      Categoría
-                    </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Precio
-                    </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Estado
-                    </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
-                      Ventas
-                    </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
-                      Ingresos
-                    </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
-                      Tags
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="px-3 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
-                            <Image
-                              width={40}
-                              height={40}
-                              className="rounded-lg object-cover"
-                              src={item.img}
-                              alt={item.name}
-                            />
-                          </div>
-                          <div className="ml-3 min-w-0 flex-1">
-                            <div className="text-sm font-medium text-gray-900 truncate">
-                              {item.name}
-                            </div>
-                            <div className="text-xs text-gray-500 truncate max-w-24 sm:max-w-32 lg:max-w-xs">
-                              {item.description}
-                            </div>
-                            <div className="text-xs text-gray-400 md:hidden">
-                              {getCategoryIcon(item.category)} {getCategoryName(item.category)}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap hidden md:table-cell">
-                        <div className="flex items-center">
-                          <span className="text-lg mr-2">{getCategoryIcon(item.category)}</span>
-                          <span className="text-sm text-gray-900 truncate">
-                            {getCategoryName(item.category)}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        ${item.price.toLocaleString('es-AR')}
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            item.isVisible
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {item.isVisible ? (
-                            <>
-                              <Eye className="w-3 h-3 mr-1" />
-                              <span className="hidden sm:inline">Visible</span>
-                            </>
-                          ) : (
-                            <>
-                              <EyeOff className="w-3 h-3 mr-1" />
-                              <span className="hidden sm:inline">Oculto</span>
-                            </>
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell">
-                        {item.totalQuantity} vendidos
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 hidden xl:table-cell">
-                        ${item.totalRevenue.toLocaleString('es-AR')}
-                      </td>
-                      <td className="px-3 py-4 whitespace-nowrap hidden xl:table-cell">
-                        <div className="flex flex-wrap gap-1">
-                          {item.tags.slice(0, 2).map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                          {item.tags.length > 2 && (
-                            <span className="text-xs text-gray-500">+{item.tags.length - 2}</span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ProductsTable
+              products={filteredItems}
+              showActions={true}
+              // onEditProduct={handleEditProduct}
+              onToggleVisibility={handleToggleVisibility}
+              // onDeleteProduct={handleDeleteProduct}
+              actionLoading={actionLoading}
+              getCategoryName={getCategoryName}
+              getCategoryIcon={getCategoryIcon}
+              getTagById={getTagById}
+            />
           )}
         </div>
       </div>
