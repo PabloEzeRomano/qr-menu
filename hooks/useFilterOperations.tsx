@@ -112,7 +112,7 @@ export function useFilterOperations() {
 
   // Helper functions for creating common filter types
   const createTagFilter = useCallback(
-    (key: string, label: string, tagKey: string, icon?: string, color?: string) => {
+    (key: string, label: string, tagKey: string, icon?: string) => {
       const predicate: FilterPredicate = {
         conditions: [
           {
@@ -133,21 +133,13 @@ export function useFilterOperations() {
         predicate,
         isActive: true,
         order: 0,
-        color,
       })
     },
     [createFilter],
   )
 
   const createPriceRangeFilter = useCallback(
-    (
-      key: string,
-      label: string,
-      minPrice: number,
-      maxPrice: number,
-      icon?: string,
-      color?: string,
-    ) => {
+    (key: string, label: string, minPrice: number, maxPrice: number, icon?: string) => {
       const predicate: FilterPredicate = {
         conditions: [
           {
@@ -168,14 +160,13 @@ export function useFilterOperations() {
         predicate,
         isActive: true,
         order: 0,
-        color,
       })
     },
     [createFilter],
   )
 
   const createCategoryFilter = useCallback(
-    (key: string, label: string, categoryKey: string, icon?: string, color?: string) => {
+    (key: string, label: string, categoryKey: string, icon?: string) => {
       const predicate: FilterPredicate = {
         conditions: [
           {
@@ -196,7 +187,6 @@ export function useFilterOperations() {
         predicate,
         isActive: true,
         order: 0,
-        color,
       })
     },
     [createFilter],

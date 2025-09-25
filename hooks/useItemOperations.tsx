@@ -18,8 +18,7 @@ export function useItemOperations() {
       description: DEFAULT_VALUES.NEW_ITEM_DESCRIPTION,
       price: DEFAULT_VALUES.NEW_ITEM_PRICE,
       category: categoryKey,
-      tags: [],
-      diet: [],
+      tagIds: [],
       img: DEFAULT_VALUES.PLACEHOLDER_IMAGE,
       isVisible: true,
     }
