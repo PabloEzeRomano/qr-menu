@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 import { useErrorHandler } from './useErrorHandler'
 import { Filter, FilterCondition, FilterPredicate } from '@/types'
-import { listFilters, createFilters, updateFilters } from '@/lib/menuCRUD'
+import { listFilters, createFilters, updateFilters } from '@/lib/api/filters'
 
 export function useFilterOperations() {
   const { handleError } = useErrorHandler()

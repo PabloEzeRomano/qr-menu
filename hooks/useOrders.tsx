@@ -1,6 +1,6 @@
 'use client'
 
-import { listOrders } from '@/lib/menuCRUD'
+import { listOrders } from '@/lib/api/orders'
 import { Order } from '@/types'
 import { useCallback, useEffect, useState } from 'react'
 

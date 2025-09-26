@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback } from 'react'
-import { createItem, updateItem, deleteItem } from '@/lib/menuCRUD'
+import { createItem, updateItem, deleteItem } from '@/lib/api/menu'
 import { MenuItem } from '@/types'
 import { useMenuContext } from '@/contexts/MenuContextProvider'
 import { useMenuData } from '@/contexts/MenuDataProvider'

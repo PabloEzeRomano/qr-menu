@@ -2,8 +2,9 @@
 
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { ERROR_MESSAGES } from '@/lib/constants'
-import { patchDailyMenu, patchRestaurant } from '@/lib/menuCRUD'
-import { DailyMenu } from '@/types'
+import { patchDailyMenu } from '@/lib/api/menu'
+import { patchRestaurant } from '@/lib/api/restaurant'
+import { DailyMenu, Restaurant } from '@/types'
 import { useCallback } from 'react'
 import { useErrorHandler } from './useErrorHandler'
 
@@ -51,9 +52,21 @@ export function useRestaurantOperations() {
     [dailyMenu, handleError, refreshDailyMenu],
   )
 
+  const handleRestaurantSave = useCallback(
+    async (patch: Partial<Restaurant>) => {
+      try {
+        await patchRestaurant(patch)
+      } catch (error) {
+        handleError(error, ERROR_MESSAGES.RESTAURANT_SAVE)
+      }
+    },
+    [handleError],
+  )
+
   return {
     handleTitleSave,
     handleSubtitleSave,
     handleDailyMenuSave,
+    handleRestaurantSave,
   }
 }

@@ -8,7 +8,7 @@ import {
   getOrder as getOrderAPI,
   patchOrder,
   createOrder as createOrderAPI,
-} from '@/lib/menuCRUD'
+} from '@/lib/api/orders'
 
 interface UseOrderOperationsProps {
   updateOrder?: (order: Order) => void

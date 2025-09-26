@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 import { useErrorHandler } from './useErrorHandler'
 import { Tag } from '@/types'
-import { listTags, createTags, updateTags } from '@/lib/menuCRUD'
+import { listTags, createTags, updateTags } from '@/lib/api/filters'
 
 export function useTagOperations() {
   const { handleError } = useErrorHandler()

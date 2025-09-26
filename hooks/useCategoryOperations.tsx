@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback } from 'react'
-import { createCategory, updateCategory, deleteCategory } from '@/lib/menuCRUD'
+import { createCategory, updateCategory, deleteCategory } from '@/lib/api/menu'
 import { Category } from '@/types'
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useErrorHandler } from './useErrorHandler'
