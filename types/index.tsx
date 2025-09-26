@@ -43,7 +43,7 @@ export interface MenuItem {
   description: string
   price: number
   category: string
-  tagIds?: string[] // Store tag IDs instead of hardcoded values (optional for migration)
+  tagIds?: string[]
   img: string
   isVisible: boolean
   createdAt?: any
@@ -78,6 +78,9 @@ export interface OrderItem {
   quantity: number
   unit_price: number
 }
+
+// Re-export onboarding types
+export * from './onboarding'
 
 export interface Order {
   id: string
