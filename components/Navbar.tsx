@@ -36,9 +36,9 @@ export default function Navbar() {
                 Inicio
               </Button>
             </Link>
-            <Link href="/demo-menu">
-              <Button variant={pathname === '/demo-menu' ? 'nav-active' : 'nav'} size="sm">
-                Demo
+            <Link href="/menu">
+              <Button variant={pathname === '/menu' ? 'nav-active' : 'nav'} size="sm">
+                Menú
               </Button>
             </Link>
             {isAdmin && (
@@ -97,13 +97,13 @@ export default function Navbar() {
                     Inicio
                   </Button>
                 </Link>
-                <Link href="/demo-menu" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/menu" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button
-                    variant={pathname === '/demo-menu' ? 'nav-active' : 'nav'}
+                    variant={pathname === '/menu' ? 'nav-active' : 'nav'}
                     size="sm"
                     className="w-full justify-start"
                   >
-                    Demo
+                    Menú
                   </Button>
                 </Link>
                 {isAdmin && (

@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       createdAt: serverTimestamp(),
     })
 
-    const base = process.env.MP_BACK_URL_BASE || 'http://localhost:3000/demo-menu'
+    const base = process.env.MP_BACK_URL_BASE || 'http://localhost:3000/menu'
     if (!/^https?:\/\//i.test(base)) {
       throw new Error('MP_BACK_URL_BASE must be an absolute URL')
     }

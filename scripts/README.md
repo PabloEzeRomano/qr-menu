@@ -1,6 +1,6 @@
 # Firebase Database Seeder
 
-This directory contains scripts to seed your Firebase Firestore database with menu data from `app/demo-menu/data.json`.
+This directory contains scripts to seed your Firebase Firestore database with menu data from `app/menu/data.json`.
 
 ## Prerequisites
 
@@ -66,7 +66,7 @@ Each document includes:
 
 ## Data Structure
 
-The seeder uses the data from `app/demo-menu/data.json` which includes:
+The seeder uses the data from `app/menu/data.json` which includes:
 
 - **6 categories** with icons
 - **5 filter options**
@@ -89,4 +89,4 @@ The TypeScript version requires Node.js 16+ and works best with tsx. If you enco
 
 ## Development
 
-To modify the seeded data, edit `app/demo-menu/data.json` and re-run the seeder. The script will overwrite existing data in the database.
+To modify the seeded data, edit `app/menu/data.json` and re-run the seeder. The script will overwrite existing data in the database.

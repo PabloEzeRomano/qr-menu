@@ -4,7 +4,7 @@ import { Button } from '@/components/ui'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { AnimatedBackground } from './demo-menu/components'
+import { AnimatedBackground } from './menu/components'
 
 const phrases = [
   'Decile chau al menú en PDF',
@@ -80,10 +80,10 @@ export default function Landing() {
               variant="primary"
               size="lg"
               onClick={() => {
-                router.push('/demo-menu')
+                router.push('/menu')
               }}
             >
-              Probar demo
+              Ver Menú
             </Button>
           </motion.div>
         </div>

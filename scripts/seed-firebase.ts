@@ -97,7 +97,7 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 // Load menu data
-const dataPath = path.join(__dirname, '..', 'app', 'demo-menu', 'data.json')
+const dataPath = path.join(__dirname, '..', 'app', 'menu', 'data.json')
 let menuData: MenuData
 
 try {

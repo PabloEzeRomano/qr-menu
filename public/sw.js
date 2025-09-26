@@ -8,7 +8,7 @@ const IS_DEVELOPMENT = self.location.hostname === 'localhost'
 // Files to cache for offline use
 const STATIC_ASSETS = [
   '/',
-  '/demo-menu',
+  '/menu',
   '/auth',
   '/manifest.json',
   '/_next/static/css/app/layout.css',

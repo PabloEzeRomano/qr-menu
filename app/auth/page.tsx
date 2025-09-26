@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { AnimatedBackground } from '../demo-menu/components'
+import { AnimatedBackground } from '../menu/components'
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)

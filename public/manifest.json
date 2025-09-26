@@ -78,7 +78,7 @@
       "name": "Ver Menú",
       "short_name": "Menú",
       "description": "Ver el menú del restaurante",
-      "url": "/demo-menu",
+      "url": "/menu",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
