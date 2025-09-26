@@ -55,7 +55,7 @@ function MenuContentComponent() {
   return (
     <>
       <motion.main
-        key="demo-menu"
+        key="menu"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -12 }}

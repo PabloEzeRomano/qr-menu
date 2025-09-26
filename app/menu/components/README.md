@@ -1,6 +1,6 @@
-# Demo Menu Components
+# Menu Components
 
-This directory contains the modular components for the demo menu page. The components are designed to be reusable and maintainable.
+This directory contains the modular components for the menu page. The components are designed to be reusable and maintainable.
 
 ## Component Structure
 

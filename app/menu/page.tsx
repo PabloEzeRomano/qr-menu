@@ -2,27 +2,27 @@
 
 import { AppProvider } from '@/contexts/AppProvider'
 import { Suspense } from 'react'
-import { LoadingScreen, MenuContent, MenuManager, PaymentStatusHandler } from './components'
+import { LoadingScreen, MenuContent as MenuContentComponent, MenuManager, PaymentStatusHandler } from './components'
 import Toast from '@/components/ui/Toast'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
 
-function DemoMenuContent() {
+function MenuContent() {
   const { error, hideError } = useErrorHandler()
 
   return (
     <AppProvider>
       <MenuManager>
-        <MenuContent />
+        <MenuContentComponent />
       </MenuManager>
       <Toast error={error} onClose={hideError} />
     </AppProvider>
   )
 }
 
-export default function DemoMenu() {
+export default function Menu() {
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <DemoMenuContent />
+      <MenuContent />
       <Suspense fallback={null}>
         <PaymentStatusHandler />
       </Suspense>
