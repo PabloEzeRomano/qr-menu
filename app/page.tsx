@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/Button'
+import { Button } from '@/components/ui'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -86,17 +86,6 @@ export default function Landing() {
               Probar demo
             </Button>
           </motion.div>
-
-          {/* <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.2, duration: 0.5 }}
-            className="mt-8 text-center"
-          >
-            <p className="text-gray-400 text-sm">
-              ✨ Sin registración • Completamente gratis • Responsive
-            </p>
-          </motion.div> */}
         </div>
       </motion.main>
     </AnimatePresence>

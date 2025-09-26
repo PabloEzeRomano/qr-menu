@@ -3,7 +3,7 @@
 import { AppProvider } from '@/contexts/AppProvider'
 import { Suspense } from 'react'
 import { LoadingScreen, MenuContent, MenuManager, PaymentStatusHandler } from './components'
-import Toast from '@/components/Toast'
+import Toast from '@/components/ui/Toast'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
 
 function DemoMenuContent() {

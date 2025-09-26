@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/Button'
+import { Button, Input } from '@/components/ui'
 import { useAuth } from '@/contexts/AuthContextProvider'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
@@ -103,13 +103,15 @@ export default function AuthPage() {
                     >
                       Nombre de usuario
                     </label>
-                    <input
+                    <Input
                       id="displayName"
                       name="displayName"
                       type="text"
                       required={!isLogin}
                       value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setDisplayName(e.target.value)
+                      }
                       className="appearance-none relative block w-full px-4 py-3 bg-black/30 border border-gray-600/50 backdrop-blur-sm placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all duration-200"
                       placeholder="Ingresa tu nombre de usuario"
                     />
@@ -120,14 +122,14 @@ export default function AuthPage() {
                 <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                   Correo electrónico
                 </label>
-                <input
+                <Input
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                   className="appearance-none relative block w-full px-4 py-3 bg-black/30 border border-gray-600/50 backdrop-blur-sm placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all duration-200"
                   placeholder="correo@ejemplo.com"
                 />
@@ -136,14 +138,14 @@ export default function AuthPage() {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
                   Contraseña
                 </label>
-                <input
+                <Input
                   id="password"
                   name="password"
                   type="password"
                   autoComplete="current-password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                   className="appearance-none relative block w-full px-4 py-3 bg-black/30 border border-gray-600/50 backdrop-blur-sm placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all duration-200"
                   placeholder="Ingresa tu contraseña"
                 />
