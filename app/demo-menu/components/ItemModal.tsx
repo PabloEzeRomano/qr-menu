@@ -8,7 +8,7 @@ import { MenuItem } from '@/types'
 import { useCart } from '@/contexts/CartProvider'
 import { useAuth } from '@/contexts/AuthContextProvider'
 import { useTags } from '@/contexts/TagsProvider'
-import Button from '@/components/Button'
+import { Button } from '@/components/ui'
 
 interface ItemModalProps {
   item: MenuItem | null

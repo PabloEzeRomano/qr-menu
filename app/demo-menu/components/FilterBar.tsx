@@ -1,8 +1,7 @@
 'use client'
 
-import Button from '@/components/Button'
+import { Button } from '@/components/ui'
 import { useFilters } from '@/contexts/FiltersProvider'
-import { useMenuFilters } from '@/hooks/useMenuFilters'
 import { MenuItem } from '@/types'
 
 interface FilterBarProps {

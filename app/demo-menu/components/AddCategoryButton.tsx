@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/Button'
+import { Button, Input } from '@/components/ui'
 import { motion } from 'framer-motion'
 import { Check, Plus } from 'lucide-react'
 import { useState } from 'react'
@@ -56,10 +56,12 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
           {/* Icon */}
           <div>
             <label className="block text-cyan-200 text-sm font-medium mb-1">Icono</label>
-            <input
+            <Input
               type="text"
               value={tempCategory.icon}
-              onChange={(e) => setTempCategory((prev) => ({ ...prev, icon: e.target.value }))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setTempCategory((prev) => ({ ...prev, icon: e.target.value }))
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400 text-center text-2xl"
               placeholder="🍽️"
             />
@@ -70,10 +72,10 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
             <label className="block text-cyan-200 text-sm font-medium mb-1">
               Clave (sin espacios)
             </label>
-            <input
+            <Input
               type="text"
               value={tempCategory.key}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setTempCategory((prev) => ({
                   ...prev,
                   key: e.target.value.replace(/\s+/g, '-').toLowerCase(),
@@ -87,10 +89,12 @@ export default function AddCategoryButton({ isEditMode, onAddCategory }: AddCate
           {/* Label */}
           <div>
             <label className="block text-cyan-200 text-sm font-medium mb-1">Nombre</label>
-            <input
+            <Input
               type="text"
               value={tempCategory.label}
-              onChange={(e) => setTempCategory((prev) => ({ ...prev, label: e.target.value }))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setTempCategory((prev) => ({ ...prev, label: e.target.value }))
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="Nueva Categoría"
             />

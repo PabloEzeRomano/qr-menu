@@ -5,7 +5,8 @@ import { motion } from 'framer-motion'
 import { Check, Edit2, Plus, Trash2, X } from 'lucide-react'
 import { useState } from 'react'
 import EditableMenuItem from './EditableMenuItem'
-import Button from '@/components/Button'
+import { Button } from '@/components/ui'
+import { Input } from '@/components/ui'
 import { useCategoryOperations } from '@/hooks/useCategoryOperations'
 import { useItemOperations } from '@/hooks/useItemOperations'
 interface EditableMenuCategoryProps {
@@ -67,10 +68,12 @@ export default function EditableMenuCategory({
         <div className="relative">
           {isEditingCategory ? (
             <div className="flex items-center gap-2">
-              <input
+              <Input
                 type="text"
                 value={tempCategory.icon}
-                onChange={(e) => setTempCategory((prev) => ({ ...prev, icon: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setTempCategory((prev) => ({ ...prev, icon: e.target.value }))
+                }
                 className="text-3xl bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 text-center w-16"
                 placeholder="🍽️"
                 autoFocus
@@ -106,10 +109,10 @@ export default function EditableMenuCategory({
         <div className="relative">
           {isEditingCategory ? (
             <div className="flex items-center gap-2">
-              <input
+              <Input
                 type="text"
                 value={tempCategory.label}
-                onChange={(e) =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setTempCategory((prev) => ({
                     ...prev,
                     label: e.target.value,

@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/Button'
+import { Button, TextArea, Input } from '@/components/ui'
 import TagDisplay from '@/components/TagDisplay'
 import TagSelector from '@/components/TagSelector'
 import { useAuth } from '@/contexts/AuthContextProvider'
@@ -130,10 +130,12 @@ export default function EditableMenuItem({
           {/* Name */}
           <div>
             <label className="block text-cyan-200 text-sm font-medium mb-1">Nombre</label>
-            <input
+            <Input
               type="text"
               value={displayItem.name}
-              onChange={(e) => updateField('name', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                updateField('name', e.target.value)
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="Nombre del plato"
             />
@@ -142,9 +144,11 @@ export default function EditableMenuItem({
           {/* Description */}
           <div>
             <label className="block text-cyan-200 text-sm font-medium mb-1">Descripción</label>
-            <textarea
+            <TextArea
               value={displayItem.description}
-              onChange={(e) => updateField('description', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                updateField('description', e.target.value)
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400 resize-none"
               rows={3}
               placeholder="Descripción del plato"
@@ -154,10 +158,12 @@ export default function EditableMenuItem({
           {/* Price */}
           <div>
             <label className="block text-cyan-200 text-sm font-medium mb-1">Precio</label>
-            <input
+            <Input
               type="number"
               value={displayItem.price}
-              onChange={(e) => updateField('price', parseInt(e.target.value) || 0)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                updateField('price', parseInt(e.target.value) || 0)
+              }
               className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
               placeholder="0"
             />

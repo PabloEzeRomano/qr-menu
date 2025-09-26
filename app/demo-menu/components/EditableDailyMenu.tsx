@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react'
-import Button from '@/components/Button'
+import { Button, Input } from '@/components/ui'
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'
 import { DailyMenu } from '@/types'
@@ -89,10 +89,12 @@ export default function EditableDailyMenu({ isEditMode }: EditableDailyMenuProps
           <div className="relative">
             {isEditingTitle ? (
               <div className="flex items-center gap-2">
-                <input
+                <Input
                   type="text"
                   value={patch.title ?? ''}
-                  onChange={(e) => handlePatch('title', e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handlePatch('title', e.target.value)
+                  }
                   className="text-2xl md:text-3xl font-extrabold text-white bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300"
                   autoFocus
                 />
@@ -133,10 +135,12 @@ export default function EditableDailyMenu({ isEditMode }: EditableDailyMenuProps
           {isEditingHours ? (
             <div className="flex items-center gap-2">
               <span className="text-cyan-100 font-medium">Disponible de</span>
-              <input
+              <Input
                 type="text"
                 value={patch.hours ?? ''}
-                onChange={(e) => handlePatch('hours', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handlePatch('hours', e.target.value)
+                }
                 className="text-cyan-100 bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 font-medium"
                 placeholder="12:00–15:00"
                 autoFocus
@@ -179,10 +183,12 @@ export default function EditableDailyMenu({ isEditMode }: EditableDailyMenuProps
             <>
               {patch.items?.map((item, index) => (
                 <div key={index} className="relative">
-                  <input
+                  <Input
                     type="text"
                     value={item}
-                    onChange={(e) => updateItem(index, e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      updateItem(index, e.target.value)
+                    }
                     className="w-full bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 shadow-lg text-white placeholder-white/50 focus:outline-none focus:border-cyan-400"
                     placeholder={`Item ${index + 1}`}
                   />
@@ -220,10 +226,12 @@ export default function EditableDailyMenu({ isEditMode }: EditableDailyMenuProps
             {isEditingPrice ? (
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-extrabold text-white drop-shadow-lg">$</span>
-                <input
+                <Input
                   type="number"
                   value={patch.price?.toString() ?? '0'}
-                  onChange={(e) => setPatch({ ...patch, price: parseInt(e.target.value) })}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPatch({ ...patch, price: parseInt(e.target.value) })
+                  }
                   className="text-2xl font-extrabold text-white bg-transparent border-b-2 border-cyan-400 focus:outline-none focus:border-cyan-300 w-24"
                   autoFocus
                 />
