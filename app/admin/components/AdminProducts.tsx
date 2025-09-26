@@ -5,9 +5,10 @@ import { useOrders } from '@/hooks/useOrders'
 import { DollarSign, Eye, EyeOff, Package, Search } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { Input, Select } from '@/components/ui'
 import { useTags } from '@/contexts/TagsProvider'
 import ProductsTable from './ProductsTable'
-import { updateItem, deleteItem } from '@/lib/menuCRUD'
+import { updateItem, deleteItem } from '@/lib/api/menu'
 
 export default function AdminProducts() {
   const { items, categories, loading, refreshItems } = useMenuData()
@@ -102,8 +103,6 @@ export default function AdminProducts() {
 
       // Refresh the items to get the updated data
       await refreshItems()
-
-      console.log(`Product ${productId} visibility toggled to: ${newVisibility}`)
     } catch (error) {
       console.error('Error toggling product visibility:', error)
     } finally {
@@ -114,7 +113,7 @@ export default function AdminProducts() {
   const handleEditProduct = (product: any) => {
     setSelectedProduct(product)
     // TODO: Open edit modal or navigate to edit page
-    console.log('Edit product:', product)
+    // console.log('Edit product:', product)
   }
 
   const handleDeleteProduct = async (productId: string) => {
@@ -127,7 +126,7 @@ export default function AdminProducts() {
         // Refresh the items to get the updated data
         await refreshItems()
 
-        console.log(`Product ${productId} deleted successfully`)
+        // console.log(`Product ${productId} deleted successfully`)
       } catch (error) {
         console.error('Error deleting product:', error)
       } finally {
@@ -313,39 +312,41 @@ export default function AdminProducts() {
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
+              <Input
                 type="text"
                 placeholder="Buscar productos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className="pl-10"
+                containerClassName="mb-0"
               />
             </div>
           </div>
           <div className="w-full sm:w-48">
-            <select
+            <Select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="all">Todas las Categorías</option>
-              {categories?.map((category) => (
-                <option key={category.key} value={category.key}>
-                  {category.icon} {category.label}
-                </option>
-              ))}
-            </select>
+              options={[
+                { value: 'all', label: 'Todas las Categorías' },
+                ...(categories?.map((category) => ({
+                  value: category.key,
+                  label: `${category.icon} ${category.label}`,
+                })) || []),
+              ]}
+              containerClassName="mb-0"
+            />
           </div>
           <div className="w-full sm:w-32">
-            <select
+            <Select
               value={visibilityFilter}
               onChange={(e) => setVisibilityFilter(e.target.value as 'all' | 'visible' | 'hidden')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="all">Todos los Items</option>
-              <option value="visible">Visible</option>
-              <option value="hidden">Oculto</option>
-            </select>
+              options={[
+                { value: 'all', label: 'Todos los Items' },
+                { value: 'visible', label: 'Visible' },
+                { value: 'hidden', label: 'Oculto' },
+              ]}
+              containerClassName="mb-0"
+            />
           </div>
         </div>
       </div>

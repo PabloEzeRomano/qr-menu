@@ -14,6 +14,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import { useState } from 'react'
+import { Input, Select } from '@/components/ui'
 
 export default function AdminOrders() {
   const { orders, loading, getOrdersByStatus, updateOrder, removeOrder } = useOrders()
@@ -80,27 +81,29 @@ export default function AdminOrders() {
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
+              <Input
                 type="text"
                 placeholder="Buscar órdenes por ID, mesa o productos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className="pl-10"
+                containerClassName="mb-0"
               />
             </div>
           </div>
           <div className="sm:w-48">
-            <select
+            <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as Order['status'] | 'all')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="all">Todos los Estados</option>
-              <option value="pending">Pendiente</option>
-              <option value="approved">Aprobada</option>
-              <option value="rejected">Rechazada</option>
-              <option value="cancelled">Cancelada</option>
-            </select>
+              options={[
+                { value: 'all', label: 'Todos los Estados' },
+                { value: 'pending', label: 'Pendiente' },
+                { value: 'approved', label: 'Aprobada' },
+                { value: 'rejected', label: 'Rechazada' },
+                { value: 'cancelled', label: 'Cancelada' },
+              ]}
+              containerClassName="mb-0"
+            />
           </div>
         </div>
       </div>

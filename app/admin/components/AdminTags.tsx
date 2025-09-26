@@ -4,7 +4,7 @@ import { useTagOperations } from '@/hooks/useTagOperations'
 import { Tag } from '@/types'
 import { Plus, Edit2, Trash2, GripVertical, Eye, EyeOff, Tag as TagIcon } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
-import Button from '@/components/Button'
+import { Input, Select, Button } from '@/components/ui'
 
 const TAG_CATEGORIES = [
   { value: 'diet', label: 'Dieta', color: 'bg-green-100 text-green-800' },
@@ -182,40 +182,35 @@ export default function AdminTags() {
           <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Clave (ID)</label>
-                <input
+                <Input
+                  label="Clave (ID)"
                   type="text"
                   value={newTag.key || ''}
                   onChange={(e) => setNewTag({ ...newTag, key: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="ej: picante, sin-lactosa"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Etiqueta</label>
-                <input
+                <Input
+                  label="Etiqueta"
                   type="text"
                   value={newTag.label || ''}
                   onChange={(e) => setNewTag({ ...newTag, label: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="ej: Picante, Sin Lactosa"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-                <select
+                <Select
+                  label="Categoría"
                   value={newTag.category || 'custom'}
                   onChange={(e) =>
                     setNewTag({ ...newTag, category: e.target.value as Tag['category'] })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  {TAG_CATEGORIES.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
-                  ))}
-                </select>
+                  options={TAG_CATEGORIES.map((category) => ({
+                    value: category.value,
+                    label: category.label,
+                  }))}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
@@ -333,30 +328,24 @@ export default function AdminTags() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Clave (ID)
-                    </label>
-                    <input
+                    <Input
+                      label="Clave (ID)"
                       type="text"
                       value={editingTag.key}
                       onChange={(e) => setEditingTag({ ...editingTag, key: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Etiqueta</label>
-                    <input
+                    <Input
+                      label="Etiqueta"
                       type="text"
                       value={editingTag.label}
                       onChange={(e) => setEditingTag({ ...editingTag, label: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Categoría
-                    </label>
-                    <select
+                    <Select
+                      label="Categoría"
                       value={editingTag.category}
                       onChange={(e) =>
                         setEditingTag({
@@ -364,14 +353,11 @@ export default function AdminTags() {
                           category: e.target.value as Tag['category'],
                         })
                       }
-                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      {TAG_CATEGORIES.map((category) => (
-                        <option key={category.value} value={category.value}>
-                          {category.label}
-                        </option>
-                      ))}
-                    </select>
+                      options={TAG_CATEGORIES.map((category) => ({
+                        value: category.value,
+                        label: category.label,
+                      }))}
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>

@@ -15,7 +15,7 @@ import {
   Save,
   RefreshCw,
 } from 'lucide-react'
-import { Category, DailyMenu } from '@/types'
+import { Button } from '@/components/ui'
 
 export default function AdminVisibility() {
   const { categories, dailyMenu, items, loading } = useMenuData()
@@ -124,18 +124,14 @@ export default function AdminVisibility() {
           <h2 className="text-2xl font-bold text-gray-900">Gestión de Visibilidad</h2>
           <p className="text-gray-600">Control lo que los clientes pueden ver en el menú</p>
         </div>
-        <button
-          onClick={handleSaveAll}
-          disabled={!hasChanges() || isSaving}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button onClick={handleSaveAll} disabled={!hasChanges() || isSaving} size="md">
           {isSaving ? (
             <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
           ) : (
             <Save className="w-4 h-4 mr-2" />
           )}
           {isSaving ? 'Guardando...' : 'Guardar Cambios'}
-        </button>
+        </Button>
       </div>
 
       {/* Daily Menu Visibility */}

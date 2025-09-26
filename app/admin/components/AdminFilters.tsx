@@ -19,7 +19,7 @@ import {
   Settings,
 } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
-import Button from '@/components/Button'
+import { Input, Select, Button } from '@/components/ui'
 
 const FILTER_TYPES = [
   { value: 'tag', label: 'Por Etiqueta', icon: Tag, color: 'bg-blue-100 text-blue-800' },
@@ -286,42 +286,35 @@ export default function AdminFilters() {
           <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Clave (ID)</label>
-                <input
+                <Input
+                  label="Clave (ID)"
                   type="text"
                   value={newFilter.key || ''}
                   onChange={(e) => setNewFilter({ ...newFilter, key: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="ej: vegetariano, economico"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Etiqueta</label>
-                <input
+                <Input
+                  label="Etiqueta"
                   type="text"
                   value={newFilter.label || ''}
                   onChange={(e) => setNewFilter({ ...newFilter, label: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="ej: Vegetariano, Económico"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tipo de Filtro
-                </label>
-                <select
+                <Select
+                  label="Tipo de Filtro"
                   value={newFilter.type || 'tag'}
                   onChange={(e) =>
                     setNewFilter({ ...newFilter, type: e.target.value as FilterType })
                   }
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  {FILTER_TYPES.map((type) => (
-                    <option key={type.value} value={type.value}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
+                  options={FILTER_TYPES.map((type) => ({
+                    value: type.value,
+                    label: type.label,
+                  }))}
+                />
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -405,66 +398,55 @@ export default function AdminFilters() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Clave (ID)</label>
-                  <input
+                  <Input
+                    label="Clave (ID)"
                     type="text"
                     value={editingFilter.key}
                     onChange={(e) => setEditingFilter({ ...editingFilter, key: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="ej: vegetariano, economico"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Etiqueta</label>
-                  <input
+                  <Input
+                    label="Etiqueta"
                     type="text"
                     value={editingFilter.label}
                     onChange={(e) => setEditingFilter({ ...editingFilter, label: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="ej: Vegetariano, Económico"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Descripción
-                  </label>
-                  <input
+                  <Input
+                    label="Descripción"
                     type="text"
                     value={editingFilter.description || ''}
                     onChange={(e) =>
                       setEditingFilter({ ...editingFilter, description: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Descripción opcional"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ícono</label>
-                  <input
+                  <Input
+                    label="Ícono"
                     type="text"
                     value={editingFilter.icon || ''}
                     onChange={(e) => setEditingFilter({ ...editingFilter, icon: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="🏷️, 💰, etc."
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tipo de Filtro
-                  </label>
-                  <select
+                  <Select
+                    label="Tipo de Filtro"
                     value={editingFilter.type}
                     onChange={(e) =>
                       setEditingFilter({ ...editingFilter, type: e.target.value as FilterType })
                     }
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  >
-                    {FILTER_TYPES.map((type) => (
-                      <option key={type.value} value={type.value}>
-                        {type.label}
-                      </option>
-                    ))}
-                  </select>
+                    options={FILTER_TYPES.map((type) => ({
+                      value: type.value,
+                      label: type.label,
+                    }))}
+                  />
                 </div>
               </div>
 
