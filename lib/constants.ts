@@ -11,6 +11,7 @@ export const ERROR_MESSAGES = {
   RESTAURANT_SUBTITLE: 'Error actualizando la descripción',
   DAILY_MENU_SAVE: 'Error guardando el Menú del día',
   IMAGE_UPLOAD: 'Error subiendo la imagen',
+  RESTAURANT_SAVE: 'Error guardando el restaurante',
 } as const
 
 // Default Values
