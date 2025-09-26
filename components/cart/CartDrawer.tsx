@@ -1,7 +1,7 @@
 'use client'
 
-import Button from '@/components/Button'
-import { cartPayment } from '@/lib/cartPreferenceApi'
+import Button from '@/components/ui/Button'
+import { cartPayment } from '@/lib/api/cart'
 import { useCart } from '@/contexts/CartProvider'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus, Trash2, X } from 'lucide-react'

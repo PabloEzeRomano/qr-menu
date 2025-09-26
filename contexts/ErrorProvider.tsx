@@ -2,7 +2,7 @@
 
 import { createContext, useContext, ReactNode } from 'react'
 import { useErrorHandler, ErrorState } from '@/hooks/useErrorHandler'
-import Toast from '@/components/Toast'
+import Toast from '@/components/ui/Toast'
 
 interface ErrorContextType {
   error: ErrorState

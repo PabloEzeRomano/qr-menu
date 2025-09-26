@@ -1,7 +1,9 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, useRef, memo, useCallback } from 'react'
-import { getDailyMenu, getRestaurant, listCategories, listFilters, listItems } from '@/lib/menuCRUD'
+import { getDailyMenu, listCategories, listItems } from '@/lib/api/menu'
+import { getRestaurant } from '@/lib/api/restaurant'
+import { listFilters } from '@/lib/api/filters'
 import type { Category, DailyMenu, Filter, MenuItem, Restaurant } from '@/types'
 import { useAuth } from '@/contexts/AuthContextProvider'
 

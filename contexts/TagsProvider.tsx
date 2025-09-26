@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { Tag } from '@/types'
-import { listTags } from '@/lib/menuCRUD'
+import { listTags } from '@/lib/api/filters'
 
 interface TagsContextType {
   tags: Tag[]

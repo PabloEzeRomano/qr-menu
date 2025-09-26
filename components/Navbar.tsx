@@ -1,6 +1,6 @@
 'use client'
 
-import Button from './Button'
+import Button from './ui/Button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
