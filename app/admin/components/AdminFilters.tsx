@@ -17,6 +17,7 @@ import {
   Folder,
   Clock,
   Settings,
+  X,
 } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
 import { Input, Select, Button } from '@/components/ui'
@@ -268,7 +269,7 @@ export default function AdminFilters() {
 
       {/* Create New Filter */}
       <div className="bg-white shadow rounded-lg p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className={`flex items-center justify-between${isCreating ? ' mb-4' : ''}`}>
           <h3 className="text-lg font-medium text-gray-900">
             {isCreating ? 'Crear Nuevo Filtro' : 'Filtros'}
           </h3>
@@ -278,13 +279,13 @@ export default function AdminFilters() {
             size="sm"
             className="flex items-center gap-2"
           >
-            <Plus size={16} />
+            {isCreating ? <X size={16} /> : <Plus size={16} />}
             {isCreating ? 'Cancelar' : 'Nuevo Filtro'}
           </Button>
         </div>
         {isCreating && (
           <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Input
                   label="Clave (ID)"
@@ -303,7 +304,7 @@ export default function AdminFilters() {
                   placeholder="ej: Vegetariano, Económico"
                 />
               </div>
-              <div>
+              <div className="sm:col-span-2">
                 <Select
                   label="Tipo de Filtro"
                   value={newFilter.type || 'tag'}
@@ -317,7 +318,7 @@ export default function AdminFilters() {
                 />
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <Button
                 onClick={handleCreateFilter}
                 variant="primary"
@@ -328,10 +329,16 @@ export default function AdminFilters() {
                   (newFilter.type !== 'custom' &&
                     (!newFilter.predicate || newFilter.predicate.conditions.length === 0))
                 }
+                className="flex-1 sm:flex-none"
               >
                 Crear Filtro
               </Button>
-              <Button onClick={() => setIsCreating(false)} variant="secondary" size="sm">
+              <Button
+                onClick={() => setIsCreating(false)}
+                variant="secondary"
+                size="sm"
+                className="flex-1 sm:flex-none"
+              >
                 Cancelar
               </Button>
             </div>
@@ -342,41 +349,41 @@ export default function AdminFilters() {
       {/* Quick Actions */}
       <div className="bg-white shadow rounded-lg p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Acciones Rápidas</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <Button
             onClick={handleCreateTagFilters}
             variant="secondary"
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2"
           >
             <Tag size={16} />
-            Crear Filtros de Etiquetas
+            <span className="truncate">Crear Filtros de Etiquetas</span>
           </Button>
           <Button
             onClick={handleCreatePriceFilters}
             variant="secondary"
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2"
           >
             <DollarSign size={16} />
-            Crear Filtros de Precio
+            <span className="truncate">Crear Filtros de Precio</span>
           </Button>
           <Button
             onClick={handleCreateCategoryFilters}
             variant="secondary"
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 sm:col-span-2 lg:col-span-1"
           >
             <Folder size={16} />
-            Crear Filtros de Categoría
+            <span className="truncate">Crear Filtros de Categoría</span>
           </Button>
         </div>
       </div>
 
       {/* Edit Filter Modal */}
       {editingFilter && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-gray-900">Editar Filtro</h3>
               <button
@@ -396,7 +403,7 @@ export default function AdminFilters() {
             </div>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Input
                     label="Clave (ID)"
@@ -435,7 +442,7 @@ export default function AdminFilters() {
                     placeholder="🏷️, 💰, etc."
                   />
                 </div>
-                <div>
+                <div className="sm:col-span-2">
                   <Select
                     label="Tipo de Filtro"
                     value={editingFilter.type}
@@ -464,8 +471,13 @@ export default function AdminFilters() {
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-                <Button onClick={() => setEditingFilter(null)} variant="secondary" size="sm">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-4 border-t border-gray-200">
+                <Button
+                  onClick={() => setEditingFilter(null)}
+                  variant="secondary"
+                  size="sm"
+                  className="flex-1 sm:flex-none"
+                >
                   Cancelar
                 </Button>
                 <Button
@@ -476,6 +488,7 @@ export default function AdminFilters() {
                   variant="primary"
                   size="sm"
                   disabled={!editingFilter.key || !editingFilter.label}
+                  className="flex-1 sm:flex-none"
                 >
                   Guardar Cambios
                 </Button>
@@ -487,10 +500,10 @@ export default function AdminFilters() {
 
       {/* Filters List */}
       <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">Filtros ({filters.length})</h3>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 overflow-hidden">
           {filters.length === 0 ? (
             <div className="text-center py-8">
               <FilterIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -508,53 +521,66 @@ export default function AdminFilters() {
                   onDragStart={(e) => handleDragStart(e, filter.id)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, filter.id)}
-                  className="p-4 hover:bg-gray-50 transition-colors"
+                  className="p-3 sm:p-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
-                      <Icon className="w-5 h-5 text-gray-600" />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-gray-900">{filter.label}</span>
-                          <span className="text-sm text-gray-500">({filter.key})</span>
-                          <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full ${typeInfo.color}`}
-                          >
-                            {typeInfo.label}
-                          </span>
+                  <div className="flex flex-col gap-3">
+                    {/* Header row with drag handle, icon, and actions */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <GripVertical className="w-5 h-5 text-gray-400 cursor-move flex-shrink-0" />
+                        <Icon className="w-5 h-5 text-gray-600 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-medium text-gray-900 truncate">
+                              {filter.label}
+                            </span>
+                            <span className="text-sm text-gray-500 flex-shrink-0">
+                              ({filter.key})
+                            </span>
+                          </div>
                         </div>
-                        {filter.description && (
-                          <div className="text-sm text-gray-500 mt-1">{filter.description}</div>
-                        )}
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <button
+                          onClick={() => handleToggleActive(filter.id)}
+                          className={`p-2 rounded-md transition-colors ${
+                            filter.isActive
+                              ? 'text-green-600 hover:bg-green-100'
+                              : 'text-gray-400 hover:bg-gray-100'
+                          }`}
+                          title={filter.isActive ? 'Ocultar filtro' : 'Mostrar filtro'}
+                        >
+                          {filter.isActive ? <Eye size={16} /> : <EyeOff size={16} />}
+                        </button>
+                        <button
+                          onClick={() => setEditingFilter(filter)}
+                          className="p-2 text-indigo-600 hover:bg-indigo-100 rounded-md transition-colors"
+                          title="Editar filtro"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteFilter(filter.id)}
+                          className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                          title="Eliminar filtro"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleToggleActive(filter.id)}
-                        className={`p-2 rounded-md transition-colors ${
-                          filter.isActive
-                            ? 'text-green-600 hover:bg-green-100'
-                            : 'text-gray-400 hover:bg-gray-100'
-                        }`}
-                        title={filter.isActive ? 'Ocultar filtro' : 'Mostrar filtro'}
+
+                    {/* Description and type badge row */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                      {filter.description && (
+                        <div className="text-sm text-gray-500 break-words flex-1">
+                          {filter.description}
+                        </div>
+                      )}
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${typeInfo.color} self-start sm:self-auto`}
                       >
-                        {filter.isActive ? <Eye size={16} /> : <EyeOff size={16} />}
-                      </button>
-                      <button
-                        onClick={() => setEditingFilter(filter)}
-                        className="p-2 text-indigo-600 hover:bg-indigo-100 rounded-md transition-colors"
-                        title="Editar filtro"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteFilter(filter.id)}
-                        className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
-                        title="Eliminar filtro"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                        {typeInfo.label}
+                      </span>
                     </div>
                   </div>
                 </div>

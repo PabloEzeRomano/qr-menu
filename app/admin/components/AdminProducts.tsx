@@ -152,7 +152,7 @@ export default function AdminProducts() {
     <div className="space-y-4 lg:space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Analytics de Productos</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Analiticas de Productos</h2>
         <p className="text-gray-600">
           Analizar el rendimiento y los datos de ventas de los productos
         </p>

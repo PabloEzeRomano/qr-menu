@@ -2,7 +2,7 @@
 
 import { useTagOperations } from '@/hooks/useTagOperations'
 import { Tag } from '@/types'
-import { Plus, Edit2, Trash2, GripVertical, Eye, EyeOff, Tag as TagIcon } from 'lucide-react'
+import { Plus, Edit2, Trash2, GripVertical, Eye, EyeOff, Tag as TagIcon, X } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
 import { Input, Select, Button } from '@/components/ui'
 
@@ -163,7 +163,7 @@ export default function AdminTags() {
 
       {/* Create New Tag */}
       <div className="bg-white shadow rounded-lg p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className={`flex items-center justify-between${isCreating ? ' mb-4' : ''}`}>
           <h3 className="text-lg font-medium text-gray-900">
             {isCreating ? 'Crear Nueva Etiqueta' : 'Etiquetas'}
           </h3>
@@ -173,14 +173,14 @@ export default function AdminTags() {
             size="sm"
             className="flex items-center gap-2"
           >
-            <Plus size={16} />
+            {isCreating ? <X size={16} /> : <Plus size={16} />}
             {isCreating ? 'Cancelar' : 'Nueva Etiqueta'}
           </Button>
         </div>
 
         {isCreating && (
           <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Input
                   label="Clave (ID)"
@@ -199,7 +199,7 @@ export default function AdminTags() {
                   placeholder="ej: Picante, Sin Lactosa"
                 />
               </div>
-              <div>
+              <div className="sm:col-span-2">
                 <Select
                   label="Categoría"
                   value={newTag.category || 'custom'}
@@ -212,8 +212,8 @@ export default function AdminTags() {
                   }))}
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
                 <div className="flex flex-wrap gap-2">
                   {TAG_COLORS.map((color) => (
                     <button
@@ -228,16 +228,22 @@ export default function AdminTags() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <Button
                 onClick={handleCreateTag}
                 variant="primary"
                 size="sm"
                 disabled={!newTag.key || !newTag.label}
+                className="flex-1 sm:flex-none"
               >
                 Crear Etiqueta
               </Button>
-              <Button onClick={() => setIsCreating(false)} variant="secondary" size="sm">
+              <Button
+                onClick={() => setIsCreating(false)}
+                variant="secondary"
+                size="sm"
+                className="flex-1 sm:flex-none"
+              >
                 Cancelar
               </Button>
             </div>
@@ -247,10 +253,10 @@ export default function AdminTags() {
 
       {/* Tags List */}
       <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">Etiquetas ({tags.length})</h3>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 overflow-hidden">
           {tags.length === 0 ? (
             <div className="text-center py-8">
               <TagIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -264,53 +270,60 @@ export default function AdminTags() {
                 onDragStart={(e) => handleDragStart(e, tag.id)}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, tag.id)}
-                className="p-4 hover:bg-gray-50 transition-colors"
+                className="p-3 sm:p-4 hover:bg-gray-50 transition-colors"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
-                    <div className={`w-4 h-4 rounded-full ${tag.color}`} />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">{tag.label}</span>
-                        <span className="text-sm text-gray-500">({tag.key})</span>
-                        <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            TAG_CATEGORIES.find((c) => c.value === tag.category)?.color ||
-                            'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {TAG_CATEGORIES.find((c) => c.value === tag.category)?.label}
-                        </span>
+                <div className="flex flex-col gap-3">
+                  {/* Header row with drag handle, color dot, and actions */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <GripVertical className="w-5 h-5 text-gray-400 cursor-move flex-shrink-0" />
+                      <div className={`w-4 h-4 rounded-full ${tag.color} flex-shrink-0`} />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-medium text-gray-900 truncate">{tag.label}</span>
+                          <span className="text-sm text-gray-500 flex-shrink-0">({tag.key})</span>
+                        </div>
                       </div>
                     </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        onClick={() => handleToggleActive(tag.id)}
+                        className={`p-2 rounded-md transition-colors ${
+                          tag.isActive
+                            ? 'text-green-600 hover:bg-green-100'
+                            : 'text-gray-400 hover:bg-gray-100'
+                        }`}
+                        title={tag.isActive ? 'Ocultar etiqueta' : 'Mostrar etiqueta'}
+                      >
+                        {tag.isActive ? <Eye size={16} /> : <EyeOff size={16} />}
+                      </button>
+                      <button
+                        onClick={() => setEditingTag(tag)}
+                        className="p-2 text-indigo-600 hover:bg-indigo-100 rounded-md transition-colors"
+                        title="Editar etiqueta"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTag(tag.id)}
+                        className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                        title="Eliminar etiqueta"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleToggleActive(tag.id)}
-                      className={`p-2 rounded-md transition-colors ${
-                        tag.isActive
-                          ? 'text-green-600 hover:bg-green-100'
-                          : 'text-gray-400 hover:bg-gray-100'
+
+                  {/* Category badge row */}
+                  <div className="flex justify-start">
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        TAG_CATEGORIES.find((c) => c.value === tag.category)?.color ||
+                        'bg-gray-100 text-gray-800'
                       }`}
-                      title={tag.isActive ? 'Ocultar etiqueta' : 'Mostrar etiqueta'}
                     >
-                      {tag.isActive ? <Eye size={16} /> : <EyeOff size={16} />}
-                    </button>
-                    <button
-                      onClick={() => setEditingTag(tag)}
-                      className="p-2 text-indigo-600 hover:bg-indigo-100 rounded-md transition-colors"
-                      title="Editar etiqueta"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTag(tag.id)}
-                      className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
-                      title="Eliminar etiqueta"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                      {TAG_CATEGORIES.find((c) => c.value === tag.category)?.label}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -321,12 +334,28 @@ export default function AdminTags() {
 
       {/* Edit Modal */}
       {editingTag && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Etiqueta</h3>
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 p-4">
+          <div className="relative top-8 mx-auto border w-full max-w-md shadow-lg rounded-md bg-white">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium text-gray-900">Editar Etiqueta</h3>
+                <button
+                  onClick={() => setEditingTag(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <span className="sr-only">Cerrar</span>
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Input
                       label="Clave (ID)"
@@ -343,7 +372,7 @@ export default function AdminTags() {
                       onChange={(e) => setEditingTag({ ...editingTag, label: e.target.value })}
                     />
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <Select
                       label="Categoría"
                       value={editingTag.category}
@@ -359,8 +388,8 @@ export default function AdminTags() {
                       }))}
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
                     <div className="flex flex-wrap gap-2">
                       {TAG_COLORS.map((color) => (
                         <button
@@ -375,14 +404,20 @@ export default function AdminTags() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-3">
-                  <Button onClick={() => setEditingTag(null)} variant="secondary" size="sm">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-4 border-t border-gray-200">
+                  <Button
+                    onClick={() => setEditingTag(null)}
+                    variant="secondary"
+                    size="sm"
+                    className="flex-1 sm:flex-none"
+                  >
                     Cancelar
                   </Button>
                   <Button
                     onClick={() => handleUpdateTag(editingTag.id, editingTag)}
                     variant="primary"
                     size="sm"
+                    className="flex-1 sm:flex-none"
                   >
                     Guardar Cambios
                   </Button>
