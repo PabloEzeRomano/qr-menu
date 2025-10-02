@@ -57,6 +57,8 @@ const initialData: OnboardingData = {
     email: '',
     website: '',
     hasCart: false,
+    showAnimatedBackground: true,
+    customBackground: '',
   },
   categories: [],
   items: [],

@@ -210,7 +210,7 @@ export default function EditableMenuItem({
             <label className="block text-cyan-200 text-sm font-medium mb-2">Imagen</label>
             <div className="space-y-2">
               <div className="relative group/upload">
-                <input
+                <Input
                   type="file"
                   accept="image/*"
                   onChange={(e) => {

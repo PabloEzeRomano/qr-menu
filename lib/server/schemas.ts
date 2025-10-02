@@ -33,6 +33,8 @@ export const RestaurantSchema = z.object({
   email: z.email().optional(),
   website: z.url().optional(),
   hasCart: z.boolean().default(true),
+  showAnimatedBackground: z.boolean().default(true),
+  customBackground: z.string().optional(),
 })
 
 export const FilterConditionSchema = z.object({

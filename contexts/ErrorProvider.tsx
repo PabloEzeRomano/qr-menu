@@ -6,8 +6,8 @@ import Toast from '@/components/ui/Toast'
 
 interface ErrorContextType {
   error: ErrorState
-  showError: (message: string, type?: 'error' | 'warning' | 'info') => void
-  hideError: () => void
+  showToast: (message: string, type?: 'error' | 'warning' | 'info') => void
+  hideToast: () => void
   handleError: (error: any, defaultMessage: string) => void
 }
 
@@ -19,7 +19,7 @@ export function ErrorProvider({ children }: { children: ReactNode }) {
   return (
     <ErrorContext.Provider value={errorHandler}>
       {children}
-      <Toast error={errorHandler.error} onClose={errorHandler.hideError} />
+      <Toast error={errorHandler.error} onClose={errorHandler.hideToast} />
     </ErrorContext.Provider>
   )
 }

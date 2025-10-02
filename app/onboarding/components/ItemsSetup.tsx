@@ -3,6 +3,7 @@
 import { useOnboarding } from '@/contexts/OnboardingProvider'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
 import { useItemOperations } from '@/hooks/useItemOperations'
+import { useImageOperations } from '@/hooks/useImageOperations'
 import { DEFAULT_VALUES } from '@/lib/constants'
 import { Input, TextArea, Select } from '@/components/ui'
 import Button from '@/components/ui/Button'
@@ -47,6 +48,7 @@ export default function ItemsSetup() {
   const [isLoading, setIsLoading] = useState(false)
   const { handleSaveNewItem } = useItemOperations()
   const { handleError } = useErrorHandler()
+  const { uploadImage } = useImageOperations()
 
   // Sync items when context data changes (e.g., when existing data is loaded)
   useEffect(() => {
@@ -272,6 +274,44 @@ export default function ItemsSetup() {
                     placeholder="Selecciona una categoría"
                     containerClassName="mb-0"
                   />
+                </div>
+              </div>
+
+              {/* Image Upload */}
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Imagen del producto
+                </label>
+                <div className="flex items-center space-x-4">
+                  <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                    <Image
+                      src={item.img}
+                      alt={item.name || 'Producto'}
+                      width={80}
+                      height={80}
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          try {
+                            const imageUrl = await uploadImage(file)
+                            handleItemChange(index, 'img', imageUrl)
+                          } catch (error) {
+                            console.error('Error uploading image:', error)
+                            handleError('Error al subir la imagen', 'upload')
+                          }
+                        }
+                      }}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">JPG, PNG o WebP. Máximo 5MB.</p>
+                  </div>
                 </div>
               </div>
             </div>
