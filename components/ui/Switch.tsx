@@ -32,9 +32,9 @@ export default function Switch({
   }
 
   const thumbTranslateClasses = {
-    sm: checked ? 'translate-x-4' : 'translate-x-0.5',
-    md: checked ? 'translate-x-6' : 'translate-x-1',
-    lg: checked ? 'translate-x-6' : 'translate-x-1',
+    sm: checked ? 'translate-x-6' : 'translate-x-0.5',
+    md: checked ? 'translate-x-9' : 'translate-x-1',
+    lg: checked ? 'translate-x-10' : 'translate-x-1',
   }
 
   const colorClasses = {
