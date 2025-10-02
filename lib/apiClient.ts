@@ -41,3 +41,27 @@ export async function apiJson<T>(
   if (!res.ok) throw new Error(json?.error || res.statusText)
   return json as T
 }
+
+export async function apiFormData<T>(
+  url: string,
+  method: 'POST' | 'PATCH' | 'DELETE',
+  formData: FormData,
+): Promise<T> {
+  const headers = new Headers()
+  const token = await auth.currentUser?.getIdToken()
+  if (token) headers.set('Authorization', `Bearer ${token}`)
+  // Don't set Content-Type - let the browser set it with boundary for FormData
+
+  const res = await fetch(url, {
+    method,
+    headers,
+    body: formData,
+  })
+
+  let json: any = {}
+  try {
+    json = await res.json()
+  } catch {}
+  if (!res.ok) throw new Error(json?.error || res.statusText)
+  return json as T
+}
