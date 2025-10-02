@@ -15,7 +15,7 @@ export function useErrorHandler() {
     isVisible: false,
   })
 
-  const showError = useCallback((message: string, type: 'error' | 'warning' | 'info' = 'error') => {
+  const showToast = useCallback((message: string, type: 'error' | 'warning' | 'info' = 'error') => {
     setError({
       message,
       type,
@@ -28,7 +28,7 @@ export function useErrorHandler() {
     }, 5000)
   }, [])
 
-  const hideError = useCallback(() => {
+  const hideToast = useCallback(() => {
     setError((prev) => ({ ...prev, isVisible: false }))
   }, [])
 
@@ -36,15 +36,15 @@ export function useErrorHandler() {
     (error: any, defaultMessage: string) => {
       console.error('Operation failed:', error)
       const message = error?.message || defaultMessage
-      showError(message, 'error')
+      showToast(message, 'error')
     },
-    [showError],
+    [showToast],
   )
 
   return {
     error,
-    showError,
-    hideError,
+    showToast,
+    hideToast,
     handleError,
   }
 }

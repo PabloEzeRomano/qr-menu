@@ -1,9 +1,10 @@
 'use client'
 
-import { useCallback } from 'react'
-import { uploadItemImage } from '@/lib/uploadImage'
-import { useErrorHandler } from './useErrorHandler'
+import { patchRestaurantBackground } from '@/lib/api/restaurant'
 import { ERROR_MESSAGES } from '@/lib/constants'
+import { uploadItemImage } from '@/lib/uploadImage'
+import { useCallback } from 'react'
+import { useErrorHandler } from './useErrorHandler'
 
 export function useImageOperations() {
   const { handleError } = useErrorHandler()
@@ -21,5 +22,21 @@ export function useImageOperations() {
     [handleError],
   )
 
-  return { handleImageUpload }
+  const uploadImage = useCallback(
+    async (file: File): Promise<string> => {
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await patchRestaurantBackground(formData)
+        return response.url
+      } catch (error) {
+        handleError(error, ERROR_MESSAGES.IMAGE_UPLOAD)
+        throw error
+      }
+    },
+    [handleError],
+  )
+
+  return { handleImageUpload, uploadImage }
 }
