@@ -68,6 +68,8 @@ export interface Restaurant {
   email: string
   website: string
   hasCart: boolean
+  showAnimatedBackground?: boolean
+  customBackground?: string
   createdAt?: any
   updatedAt?: any
 }
@@ -106,4 +108,11 @@ export interface Tag {
   updatedAt?: any
 }
 
-export type AdminView = 'overview' | 'orders' | 'products' | 'visibility' | 'tags' | 'filters'
+export type AdminView =
+  | 'overview'
+  | 'orders'
+  | 'products'
+  | 'visibility'
+  | 'tags'
+  | 'filters'
+  | 'settings'
