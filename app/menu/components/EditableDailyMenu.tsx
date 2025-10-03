@@ -1,8 +1,10 @@
 'use client'
 
+import { useEffect,useState } from 'react'
+
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
-import { Edit2, Check, X, Plus, Trash2 } from 'lucide-react'
+import { Check, Edit2, Plus, Trash2,X } from 'lucide-react'
+
 import { Button, Input } from '@/components/ui'
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'

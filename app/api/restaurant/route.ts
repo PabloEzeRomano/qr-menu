@@ -1,7 +1,8 @@
-import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
-import { requireAdmin } from '@/lib/server/verifyAdmin'
-import { RestaurantSchema } from '@/lib/server/schemas'
 import { NextResponse } from 'next/server'
+
+import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
+import { RestaurantSchema } from '@/lib/server/schemas'
+import { requireAdmin } from '@/lib/server/verifyAdmin'
 
 const PATH = 'meta/restaurant'
 

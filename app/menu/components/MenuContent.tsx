@@ -1,5 +1,9 @@
 'use client'
 
+import { memo } from 'react'
+
+import { motion } from 'framer-motion'
+
 import { AdminGuard } from '@/components/AdminGuard'
 import { useMenuContext } from '@/contexts/MenuContextProvider'
 import { useMenuData } from '@/contexts/MenuDataProvider'
@@ -7,8 +11,7 @@ import { useCartEnabled } from '@/hooks/useCartEnabled'
 import { useCategoryOperations } from '@/hooks/useCategoryOperations'
 import { useMenuFilters } from '@/hooks/useMenuFilters'
 import { Category, MenuItem } from '@/types'
-import { motion } from 'framer-motion'
-import { memo } from 'react'
+
 import {
   AddCategoryButton,
   AnimatedBackground,

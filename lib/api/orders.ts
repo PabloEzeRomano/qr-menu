@@ -1,5 +1,6 @@
-import { apiGet, apiJson } from '../apiClient'
 import type { Order } from '@/types'
+
+import { apiGet, apiJson } from '../apiClient'
 
 // Orders CRUD
 export const listOrders = () => apiGet<Order[]>('/api/orders')

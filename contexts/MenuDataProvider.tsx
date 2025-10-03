@@ -1,11 +1,12 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useRef, memo, useCallback } from 'react'
+import { createContext, memo, useCallback,useContext, useEffect, useRef, useState } from 'react'
+
+import { useAuth } from '@/contexts/AuthContextProvider'
+import { listFilters } from '@/lib/api/filters'
 import { getDailyMenu, listCategories, listItems } from '@/lib/api/menu'
 import { getRestaurant } from '@/lib/api/restaurant'
-import { listFilters } from '@/lib/api/filters'
 import type { Category, DailyMenu, Filter, MenuItem, Restaurant } from '@/types'
-import { useAuth } from '@/contexts/AuthContextProvider'
 
 type MenuDataState = {
   categories: Category[]

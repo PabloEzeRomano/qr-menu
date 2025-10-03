@@ -1,15 +1,17 @@
 'use client'
 
-import { useOnboarding } from '@/contexts/OnboardingProvider'
-import { useErrorHandler } from '@/hooks/useErrorHandler'
-import { useItemOperations } from '@/hooks/useItemOperations'
-import { useImageOperations } from '@/hooks/useImageOperations'
-import { DEFAULT_VALUES } from '@/lib/constants'
-import { Input, TextArea, Select } from '@/components/ui'
-import Button from '@/components/ui/Button'
+import { useEffect, useState } from 'react'
+
 import { Trash2 } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+
+import { Input, Select,TextArea } from '@/components/ui'
+import Button from '@/components/ui/Button'
+import { useOnboarding } from '@/contexts/OnboardingProvider'
+import { useErrorHandler } from '@/hooks/useErrorHandler'
+import { useImageOperations } from '@/hooks/useImageOperations'
+import { useItemOperations } from '@/hooks/useItemOperations'
+import { DEFAULT_VALUES } from '@/lib/constants'
 
 const SAMPLE_ITEMS = [
   {

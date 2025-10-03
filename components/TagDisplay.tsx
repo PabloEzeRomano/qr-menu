@@ -1,8 +1,9 @@
 'use client'
 
+import { motion } from 'framer-motion'
+
 import { useTags } from '@/contexts/TagsProvider'
 import { Tag } from '@/types'
-import { motion } from 'framer-motion'
 
 interface TagDisplayProps {
   tagIds: string[]

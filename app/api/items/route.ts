@@ -1,11 +1,12 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
-import { requireAdmin } from '@/lib/server/verifyAdmin'
-import { MenuItemSchema } from '@/lib/server/schemas'
+
 import { cacheOrFetch } from '@/lib/server/cache'
 import { corsResponse } from '@/lib/server/cors'
+import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
+import { MenuItemSchema } from '@/lib/server/schemas'
+import { requireAdmin } from '@/lib/server/verifyAdmin'
 
 export async function GET(req: Request) {
   try {

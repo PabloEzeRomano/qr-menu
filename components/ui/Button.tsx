@@ -1,7 +1,8 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { forwardRef } from 'react'
+
+import { motion } from 'framer-motion'
 
 export interface ButtonProps
   extends Omit<

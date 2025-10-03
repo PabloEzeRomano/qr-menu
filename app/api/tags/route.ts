@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 import { z } from 'zod'
+
 import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
-import { requireAdmin } from '@/lib/server/verifyAdmin'
 import { TagSchema } from '@/lib/server/schemas'
+import { requireAdmin } from '@/lib/server/verifyAdmin'
 
 const Payload = z.object({ tags: z.array(TagSchema).min(0) })
 

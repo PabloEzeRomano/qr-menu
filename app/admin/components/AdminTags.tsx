@@ -1,10 +1,12 @@
 'use client'
 
+import { useCallback,useEffect, useState } from 'react'
+
+import { Edit2, Eye, EyeOff, GripVertical, Plus, Tag as TagIcon, Trash2, X } from 'lucide-react'
+
+import { Button,Input, Select } from '@/components/ui'
 import { useTagOperations } from '@/hooks/useTagOperations'
 import { Tag } from '@/types'
-import { Plus, Edit2, Trash2, GripVertical, Eye, EyeOff, Tag as TagIcon, X } from 'lucide-react'
-import { useState, useEffect, useCallback } from 'react'
-import { Input, Select, Button } from '@/components/ui'
 
 const TAG_CATEGORIES = [
   { value: 'diet', label: 'Dieta', color: 'bg-green-100 text-green-800' },

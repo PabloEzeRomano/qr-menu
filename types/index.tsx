@@ -115,4 +115,35 @@ export type AdminView =
   | 'visibility'
   | 'tags'
   | 'filters'
+  | 'invitations'
   | 'settings'
+
+
+export interface AdminInvitation {
+  id: string
+  email: string
+  createdAt: Date
+  expiresAt: Date
+  used: boolean
+  createdByName: string
+}
+
+export interface InvitationResponse {
+  message: string
+  expiresAt?: string
+}
+
+export interface AcceptInviteResponse {
+  message: string
+  customToken: string
+  user: {
+    uid: string
+    email: string
+  }
+}
+
+export interface ValidateInviteResponse {
+  valid: boolean
+  email: string
+  expiresAt: string
+}

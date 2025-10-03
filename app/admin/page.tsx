@@ -1,30 +1,34 @@
 'use client'
 
-import ProtectedRoute from '@/components/ProtectedRoute'
-import OnboardingGuard from '@/components/OnboardingGuard'
-import { AppProvider } from '@/contexts/AppProvider'
-import { AdminView } from '@/types'
+import { useState } from 'react'
+
 import {
+  ChevronDown,
   Eye,
+  Filter,
   Home,
   Package,
+  Settings,
   ShoppingCart,
   Tag,
-  Filter,
-  Settings,
-  Menu,
-  X,
-  ChevronDown,
+  UserPlus,
+  X
 } from 'lucide-react'
-import { useState } from 'react'
+
+import OnboardingGuard from '@/components/OnboardingGuard'
+import ProtectedRoute from '@/components/ProtectedRoute'
+import { AppProvider } from '@/contexts/AppProvider'
+import { AdminView } from '@/types'
+
 import {
+  AdminFilters,
+  AdminInvitations,
   AdminOrders,
   AdminOverview,
   AdminProducts,
-  AdminVisibility,
-  AdminTags,
-  AdminFilters,
   AdminSettings,
+  AdminTags,
+  AdminVisibility,
 } from './components'
 
 export default function AdminPage() {
@@ -38,6 +42,7 @@ export default function AdminPage() {
     { id: 'visibility', label: 'Visibilidad', icon: Eye, color: 'bg-orange-500' },
     { id: 'tags', label: 'Etiquetas', icon: Tag, color: 'bg-pink-500' },
     { id: 'filters', label: 'Filtros', icon: Filter, color: 'bg-indigo-500' },
+    { id: 'invitations', label: 'Invitaciones', icon: UserPlus, color: 'bg-teal-500' },
     { id: 'settings', label: 'Configuración', icon: Settings, color: 'bg-gray-500' },
   ]
 
@@ -55,6 +60,8 @@ export default function AdminPage() {
         return <AdminTags />
       case 'filters':
         return <AdminFilters />
+      case 'invitations':
+        return <AdminInvitations />
       case 'settings':
         return <AdminSettings />
       default:

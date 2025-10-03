@@ -1,9 +1,11 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { useErrorHandler } from './useErrorHandler'
+
+import { createFilters, listFilters, updateFilters } from '@/lib/api/filters'
 import { Filter, FilterCondition, FilterPredicate } from '@/types'
-import { listFilters, createFilters, updateFilters } from '@/lib/api/filters'
+
+import { useErrorHandler } from './useErrorHandler'
 
 export function useFilterOperations() {
   const { handleError } = useErrorHandler()

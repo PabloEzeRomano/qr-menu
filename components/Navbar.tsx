@@ -1,12 +1,15 @@
 'use client'
 
-import Button from './ui/Button'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+
+import { AnimatePresence,motion } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+
 import { useAuth } from '@/contexts/AuthContextProvider'
-import { Menu, X } from 'lucide-react'
-import { useState } from 'react'
+
+import Button from './ui/Button'
 
 export default function Navbar() {
   const pathname = usePathname()

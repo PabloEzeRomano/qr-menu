@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useOnboarding } from '@/contexts/OnboardingProvider'
+import { useEffect,useState } from 'react'
+
+import { Trash2 } from 'lucide-react'
+
 import { Input } from '@/components/ui'
 import Button from '@/components/ui/Button'
-import { useFilterOperations } from '@/hooks/useFilterOperations'
+import { useOnboarding } from '@/contexts/OnboardingProvider'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
-import { Trash2 } from 'lucide-react'
+import { useFilterOperations } from '@/hooks/useFilterOperations'
 
 const COMMON_FILTERS = [
   { key: 'vegetariano', label: 'Vegetariano' },

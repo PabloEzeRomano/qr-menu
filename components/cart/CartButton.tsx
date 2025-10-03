@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ShoppingCart } from 'lucide-react'
+
 import { useCart } from '@/contexts/CartProvider'
 
 interface CartButtonProps {

@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import CartButton from './CartButton'
-import CartDrawer from './CartDrawer'
-import StickyCartBar from './StickyCartBar'
+
 import { useAuth } from '@/contexts/AuthContextProvider'
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useCartEnabled } from '@/hooks/useCartEnabled'
+
+import CartButton from './CartButton'
+import CartDrawer from './CartDrawer'
+import StickyCartBar from './StickyCartBar'
 
 export default function CartWrapper() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)

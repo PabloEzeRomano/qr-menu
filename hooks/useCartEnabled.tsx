@@ -1,7 +1,8 @@
 'use client'
 
-import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useMemo } from 'react'
+
+import { useMenuData } from '@/contexts/MenuDataProvider'
 
 /**
  * Hook to check if cart functionality should be enabled based on restaurant metadata

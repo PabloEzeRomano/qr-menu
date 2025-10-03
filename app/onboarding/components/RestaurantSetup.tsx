@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useOnboarding } from '@/contexts/OnboardingProvider'
-import { Input, TextArea, Switch } from '@/components/ui'
-import { useImageOperations } from '@/hooks/useImageOperations'
-import Button from '@/components/ui/Button'
+import { useEffect,useState } from 'react'
+
 import Image from 'next/image'
+
+import { Input, Switch,TextArea } from '@/components/ui'
+import Button from '@/components/ui/Button'
+import { useOnboarding } from '@/contexts/OnboardingProvider'
+import { useImageOperations } from '@/hooks/useImageOperations'
 
 export default function RestaurantSetup() {
   const { data, updateData, nextStep, previousStep, currentStep } = useOnboarding()

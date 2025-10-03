@@ -1,8 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useMenuData } from '@/contexts/MenuDataProvider'
 import Image from 'next/image'
+
+import { useMenuData } from '@/contexts/MenuDataProvider'
 
 // Animation configuration
 const ANIMATION_CONFIG = {

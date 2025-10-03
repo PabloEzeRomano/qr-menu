@@ -1,8 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { Edit2, Check, X } from 'lucide-react'
+
+import { motion } from 'framer-motion'
+import { Check, Edit2, X } from 'lucide-react'
+
 import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'
 
 interface EditableHeaderProps {

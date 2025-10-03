@@ -2,9 +2,10 @@
 import { NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 import { z } from 'zod'
+
 import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
-import { requireAdmin } from '@/lib/server/verifyAdmin'
 import { FilterSchema } from '@/lib/server/schemas'
+import { requireAdmin } from '@/lib/server/verifyAdmin'
 
 const Payload = z.object({ filters: z.array(FilterSchema).min(0) })
 

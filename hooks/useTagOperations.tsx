@@ -1,9 +1,11 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { useErrorHandler } from './useErrorHandler'
+
+import { createTags, listTags, updateTags } from '@/lib/api/filters'
 import { Tag } from '@/types'
-import { listTags, createTags, updateTags } from '@/lib/api/filters'
+
+import { useErrorHandler } from './useErrorHandler'
 
 export function useTagOperations() {
   const { handleError } = useErrorHandler()

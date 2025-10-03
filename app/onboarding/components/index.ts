@@ -1,5 +1,5 @@
-export { default as RestaurantSetup } from './RestaurantSetup'
 export { default as CategoriesSetup } from './CategoriesSetup'
-export { default as ItemsSetup } from './ItemsSetup'
 export { default as FiltersSetup } from './FiltersSetup'
+export { default as ItemsSetup } from './ItemsSetup'
 export { default as OnboardingComplete } from './OnboardingComplete'
+export { default as RestaurantSetup } from './RestaurantSetup'

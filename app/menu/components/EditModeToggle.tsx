@@ -1,8 +1,9 @@
 'use client'
 
-import { Button } from '@/components/ui'
 import { motion } from 'framer-motion'
 import { Pencil, X } from 'lucide-react'
+
+import { Button } from '@/components/ui'
 
 interface EditModeToggleProps {
   isEditMode: boolean

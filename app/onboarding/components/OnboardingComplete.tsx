@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
-import { useOnboarding } from '@/contexts/OnboardingProvider'
-import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'
-import { useErrorHandler } from '@/hooks/useErrorHandler'
+
 import Button from '@/components/ui/Button'
+import { useOnboarding } from '@/contexts/OnboardingProvider'
+import { useErrorHandler } from '@/hooks/useErrorHandler'
+import { useRestaurantOperations } from '@/hooks/useRestaurantOperations'
 
 export default function OnboardingComplete() {
   const { data, completeOnboarding, isLoading, error, previousStep, currentStep } = useOnboarding()

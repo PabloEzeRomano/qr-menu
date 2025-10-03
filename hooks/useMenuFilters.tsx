@@ -1,10 +1,11 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Category, MenuItem, FilterCondition, FilterPredicate } from '@/types'
-import { useTags } from '@/contexts/TagsProvider'
-import { useFilters } from '@/contexts/FiltersProvider'
+
 import { useAuth } from '@/contexts/AuthContextProvider'
+import { useFilters } from '@/contexts/FiltersProvider'
+import { useTags } from '@/contexts/TagsProvider'
+import { Category, FilterCondition, FilterPredicate,MenuItem } from '@/types'
 
 function evaluateCondition(item: MenuItem, condition: FilterCondition, tags: any[]): boolean {
   const { field, operator, value } = condition

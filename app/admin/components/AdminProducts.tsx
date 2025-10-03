@@ -1,14 +1,17 @@
 'use client'
 
-import { useMenuData } from '@/contexts/MenuDataProvider'
-import { useOrders } from '@/hooks/useOrders'
+import { useEffect, useState } from 'react'
+
 import { DollarSign, Eye, EyeOff, Package, Search } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+
 import { Input, Select } from '@/components/ui'
+import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useTags } from '@/contexts/TagsProvider'
+import { useOrders } from '@/hooks/useOrders'
+import { deleteItem,updateItem } from '@/lib/api/menu'
+
 import ProductsTable from './ProductsTable'
-import { updateItem, deleteItem } from '@/lib/api/menu'
 
 export default function AdminProducts() {
   const { items, categories, loading, refreshItems } = useMenuData()

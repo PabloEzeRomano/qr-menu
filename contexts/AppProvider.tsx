@@ -1,14 +1,16 @@
 'use client'
 
 import { ReactNode } from 'react'
+
+import CartWrapper from '@/components/cart/CartWrapper'
+
 import { AuthProvider } from './AuthContextProvider'
-import { MenuDataProvider } from './MenuDataProvider'
-import { MenuProvider } from './MenuContextProvider'
 import { CartProvider } from './CartProvider'
 import { ErrorProvider } from './ErrorProvider'
-import { TagsProvider } from './TagsProvider'
 import { FiltersProvider } from './FiltersProvider'
-import CartWrapper from '@/components/cart/CartWrapper'
+import { MenuProvider } from './MenuContextProvider'
+import { MenuDataProvider } from './MenuDataProvider'
+import { TagsProvider } from './TagsProvider'
 
 interface AppProviderProps {
   children: ReactNode

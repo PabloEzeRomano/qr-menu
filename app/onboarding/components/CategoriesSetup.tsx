@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useOnboarding } from '@/contexts/OnboardingProvider'
+import { useEffect,useState } from 'react'
+
+import { Trash2 } from 'lucide-react'
+
 import { Input } from '@/components/ui'
 import Button from '@/components/ui/Button'
+import { useOnboarding } from '@/contexts/OnboardingProvider'
 import { useCategoryOperations } from '@/hooks/useCategoryOperations'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
-import { Trash2 } from 'lucide-react'
 
 const COMMON_EMOJIS = ['🍕', '🍔', '🍝', '🥗', '🍣', '🌮', '🥘', '🍖', '🍰', '☕', '🍺', '🥤']
 const COMMON_CATEGORIES = [

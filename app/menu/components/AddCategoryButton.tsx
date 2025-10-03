@@ -1,9 +1,11 @@
 'use client'
 
-import { Button, Input } from '@/components/ui'
+import { useState } from 'react'
+
 import { motion } from 'framer-motion'
 import { Check, Plus } from 'lucide-react'
-import { useState } from 'react'
+
+import { Button, Input } from '@/components/ui'
 
 interface AddCategoryButtonProps {
   isEditMode: boolean

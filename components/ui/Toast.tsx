@@ -1,7 +1,8 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { X, AlertCircle, AlertTriangle, Info } from 'lucide-react'
+import { AnimatePresence,motion } from 'framer-motion'
+import { AlertCircle, AlertTriangle, Info,X } from 'lucide-react'
+
 import { ErrorState } from '@/hooks/useErrorHandler'
 
 interface ToastProps {

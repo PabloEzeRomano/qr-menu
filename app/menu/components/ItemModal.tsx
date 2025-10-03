@@ -1,14 +1,16 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
-import { X, Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { MenuItem } from '@/types'
-import { useCart } from '@/contexts/CartProvider'
-import { useAuth } from '@/contexts/AuthContextProvider'
-import { useTags } from '@/contexts/TagsProvider'
+
+import { AnimatePresence,motion } from 'framer-motion'
+import { Plus,X } from 'lucide-react'
+import Image from 'next/image'
+
 import { Button } from '@/components/ui'
+import { useAuth } from '@/contexts/AuthContextProvider'
+import { useCart } from '@/contexts/CartProvider'
+import { useTags } from '@/contexts/TagsProvider'
+import { MenuItem } from '@/types'
 
 interface ItemModalProps {
   item: MenuItem | null

@@ -1,12 +1,14 @@
+import './globals.css'
+import '@/lib/env' // Validate environment on startup
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
+
+import ErrorBoundary from '@/components/ErrorBoundary'
 import Navbar from '@/components/Navbar'
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import { AuthProvider } from '@/contexts/AuthContextProvider'
 import { CartProvider } from '@/contexts/CartProvider'
-import ErrorBoundary from '@/components/ErrorBoundary'
-import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
-import '@/lib/env' // Validate environment on startup
 
 const inter = Inter({ subsets: ['latin'] })
 

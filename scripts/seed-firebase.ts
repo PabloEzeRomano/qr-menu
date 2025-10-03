@@ -18,11 +18,11 @@
  *   export NEXT_PUBLIC_FIREBASE_APP_ID="your_app_id"
  */
 
+import dotenv from 'dotenv'
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, doc, writeBatch } from 'firebase/firestore'
+import { collection, doc, getFirestore, writeBatch } from 'firebase/firestore'
 import fs from 'fs'
 import path from 'path'
-import dotenv from 'dotenv'
 dotenv.config()
 
 // Types

@@ -1,15 +1,17 @@
 'use client'
 
-import { AppProvider } from '@/contexts/AppProvider'
 import { Suspense } from 'react'
+
+import Toast from '@/components/ui/Toast'
+import { AppProvider } from '@/contexts/AppProvider'
+import { useErrorHandler } from '@/hooks/useErrorHandler'
+
 import {
   LoadingScreen,
   MenuContent as MenuContentComponent,
   MenuManager,
   PaymentStatusHandler,
 } from './components'
-import Toast from '@/components/ui/Toast'
-import { useErrorHandler } from '@/hooks/useErrorHandler'
 
 function MenuContent() {
   const { error, hideToast } = useErrorHandler()

@@ -1,26 +1,28 @@
 'use client'
 
-import { useFilterOperations } from '@/hooks/useFilterOperations'
-import { useTags } from '@/contexts/TagsProvider'
-import { useMenuData } from '@/contexts/MenuDataProvider'
-import { Filter, FilterType } from '@/types'
+import { useCallback,useEffect, useState } from 'react'
+
 import {
-  Plus,
+  Clock,
+  DollarSign,
   Edit2,
-  Trash2,
-  GripVertical,
   Eye,
   EyeOff,
   Filter as FilterIcon,
-  Tag,
-  DollarSign,
   Folder,
-  Clock,
+  GripVertical,
+  Plus,
   Settings,
+  Tag,
+  Trash2,
   X,
 } from 'lucide-react'
-import { useState, useEffect, useCallback } from 'react'
-import { Input, Select, Button } from '@/components/ui'
+
+import { Button,Input, Select } from '@/components/ui'
+import { useMenuData } from '@/contexts/MenuDataProvider'
+import { useTags } from '@/contexts/TagsProvider'
+import { useFilterOperations } from '@/hooks/useFilterOperations'
+import { Filter, FilterType } from '@/types'
 
 const FILTER_TYPES = [
   { value: 'tag', label: 'Por Etiqueta', icon: Tag, color: 'bg-blue-100 text-blue-800' },

@@ -1,11 +1,13 @@
 'use client'
 
+import { useCallback } from 'react'
+
 import { useMenuData } from '@/contexts/MenuDataProvider'
-import { ERROR_MESSAGES } from '@/lib/constants'
 import { patchDailyMenu } from '@/lib/api/menu'
 import { patchRestaurant } from '@/lib/api/restaurant'
+import { ERROR_MESSAGES } from '@/lib/constants'
 import { DailyMenu, Restaurant } from '@/types'
-import { useCallback } from 'react'
+
 import { useErrorHandler } from './useErrorHandler'
 
 export function useRestaurantOperations() {

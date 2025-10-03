@@ -1,19 +1,20 @@
 'use client'
 
-import { useOrders } from '@/hooks/useOrders'
-import { useMenuData } from '@/contexts/MenuDataProvider'
-import OrdersTable from './OrdersTable'
 import {
-  ShoppingCart,
+  AlertCircle,
+  CheckCircle,
+  Clock,
   DollarSign,
   Package,
+  ShoppingCart,
   TrendingUp,
-  Clock,
-  CheckCircle,
   XCircle,
-  AlertCircle,
 } from 'lucide-react'
-import { useEffect } from 'react'
+
+import { useMenuData } from '@/contexts/MenuDataProvider'
+import { useOrders } from '@/hooks/useOrders'
+
+import OrdersTable from './OrdersTable'
 
 export default function AdminOverview() {
   const { orders, loading: ordersLoading, getTotalRevenue, getOrdersCount } = useOrders()

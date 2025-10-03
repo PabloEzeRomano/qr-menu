@@ -1,6 +1,7 @@
 'use client'
 
 import { memo, useEffect } from 'react'
+
 import { useAuth } from '@/contexts/AuthContextProvider'
 import { useMenuContext } from '@/contexts/MenuContextProvider'
 

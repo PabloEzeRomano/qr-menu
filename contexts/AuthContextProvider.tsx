@@ -1,18 +1,20 @@
 'use client'
 
-import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
-import { auth, db } from '@/lib/firebase'
+import { createContext, useCallback,useContext, useEffect, useMemo, useState } from 'react'
+
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  createUserWithEmailAndPassword,
   updateProfile,
   User,
 } from 'firebase/auth'
 import { doc, onSnapshot } from 'firebase/firestore'
+
+import { auth, db } from '@/lib/firebase'
 
 type AuthCtx = {
   user: User | null
@@ -91,7 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsub()
   }, [])
 
-  // Admin role: admins/{uid}
+  // Admin/Root role: admins/{uid} and root/{uid}
   useEffect(() => {
     let cancelled = false
 
@@ -108,9 +110,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAdmin(cachedAdminStatus)
       setRoleLoading(false)
       // Still verify with Firebase in background, but don't show loading
-      const ref = doc(db, 'admins', user.uid)
-      const unsub = onSnapshot(
-        ref,
+      const adminRef = doc(db, 'admins', user.uid)
+      const rootRef = doc(db, 'root', user.uid)
+
+      const unsubAdmin = onSnapshot(
+        adminRef,
         (snap) => {
           if (cancelled) return
           const adminStatus = snap.exists()
@@ -122,45 +126,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         (err) => {
           console.error('onSnapshot(admins) error:', err)
+        }
+      )
+
+      const unsubRoot = onSnapshot(
+        rootRef,
+        (snap) => {
           if (cancelled) return
+          const rootStatus = snap.exists()
           // Only update if different from cache
-          if (!cachedAdminStatus) {
-            setIsAdmin(false)
-            setCachedAdminStatus(user.uid, false)
+          if (rootStatus !== cachedAdminStatus) {
+            setIsAdmin(rootStatus)
+            setCachedAdminStatus(user.uid, rootStatus)
           }
         },
+        (err) => {
+          console.error('onSnapshot(root) error:', err)
+        }
       )
+
       return () => {
         cancelled = true
-        unsub()
+        unsubAdmin()
+        unsubRoot()
       }
     }
 
     // No cache, show loading and fetch from Firebase
     setRoleLoading(true)
-    const ref = doc(db, 'admins', user.uid)
+    const adminRef = doc(db, 'admins', user.uid)
+    const rootRef = doc(db, 'root', user.uid)
 
-    const unsub = onSnapshot(
-      ref,
+    let adminStatus = false
+    let rootStatus = false
+    let resolved = false
+
+    const checkStatus = () => {
+      if (resolved) return
+      resolved = true
+      const isAdmin = adminStatus || rootStatus
+      setIsAdmin(isAdmin)
+      setCachedAdminStatus(user.uid, isAdmin)
+      setRoleLoading(false)
+    }
+
+    const unsubAdmin = onSnapshot(
+      adminRef,
       (snap) => {
         if (cancelled) return
-        const adminStatus = snap.exists()
-        setIsAdmin(adminStatus)
-        setCachedAdminStatus(user.uid, adminStatus)
-        setRoleLoading(false)
+        adminStatus = snap.exists()
+        checkStatus()
       },
       (err) => {
         console.error('onSnapshot(admins) error:', err)
         if (cancelled) return
-        setIsAdmin(false)
-        setCachedAdminStatus(user.uid, false)
-        setRoleLoading(false)
+        checkStatus()
+      }
+    )
+
+    const unsubRoot = onSnapshot(
+      rootRef,
+      (snap) => {
+        if (cancelled) return
+        rootStatus = snap.exists()
+        checkStatus()
       },
+      (err) => {
+        console.error('onSnapshot(root) error:', err)
+        if (cancelled) return
+        checkStatus()
+      }
     )
 
     return () => {
       cancelled = true
-      unsub()
+      unsubAdmin()
+      unsubRoot()
     }
   }, [user])
 

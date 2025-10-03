@@ -11,11 +11,11 @@
  *   yarn create:admin
  */
 
-import { initializeApp } from 'firebase/app'
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
-import { getFirestore, doc, setDoc } from 'firebase/firestore'
-import readline from 'readline'
 import dotenv from 'dotenv'
+import { initializeApp } from 'firebase/app'
+import { createUserWithEmailAndPassword,getAuth } from 'firebase/auth'
+import { doc, getFirestore, setDoc } from 'firebase/firestore'
+import readline from 'readline'
 
 // Load environment variables
 dotenv.config()

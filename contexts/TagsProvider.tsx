@@ -1,8 +1,9 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { Tag } from '@/types'
+import { createContext, ReactNode,useContext, useEffect, useState } from 'react'
+
 import { listTags } from '@/lib/api/filters'
+import { Tag } from '@/types'
 
 interface TagsContextType {
   tags: Tag[]

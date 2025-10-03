@@ -1,6 +1,7 @@
+import { NextResponse } from 'next/server'
+
 import { adminDB, serverTimestamp } from '@/lib/server/firebaseAdmin'
 import { requireAdmin } from '@/lib/server/verifyAdmin'
-import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   try {

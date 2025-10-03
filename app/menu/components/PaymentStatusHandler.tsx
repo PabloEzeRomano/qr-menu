@@ -1,9 +1,11 @@
 'use client'
 
-import { useCart } from '@/contexts/CartProvider'
+import { useEffect, useState } from 'react'
+
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+
+import { useCart } from '@/contexts/CartProvider'
 
 export default function PaymentStatusHandler() {
   const searchParams = useSearchParams()

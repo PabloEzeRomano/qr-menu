@@ -1,3 +1,21 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "simple-import-sort/imports": ["error", {
+      "groups": [
+        // side effects
+        ["^\\u0000"],
+        // react primero
+        ["^react$"],
+        // paquetes externos
+        ["^@?\\w"],
+        // alias del proyecto
+        ["^@/"],
+        // relativos
+        ["^\\./", "^\\.\\./"]
+      ]
+    }],
+    "simple-import-sort/exports": "error"
+  }
 }

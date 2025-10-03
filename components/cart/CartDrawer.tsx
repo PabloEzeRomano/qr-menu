@@ -1,12 +1,14 @@
 'use client'
 
-import Button from '@/components/ui/Button'
-import { cartPayment } from '@/lib/api/cart'
-import { useCart } from '@/contexts/CartProvider'
+import { useEffect, useState } from 'react'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus, Trash2, X } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+
+import Button from '@/components/ui/Button'
+import { useCart } from '@/contexts/CartProvider'
+import { cartPayment } from '@/lib/api/cart'
 
 interface CartDrawerProps {
   isOpen: boolean

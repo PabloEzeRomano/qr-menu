@@ -1,4 +1,4 @@
-import { MercadoPagoConfig, Preference, Payment } from 'mercadopago'
+import { MercadoPagoConfig, Payment,Preference } from 'mercadopago'
 
 if (!process.env.MP_ACCESS_TOKEN) {
   throw new Error('Missing MP_ACCESS_TOKEN')

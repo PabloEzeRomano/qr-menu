@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
+
 import { useTags } from '@/contexts/TagsProvider'
 import { Tag } from '@/types'
-import { useState } from 'react'
 
 interface TagSelectorProps {
   selectedTagIds: string[]

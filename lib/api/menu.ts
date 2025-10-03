@@ -1,5 +1,6 @@
-import { apiGet, apiJson } from '../apiClient'
-import type { DailyMenu, MenuItem, Category } from '@/types'
+import type { Category,DailyMenu, MenuItem } from '@/types'
+
+import { apiFormData,apiGet, apiJson } from '../apiClient'
 
 // Items CRUD
 export const listItems = (showAll = false) =>
@@ -24,3 +25,13 @@ export const deleteCategory = (key: string, forceDelete: boolean) =>
 export const getDailyMenu = () => apiGet<DailyMenu | null>('/api/daily-menu')
 export const patchDailyMenu = (patch: Partial<DailyMenu>) =>
   apiJson<DailyMenu>('/api/daily-menu', 'PATCH', patch)
+
+// Image Upload
+export const uploadItemImage = async (file: File, itemId: string): Promise<string> => {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('itemId', itemId)
+
+  const data = await apiFormData<{ url: string }>('/api/upload/blob', 'POST', formData)
+  return data.url
+}

@@ -1,9 +1,12 @@
 'use client'
 
-import { Button } from '@/components/ui'
+import { useEffect, useState } from 'react'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+
+import { Button } from '@/components/ui'
+
 import { AnimatedBackground } from './menu/components'
 
 const phrases = [

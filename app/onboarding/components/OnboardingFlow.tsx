@@ -1,12 +1,13 @@
 'use client'
 
 import { useOnboarding } from '@/contexts/OnboardingProvider'
+
 import {
-  RestaurantSetup,
   CategoriesSetup,
-  ItemsSetup,
   FiltersSetup,
+  ItemsSetup,
   OnboardingComplete,
+  RestaurantSetup,
 } from './index'
 
 const STEP_COMPONENTS = {

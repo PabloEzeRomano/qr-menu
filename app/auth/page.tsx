@@ -1,11 +1,14 @@
 'use client'
 
-import { Button, Input } from '@/components/ui'
-import { useAuth } from '@/contexts/AuthContextProvider'
+import { useEffect, useState } from 'react'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+
+import { Button, Input } from '@/components/ui'
+import { useAuth } from '@/contexts/AuthContextProvider'
+
 import { AnimatedBackground } from '../menu/components'
 
 export default function AuthPage() {

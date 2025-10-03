@@ -1,10 +1,13 @@
 'use client'
 
+import { useEffect } from 'react'
+
+import { useRouter } from 'next/navigation'
+
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { AppProvider } from '@/contexts/AppProvider'
 import { OnboardingProvider, useOnboarding } from '@/contexts/OnboardingProvider'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+
 import OnboardingFlow from './components/OnboardingFlow'
 
 function OnboardingContent() {

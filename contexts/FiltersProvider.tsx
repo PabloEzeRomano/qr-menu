@@ -1,8 +1,9 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Filter } from '@/types'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
+
 import { useFilterOperations } from '@/hooks/useFilterOperations'
+import { Filter } from '@/types'
 
 interface FiltersContextType {
   filters: Filter[]
@@ -22,7 +23,7 @@ export function FiltersProvider({ children }: { children: React.ReactNode }) {
   const [activeFilter, setActiveFilter] = useState('all')
   const { fetchFilters } = useFilterOperations()
 
-  const refreshFilters = async () => {
+  const refreshFilters = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -34,11 +35,11 @@ export function FiltersProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [fetchFilters])
 
   useEffect(() => {
     refreshFilters()
-  }, [])
+  }, [refreshFilters])
 
   return (
     <FiltersContext.Provider

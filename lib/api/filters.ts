@@ -1,5 +1,6 @@
-import { apiGet, apiJson } from '../apiClient'
 import type { Filter, Tag } from '@/types'
+
+import { apiGet, apiJson } from '../apiClient'
 
 // Tags CRUD
 export const listTags = () => apiGet<Tag[]>('/api/tags')

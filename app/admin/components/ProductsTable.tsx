@@ -1,8 +1,9 @@
 'use client'
 
-import { MenuItem } from '@/types'
-import { Eye, EyeOff, Edit2, Trash2 } from 'lucide-react'
+import { Edit2, Eye, EyeOff, Trash2 } from 'lucide-react'
 import Image from 'next/image'
+
+import { MenuItem } from '@/types'
 
 interface ProductAnalytics extends MenuItem {
   totalOrders: number

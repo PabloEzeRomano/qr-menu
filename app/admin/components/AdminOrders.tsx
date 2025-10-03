@@ -1,9 +1,7 @@
 'use client'
 
-import { useOrderOperations } from '@/hooks/useOrderOperations'
-import { useOrders } from '@/hooks/useOrders'
-import { Order } from '@/types'
-import OrdersTable from './OrdersTable'
+import { useState } from 'react'
+
 import {
   AlertCircle,
   CheckCircle,
@@ -13,8 +11,13 @@ import {
   ShoppingCart,
   XCircle,
 } from 'lucide-react'
-import { useState } from 'react'
+
 import { Input, Select } from '@/components/ui'
+import { useOrderOperations } from '@/hooks/useOrderOperations'
+import { useOrders } from '@/hooks/useOrders'
+import { Order } from '@/types'
+
+import OrdersTable from './OrdersTable'
 
 export default function AdminOrders() {
   const { orders, loading, getOrdersByStatus, updateOrder, removeOrder } = useOrders()

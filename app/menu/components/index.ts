@@ -1,13 +1,13 @@
-export { default as LoadingScreen } from './LoadingScreen'
+export { default as AddCategoryButton } from './AddCategoryButton'
 export { default as AnimatedBackground } from './AnimatedBackground'
-export { default as EditableHeader } from './EditableHeader'
-export { default as FilterBar } from './FilterBar'
 export { default as EditableDailyMenu } from './EditableDailyMenu'
+export { default as EditableHeader } from './EditableHeader'
 export { default as EditableMenuCategory } from './EditableMenuCategory'
 export { default as EditableMenuItem } from './EditableMenuItem'
-export { default as ItemModal } from './ItemModal'
 export { default as EditModeToggle } from './EditModeToggle'
-export { default as AddCategoryButton } from './AddCategoryButton'
+export { default as FilterBar } from './FilterBar'
+export { default as ItemModal } from './ItemModal'
+export { default as LoadingScreen } from './LoadingScreen'
 export { default as PaymentStatusHandler } from './PaymentStatusHandler'
 
 // New architecture components

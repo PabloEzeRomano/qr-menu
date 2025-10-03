@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { useAuth } from '@/contexts/AuthContextProvider'
 import { getOnboardingStatus } from '@/lib/api/restaurant'
 

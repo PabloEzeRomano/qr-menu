@@ -1,7 +1,8 @@
 'use client'
 
-import { Order } from '@/types'
 import { AlertCircle, CheckCircle, Clock, Eye, Trash2, XCircle } from 'lucide-react'
+
+import { Order } from '@/types'
 
 interface OrdersTableProps {
   orders: Order[]

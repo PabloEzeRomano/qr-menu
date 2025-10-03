@@ -1,9 +1,11 @@
 'use client'
 
+import { useCallback } from 'react'
+
+import { uploadItemImage } from '@/lib/api/menu'
 import { patchRestaurantBackground } from '@/lib/api/restaurant'
 import { ERROR_MESSAGES } from '@/lib/constants'
-import { uploadItemImage } from '@/lib/uploadImage'
-import { useCallback } from 'react'
+
 import { useErrorHandler } from './useErrorHandler'
 
 export function useImageOperations() {

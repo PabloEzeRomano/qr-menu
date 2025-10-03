@@ -1,10 +1,12 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { createContext, useCallback, useContext, useEffect,useState } from 'react'
+
+import { getOnboardingStatus, onboardingComplete } from '@/lib/api/restaurant'
+import { OnboardingContextType,OnboardingData, OnboardingStep } from '@/types/onboarding'
+
 import { useAuth } from './AuthContextProvider'
 import { useMenuData } from './MenuDataProvider'
-import { OnboardingStep, OnboardingData, OnboardingContextType } from '@/types/onboarding'
-import { getOnboardingStatus, onboardingComplete } from '@/lib/api/restaurant'
 
 const OnboardingContext = createContext<OnboardingContextType | undefined>(undefined)
 

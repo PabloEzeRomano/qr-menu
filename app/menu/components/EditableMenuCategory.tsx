@@ -1,14 +1,17 @@
 'use client'
 
-import { Category, MenuItem } from '@/types'
+import { useState } from 'react'
+
 import { motion } from 'framer-motion'
 import { Check, Edit2, Plus, Trash2, X } from 'lucide-react'
-import { useState } from 'react'
-import EditableMenuItem from './EditableMenuItem'
+
 import { Button } from '@/components/ui'
 import { Input } from '@/components/ui'
 import { useCategoryOperations } from '@/hooks/useCategoryOperations'
 import { useItemOperations } from '@/hooks/useItemOperations'
+import { Category, MenuItem } from '@/types'
+
+import EditableMenuItem from './EditableMenuItem'
 interface EditableMenuCategoryProps {
   category: Category
   items: MenuItem[]
