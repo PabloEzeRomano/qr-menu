@@ -1,6 +1,7 @@
 import { adminAuth, adminDB } from './firebaseAdmin'
 
 interface UserData {
+  role: string
   bypassOnboarding: boolean
 }
 
@@ -11,17 +12,20 @@ export async function requireAdmin(req: Request) {
 
   const { uid } = await adminAuth.verifyIdToken(token)
 
-  const rootDoc = await adminDB.doc(`root/${uid}`).get()
-  const adminDoc = await adminDB.doc(`admins/${uid}`).get()
+  // const rootDoc = await adminDB.doc(`root/${uid}`).get()
+  const userDoc = await adminDB.doc(`users/${uid}`).get()
 
-  // Check root collection for root users
-  if (rootDoc.exists) {
-    const { bypassOnboarding } = rootDoc.data() as UserData
-    return { uid, role: 'root', canBypass: !!bypassOnboarding }
-    // Check admins collection for regular admins
-  } else if (adminDoc.exists) {
-    const { bypassOnboarding } = adminDoc.data() as UserData
-    return { uid, role: 'admin', canBypass: !!bypassOnboarding }
+  // Check users collection for admin/root users
+  if (userDoc.exists) {
+    const userData = userDoc.data() as UserData
+    const { role, bypassOnboarding } = userData
+    const isAdmin = role === 'admin' || role === 'root'
+
+    if (!isAdmin) {
+      throw new Error('Forbidden')
+    }
+
+    return { uid, role, canBypass: !!bypassOnboarding }
   }
 
   throw new Error('Forbidden')

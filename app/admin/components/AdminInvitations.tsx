@@ -1,35 +1,23 @@
 'use client'
 
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { CheckCircle, Clock, Crown,Mail, UserPlus, XCircle } from 'lucide-react'
+import { CheckCircle, Clock, Crown, Mail, UserPlus, XCircle } from 'lucide-react'
 
-import { Button,Input } from '@/components/ui'
+import { Button, Input } from '@/components/ui'
+import { useAuth } from '@/contexts/AuthContextProvider'
 import { useMenuData } from '@/contexts/MenuDataProvider'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
-import { getInvitations, getUserRole,sendInvitation } from '@/lib/api/invitations'
+import { getInvitations, getUserRole, sendInvitation } from '@/lib/api/invitations'
 import { AdminInvitation } from '@/types'
 
 export default function AdminInvitations() {
   const [email, setEmail] = useState('')
   const [sending, setSending] = useState(false)
   const [invitations, setInvitations] = useState<AdminInvitation[]>([])
-  const [userRole, setUserRole] = useState<string>('')
   const { handleError, showToast } = useErrorHandler()
   const { restaurant } = useMenuData()
-
-  useEffect(() => {
-    // Get user role from API
-    const fetchUserRole = async () => {
-      try {
-        const data = await getUserRole()
-        setUserRole(data.role)
-      } catch (error) {
-        console.error('Failed to get user role:', error)
-      }
-    }
-    fetchUserRole()
-  }, [])
+  const { isRoot } = useAuth()
 
   const handleSendInvitation = async () => {
     if (!email || !email.includes('@')) {
@@ -104,7 +92,7 @@ export default function AdminInvitations() {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-2xl font-bold text-gray-900">Invitar Administradores</h2>
-          {userRole === 'root' && (
+          {isRoot && (
             <div className="flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
               <Crown className="w-3 h-3" />
               ROOT

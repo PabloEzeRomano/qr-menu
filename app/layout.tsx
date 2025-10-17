@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google'
 
 import ErrorBoundary from '@/components/ErrorBoundary'
 import Navbar from '@/components/Navbar'
+import OnboardingGuard from '@/components/OnboardingGuard'
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import { AuthProvider } from '@/contexts/AuthContextProvider'
 import { CartProvider } from '@/contexts/CartProvider'
@@ -43,7 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthProvider>
             <CartProvider>
               <Navbar />
-              {children}
+              <OnboardingGuard>
+                {children}
+              </OnboardingGuard>
               <ServiceWorkerRegistration />
             </CartProvider>
           </AuthProvider>

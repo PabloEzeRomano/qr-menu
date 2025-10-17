@@ -15,7 +15,6 @@ import {
   X
 } from 'lucide-react'
 
-import OnboardingGuard from '@/components/OnboardingGuard'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { AppProvider } from '@/contexts/AppProvider'
 import { AdminView } from '@/types'
@@ -73,9 +72,8 @@ export default function AdminPage() {
 
   return (
     <ProtectedRoute requireAdmin={true}>
-      <OnboardingGuard>
-        <AppProvider>
-          <div className="min-h-screen bg-gray-50 pt-16">
+      <AppProvider>
+        <div className="min-h-screen bg-gray-50 pt-16">
             {/* Mobile Admin Navigation - Floating */}
             <div className="lg:hidden fixed top-20 left-4 right-4 z-30">
               <div className="bg-white shadow-lg rounded-lg border border-gray-200">
@@ -171,7 +169,6 @@ export default function AdminPage() {
             </div>
           </div>
         </AppProvider>
-      </OnboardingGuard>
     </ProtectedRoute>
   )
 }

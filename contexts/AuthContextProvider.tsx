@@ -20,6 +20,7 @@ type AuthCtx = {
   user: User | null
   loading: boolean
   isAdmin: boolean
+  isRoot: boolean
   signIn: (email: string, password: string, type?: 'email' | 'google') => Promise<void>
   signUp: (email: string, password: string, displayName?: string) => Promise<void>
   logout: () => Promise<void>
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthCtx>({
   user: null,
   loading: true,
   isAdmin: false,
+  isRoot: false,
   signIn: async () => {},
   signUp: async () => {},
   logout: async () => {},
@@ -39,34 +41,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authInit, setAuthInit] = useState(true)
   const [roleLoading, setRoleLoading] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [isRoot, setIsRoot] = useState(false)
 
   // Helper functions for localStorage admin cache
-  const getCachedAdminStatus = (uid: string): boolean | null => {
+  const getCachedAdminStatus = (uid: string): { isAdmin: boolean; isRoot: boolean } | null => {
     try {
       const cached = localStorage.getItem(`admin_${uid}`)
       if (!cached) {
         return null
       }
 
-      const { isAdmin, timestamp } = JSON.parse(cached)
+      const parsed = JSON.parse(cached)
       const now = Date.now()
       const CACHE_DURATION = 30 * 60 * 1000 // 30 minutes
 
-      if (now - timestamp > CACHE_DURATION) {
+      if (now - parsed.timestamp > CACHE_DURATION) {
         localStorage.removeItem(`admin_${uid}`)
         return null
       }
 
-      return isAdmin
+      // Handle migration from old cache format
+      const isAdmin = parsed.isAdmin || false
+      const isRoot = parsed.isRoot || false
+
+      return { isAdmin, isRoot }
     } catch (error) {
       return null
     }
   }
 
-  const setCachedAdminStatus = (uid: string, adminStatus: boolean) => {
+  const setCachedAdminStatus = (uid: string, adminStatus: boolean, rootStatus: boolean) => {
     try {
       const cacheData = {
         isAdmin: adminStatus,
+        isRoot: rootStatus,
         timestamp: Date.now(),
       }
       localStorage.setItem(`admin_${uid}`, JSON.stringify(cacheData))
@@ -85,7 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (user) {
         const cachedStatus = getCachedAdminStatus(user.uid)
         if (cachedStatus !== null) {
-          setIsAdmin(cachedStatus)
+          setIsAdmin(cachedStatus.isAdmin)
+          setIsRoot(cachedStatus.isRoot)
           setRoleLoading(false)
         }
       }
@@ -93,12 +102,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsub()
   }, [])
 
-  // Admin/Root role: admins/{uid} and root/{uid}
+  // Admin/Root role: users/{uid} with role 'admin' or 'root'
   useEffect(() => {
     let cancelled = false
 
     if (!user) {
       setIsAdmin(false)
+      setIsRoot(false)
       setRoleLoading(false)
       return
     }
@@ -107,101 +117,71 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const cachedAdminStatus = getCachedAdminStatus(user.uid)
 
     if (cachedAdminStatus !== null) {
-      setIsAdmin(cachedAdminStatus)
+      setIsAdmin(cachedAdminStatus.isAdmin)
+      setIsRoot(cachedAdminStatus.isRoot)
       setRoleLoading(false)
       // Still verify with Firebase in background, but don't show loading
-      const adminRef = doc(db, 'admins', user.uid)
-      const rootRef = doc(db, 'root', user.uid)
+      const userRef = doc(db, 'users', user.uid)
 
-      const unsubAdmin = onSnapshot(
-        adminRef,
+      const unsubUser = onSnapshot(
+        userRef,
         (snap) => {
           if (cancelled) return
-          const adminStatus = snap.exists()
+          const userData = snap.data()
+          const isAdmin = userData?.role === 'admin'
+          const isRoot = userData?.role === 'root'
           // Only update if different from cache
-          if (adminStatus !== cachedAdminStatus) {
-            setIsAdmin(adminStatus)
-            setCachedAdminStatus(user.uid, adminStatus)
+          if (isAdmin !== cachedAdminStatus.isAdmin || isRoot !== cachedAdminStatus.isRoot) {
+            setIsAdmin(isAdmin)
+            setIsRoot(isRoot)
+            setCachedAdminStatus(user.uid, isAdmin, isRoot)
           }
         },
         (err) => {
-          console.error('onSnapshot(admins) error:', err)
-        }
-      )
-
-      const unsubRoot = onSnapshot(
-        rootRef,
-        (snap) => {
-          if (cancelled) return
-          const rootStatus = snap.exists()
-          // Only update if different from cache
-          if (rootStatus !== cachedAdminStatus) {
-            setIsAdmin(rootStatus)
-            setCachedAdminStatus(user.uid, rootStatus)
-          }
-        },
-        (err) => {
-          console.error('onSnapshot(root) error:', err)
+          console.error('onSnapshot(users) error:', err)
         }
       )
 
       return () => {
         cancelled = true
-        unsubAdmin()
-        unsubRoot()
+        unsubUser()
       }
     }
 
     // No cache, show loading and fetch from Firebase
     setRoleLoading(true)
-    const adminRef = doc(db, 'admins', user.uid)
-    const rootRef = doc(db, 'root', user.uid)
+    const userRef = doc(db, 'users', user.uid)
 
-    let adminStatus = false
-    let rootStatus = false
     let resolved = false
 
-    const checkStatus = () => {
+    const checkStatus = (userData: any) => {
       if (resolved) return
       resolved = true
-      const isAdmin = adminStatus || rootStatus
+      const isAdmin = userData?.role === 'admin'
+      const isRoot = userData?.role === 'root'
       setIsAdmin(isAdmin)
-      setCachedAdminStatus(user.uid, isAdmin)
+      setIsRoot(isRoot)
+      setCachedAdminStatus(user.uid, isAdmin, isRoot)
       setRoleLoading(false)
     }
 
-    const unsubAdmin = onSnapshot(
-      adminRef,
+    const unsubUser = onSnapshot(
+      userRef,
       (snap) => {
         if (cancelled) return
-        adminStatus = snap.exists()
-        checkStatus()
+        const userData = snap.data()
+        checkStatus(userData)
       },
       (err) => {
-        console.error('onSnapshot(admins) error:', err)
+        console.error('onSnapshot(users) error:', err)
         if (cancelled) return
-        checkStatus()
-      }
-    )
-
-    const unsubRoot = onSnapshot(
-      rootRef,
-      (snap) => {
-        if (cancelled) return
-        rootStatus = snap.exists()
-        checkStatus()
-      },
-      (err) => {
-        console.error('onSnapshot(root) error:', err)
-        if (cancelled) return
-        checkStatus()
+        checkStatus(null)
       }
     )
 
     return () => {
       cancelled = true
-      unsubAdmin()
-      unsubRoot()
+      unsubUser()
     }
   }, [user])
 
@@ -244,8 +224,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // If we have a user and admin status is confirmed, ensure cache is set
     if (user && !loading && isAdmin) {
       const cachedStatus = getCachedAdminStatus(user.uid)
-      if (cachedStatus !== true) {
-        setCachedAdminStatus(user.uid, true)
+      if (cachedStatus?.isAdmin !== true) {
+        setCachedAdminStatus(user.uid, isAdmin, isRoot)
       }
     }
 
@@ -253,11 +233,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       loading,
       isAdmin,
+      isRoot,
       signIn,
       signUp,
       logout,
     }
-  }, [user, authInit, roleLoading, isAdmin, signIn, signUp, logout])
+  }, [user, authInit, roleLoading, isAdmin, isRoot, signIn, signUp, logout])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

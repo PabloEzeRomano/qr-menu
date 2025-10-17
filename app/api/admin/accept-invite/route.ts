@@ -38,12 +38,15 @@ export async function POST(req: NextRequest) {
     })
 
     // Create admin document
-    await adminDB.collection('admins').doc(userRecord.uid).set({
+    await adminDB.collection('users').doc(userRecord.uid).set({
       email: invitation.email,
       role: 'admin',
+      displayName: userRecord.displayName || null,
       createdAt: new Date(),
+      updatedAt: new Date(),
       invitedBy: invitation.createdBy,
       invitedByName: invitation.createdByName,
+      bypassOnboarding: false, // Regular admins need to complete onboarding
     })
 
     // Mark invitation as used
