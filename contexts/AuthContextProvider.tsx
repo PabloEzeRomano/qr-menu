@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Handle migration from old cache format
-      const isAdmin = parsed.isAdmin || false
+      const isAdmin = parsed.isAdmin || parsed.isRoot || false
       const isRoot = parsed.isRoot || false
 
       return { isAdmin, isRoot }
@@ -128,10 +128,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         (snap) => {
           if (cancelled) return
           const userData = snap.data()
-          const isAdmin = userData?.role === 'admin'
+          const isAdmin = userData?.role === 'admin' || userData?.role === 'root'
           const isRoot = userData?.role === 'root'
           // Only update if different from cache
-          if (isAdmin !== cachedAdminStatus.isAdmin || isRoot !== cachedAdminStatus.isRoot) {
+          if (isAdmin !== cachedAdminStatus.isAdmin) {
             setIsAdmin(isAdmin)
             setIsRoot(isRoot)
             setCachedAdminStatus(user.uid, isAdmin, isRoot)
@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const checkStatus = (userData: any) => {
       if (resolved) return
       resolved = true
-      const isAdmin = userData?.role === 'admin'
+      const isAdmin = userData?.role === 'admin' || userData?.role === 'root'
       const isRoot = userData?.role === 'root'
       setIsAdmin(isAdmin)
       setIsRoot(isRoot)

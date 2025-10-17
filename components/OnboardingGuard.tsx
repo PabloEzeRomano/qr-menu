@@ -14,7 +14,6 @@ interface OnboardingGuardProps {
 export default function OnboardingGuard({ children }: OnboardingGuardProps) {
   const { user, isAdmin, isRoot, loading } = useAuth()
   const router = useRouter()
-  const pathname = usePathname()
   const [onboardingChecked, setOnboardingChecked] = useState(false)
 
   const checkOnboarding = useCallback(async () => {

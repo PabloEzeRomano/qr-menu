@@ -17,7 +17,7 @@ export default function ProtectedRoute({
   requireAdmin = false,
   fallback,
 }: ProtectedRouteProps) {
-  const { user, isAdmin, isRoot, loading } = useAuth()
+  const { user, isAdmin, loading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function ProtectedRoute({
 
         // For admin routes, only redirect if we're sure the user is not an admin
         // This prevents redirecting during the brief moment when admin status is being verified
-        if (requireAdmin && !isAdmin && !isRoot) {
+        if (requireAdmin && !isAdmin) {
           router.push('/')
           return
         }
@@ -40,7 +40,7 @@ export default function ProtectedRoute({
     }, 100) // Small delay to allow cache to load
 
     return () => clearTimeout(timeoutId)
-  }, [user, isAdmin, isRoot, loading, requireAdmin, router])
+  }, [user, isAdmin, loading, requireAdmin, router])
 
   if (loading) {
     return (
@@ -69,7 +69,7 @@ export default function ProtectedRoute({
     )
   }
 
-  if (requireAdmin && !isAdmin && !isRoot) {
+  if (requireAdmin && !isAdmin) {
     return (
       fallback || (
         <div className="min-h-screen flex items-center justify-center">
