@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import path from 'path'
 
-// Load .env.local first (Next.js convention), then .env as fallback
+// Load environment variables FIRST, before any other imports
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
@@ -21,8 +21,8 @@ async function ensureRootAdmin() {
   try {
     console.log('🔍 Checking for root admin...')
 
-    // Check if any root admin exists
-    const rootSnapshot = await adminDB.collection('root').limit(1).get()
+    // Check if any root admin exists in users collection
+    const rootSnapshot = await adminDB.collection('users').where('role', '==', 'root').limit(1).get()
 
     if (!rootSnapshot.empty) {
       const rootAdmin = rootSnapshot.docs[0].data()
@@ -52,14 +52,19 @@ async function ensureRootAdmin() {
       }
     }
 
-    // Create root document
-    await adminDB.collection('root').doc(userRecord.uid).set({
-      email: rootEmail,
+    // Create user document with root role
+    const userData = {
+      role: 'root',
+      email: userRecord.email as string,
+      displayName: userRecord.displayName || null,
       createdAt: new Date(),
+      updatedAt: new Date(),
       isRoot: true,
       bypassOnboarding: true,
       autoCreated: true,
-    })
+    }
+
+    await adminDB.collection('users').doc(userRecord.uid).set(userData)
 
     console.log('🎉 ROOT ADMIN CREATED SUCCESSFULLY!')
     console.log(`📧 Email: ${rootEmail}`)

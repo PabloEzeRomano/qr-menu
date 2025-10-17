@@ -12,47 +12,29 @@
  */
 
 import dotenv from 'dotenv'
-import { initializeApp } from 'firebase/app'
-import { createUserWithEmailAndPassword,getAuth } from 'firebase/auth'
-import { doc, getFirestore, setDoc } from 'firebase/firestore'
+import path from 'path'
 import readline from 'readline'
-
 // Load environment variables
-dotenv.config()
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
+dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-}
+console.log(process.env)
 
 // Validate required environment variables
-const requiredEnvVars = [
-  'NEXT_PUBLIC_FIREBASE_API_KEY',
-  'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-  'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-  'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-  'NEXT_PUBLIC_FIREBASE_APP_ID',
-]
+const requiredEnvVars = ['FIREBASE_SERVICE_ACCOUNT']
 
 const missingVars = requiredEnvVars.filter((varName) => !process.env[varName])
 if (missingVars.length > 0) {
   console.error('❌ Missing required environment variables:')
   missingVars.forEach((varName) => console.error(`   - ${varName}`))
   console.error(
-    '\nPlease check your .env.local file and ensure all Firebase configuration variables are set.',
+    '\nPlease check your .env.local file and ensure the Firebase service account is configured.',
   )
   process.exit(1)
 }
 
-// Initialize Firebase
-console.log('🔥 Initializing Firebase...')
-const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
-const db = getFirestore(app)
+// Initialize Firebase Admin
+console.log('🔥 Initializing Firebase Admin...')
 
 // Create readline interface for user input
 const rl = readline.createInterface({
@@ -73,9 +55,9 @@ async function createAdminUser() {
     console.log('\n👤 Creating Admin User')
     console.log('====================')
 
-    const email = await askQuestion('Enter admin email: ')
-    const password = await askQuestion('Enter admin password: ')
-    const displayName = await askQuestion('Enter display name (optional): ')
+    const email = await askQuestion('Enter admin email: ') as string
+    const password = await askQuestion('Enter admin password: ') as string
+    const displayName = await askQuestion('Enter display name (optional): ') as string
 
     if (!email || !password) {
       console.error('❌ Email and password are required')
@@ -84,30 +66,32 @@ async function createAdminUser() {
 
     console.log('\n🔄 Creating user account...')
 
-    // Create user account
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email as string,
-      password as string,
-    )
-    const user = userCredential.user
+    // Import Firebase Admin SDK after environment variables are loaded
+    const { adminAuth, adminDB } = await import('../lib/server/firebaseAdmin')
+
+    // Create user account using Firebase Admin SDK
+    const userRecord = await adminAuth.createUser({
+      email: email,
+      password: password,
+      displayName: displayName || null,
+    })
 
     console.log('✅ User account created successfully')
-    console.log(`   - UID: ${user.uid}`)
-    console.log(`   - Email: ${user.email}`)
+    console.log(`   - UID: ${userRecord.uid}`)
+    console.log(`   - Email: ${userRecord.email}`)
 
     // Create user document with admin role
     console.log('\n🔄 Setting admin role...')
 
     const userData = {
       role: 'admin',
-      email: user.email as string,
-      displayName: displayName || user.displayName || undefined,
+      email: userRecord.email as string,
+      displayName: displayName || userRecord.displayName || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
 
-    await setDoc(doc(db, 'users', user.uid), userData)
+    await adminDB.collection('users').doc(userRecord.uid).set(userData)
 
     console.log('✅ Admin role assigned successfully')
     console.log('\n🎉 Admin user created successfully!')

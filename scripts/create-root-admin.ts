@@ -1,9 +1,7 @@
 import dotenv from 'dotenv'
 import path from 'path'
 
-import { adminAuth, adminDB } from '../lib/server/firebaseAdmin'
-
-// Load .env.local first (Next.js convention), then .env as fallback
+// Load environment variables FIRST, before any other imports
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
@@ -17,6 +15,9 @@ async function createRootAdmin() {
   }
 
   try {
+    // Import Firebase Admin SDK after environment variables are loaded
+    const { adminAuth, adminDB } = await import('../lib/server/firebaseAdmin')
+
     // Create user in Firebase Auth
     const userRecord = await adminAuth.createUser({
       email,
@@ -24,13 +25,18 @@ async function createRootAdmin() {
       emailVerified: true,
     })
 
-    // Create root document
-    await adminDB.collection('root').doc(userRecord.uid).set({
-      email,
+    // Create user document with root role
+    const userData = {
+      role: 'root',
+      email: userRecord.email as string,
+      displayName: userRecord.displayName || null,
       createdAt: new Date(),
+      updatedAt: new Date(),
       isRoot: true,
       bypassOnboarding: true,
-    })
+    }
+
+    await adminDB.collection('users').doc(userRecord.uid).set(userData)
 
     console.log('🎉 ROOT ADMIN CREATED SUCCESSFULLY!')
     console.log(`📧 Email: ${email}`)
